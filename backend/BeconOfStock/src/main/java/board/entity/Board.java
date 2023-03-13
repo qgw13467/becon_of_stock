@@ -2,7 +2,6 @@ package board.entity;
 
 import config.BaseEntity;
 import member.entity.Member;
-
 import javax.persistence.*;
 
 @Entity
