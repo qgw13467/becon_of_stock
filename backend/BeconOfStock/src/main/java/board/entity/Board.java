@@ -7,8 +7,6 @@ import javax.persistence.*;
 
 @Entity
 public class Board extends BaseEntity {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
