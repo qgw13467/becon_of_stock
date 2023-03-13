@@ -37,3 +37,17 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+task copyPrivate(type: Copy) {
+    copy {
+        from "../../becon-of-stack-config"
+        include "*.yml"
+        into "src/main/resources"
+    }
+
+    copy {
+        from "../../becon-of-stack-config"
+        include "*.yml"
+        into "src/test/resources"
+    }
+}
