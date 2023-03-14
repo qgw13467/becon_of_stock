@@ -1,5 +1,12 @@
 package com.ssafy.beconofstock.member.entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public enum Role {
-    ROLE_USER, ROLE_ADMIN
+    USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
+    private final String description;
+
 }
