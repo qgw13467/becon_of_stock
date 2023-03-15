@@ -74,6 +74,7 @@ public class JwtTokenProvider {
     private Map<String, Object> createClaims(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", member.getId());
+        claims.put("providerId", member.getProviderId());
         claims.put("nickname", member.getNickname());
         claims.put("role", member.getRole());
 
@@ -83,6 +84,7 @@ public class JwtTokenProvider {
     private Map<String, Object> createClaims(String token){
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", getId(token));
+        claims.put("providerId", getProviderId(token));
         claims.put("nickname", getNickname(token));
         claims.put("role", getRole(token));
         return claims;
@@ -99,6 +101,9 @@ public class JwtTokenProvider {
     }
     public Object getId(String token){
         return getClaims(token).get("id");
+    }
+    public Object getProviderId(String token){
+        return getClaims(token).get("providerId");
     }
     public Object getNickname(String token) {
         return getClaims(token).get("nickname");
