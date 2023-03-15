@@ -27,6 +27,7 @@ public class OAuth2UserImpl implements OAuth2User, UserDetails {
         this.oAuthUserInfo = oAuthUserInfo;
     }
 
+
     public Member getMember(){
         return member;
     }
@@ -38,7 +39,7 @@ public class OAuth2UserImpl implements OAuth2User, UserDetails {
 
     @Override
     public String getUsername() {
-        return oAuthUserInfo.getName();
+        return member.getProviderId();
     }
 
     @Override
