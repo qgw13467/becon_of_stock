@@ -47,7 +47,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-            "*"
+                "http://localhost:3000","http://j8d207.p.ssafy.io/","http://localhost:8080"
         ));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Arrays.asList(
