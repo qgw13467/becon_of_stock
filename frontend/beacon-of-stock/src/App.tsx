@@ -1,12 +1,20 @@
 import React from 'react';
+import { BrowserRouter, Route, Router, Navigate, Routes } from 'react-router-dom';
+import Nav from './nav/Nav';
+import BacktestMain from './component/backtest/BacktestMain';
+import CommunityMain from './component/community/CommunityMain';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <p className='text-3xl font-bold underline'>
-        hello typescript
-      </p>
-    </div>
+    <>
+      <BrowserRouter>
+        <Nav />
+        <Routes>
+          <Route path='/' element={<BacktestMain />} />
+          <Route path='/community' element={<CommunityMain />} />        
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
