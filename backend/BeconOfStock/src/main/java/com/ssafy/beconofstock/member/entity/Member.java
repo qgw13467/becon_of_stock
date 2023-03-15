@@ -35,6 +35,7 @@ public class Member extends BaseEntity {
 
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
