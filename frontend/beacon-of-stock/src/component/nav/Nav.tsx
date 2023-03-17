@@ -13,6 +13,11 @@ const Nav = () => {
       <div className="flex space-x-20">
         <div className="m-auto">
           <Link to="/">
+            <p className="text-lg font-KJCbold">튜토리얼</p>
+          </Link>
+        </div>
+        <div className="m-auto">
+          <Link to="/">
             <p className="text-lg font-KJCbold">백테스트</p>
           </Link>
         </div>
