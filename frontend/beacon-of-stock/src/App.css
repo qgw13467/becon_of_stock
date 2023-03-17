@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* font */
+@font-face {
+  font-family: "KimjungchulGothic-Regular";
+  src: url("./fonts/KimjungchulGothic-Regular.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: "KimjungchulGothic-Regular";
+}
