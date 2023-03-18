@@ -34,9 +34,7 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String providerId;
-
     private String nickname;
 
     private Long followNum;
@@ -49,7 +47,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Strategy> strategies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-    private List<ContestMember> contestMembers = new ArrayList<>();
+//    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+//    private List<ContestMember> contestMembers = new ArrayList<>();
 
 }

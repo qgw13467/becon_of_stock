@@ -22,9 +22,8 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public UserInfoDto getUserInfoDto(Long memberId) {
 
-        Optional<Member> memberOptional = memberRepository.findById(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(UserNotFoundException::new);
 
-        Member member = memberOptional.orElseThrow(UserNotFoundException::new);
         List<ContestMember> contestHistoryDtoList = contestMemberRepository.findByMemberFetch(member);
 
         List<ContestHistoryDto> contestHistoryDtos = contestHistoryDtoList.stream()

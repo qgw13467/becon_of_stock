@@ -13,5 +13,7 @@ public interface ContestMemberRepository extends JpaRepository<ContestMember, Lo
 
     @Query("SELECT cm FROM ContestMember cm LEFT JOIN FETCH cm.contest LEFT JOIN FETCH cm.strategy WHERE cm.member = :member")
    List<ContestMember> findByMemberFetch(Member member);
+    @Query("SELECT cm FROM ContestMember cm LEFT JOIN FETCH cm.contest LEFT JOIN FETCH cm.strategy WHERE cm.member.providerId = :providerId")
+    List<ContestMember> findByMemberFetch(String providerId);
 
 }
