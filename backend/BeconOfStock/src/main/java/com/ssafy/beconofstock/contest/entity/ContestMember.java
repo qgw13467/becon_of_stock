@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,6 +35,5 @@ public class ContestMember extends BaseEntity {
 
     private LocalDateTime participateDateTime;
 
-    @NotNull
     private Long ranking;
 }
