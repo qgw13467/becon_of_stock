@@ -8,6 +8,8 @@ import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member extends BaseEntity {
 
     public Member(OAuthUserInfo oAuthUserInfo){
@@ -35,6 +39,7 @@ public class Member extends BaseEntity {
 
     private String nickname;
 
+    private Long followNum;
     @Enumerated(EnumType.STRING)
     private Role role;
 
