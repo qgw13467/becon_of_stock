@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        Member member = new Member();
         String token = "";
         try {
             token = jwtTokenProvider.parseJwt(request);
@@ -42,9 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 UserDetails userDetails = principalOAuth2UserService.loadUserByUsername(providerId);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                OAuth2UserImpl oAuth2User = (OAuth2UserImpl) userDetails;
-                member = oAuth2User.getMember();
 
                 SecurityContext context = SecurityContextHolder.getContext();
                 context.setAuthentication(authentication);
