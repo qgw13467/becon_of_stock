@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicInsert
 public class Member extends BaseEntity {
 
     public Member(OAuthUserInfo oAuthUserInfo){
@@ -37,6 +40,7 @@ public class Member extends BaseEntity {
     private String providerId;
     private String nickname;
 
+    @ColumnDefault("0")
     private Long followNum;
     @Enumerated(EnumType.STRING)
     private Role role;
