@@ -11,6 +11,7 @@ import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.authentication.user.PrincipalOAuth2UserService;
 import com.ssafy.beconofstock.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SelectBeforeUpdate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final PrincipalOAuth2UserService principalOAuth2UserService;
@@ -37,10 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = "";
         try {
             token = jwtTokenProvider.parseJwt(request);
+            log.info("request: {}",request.getHeader("Authentication"));
+            log.info("=============== token: {}", token);
+
             if (token != null && jwtTokenProvider.isValidate(token)) {
                 String providerId = (String)jwtTokenProvider.getProviderId(token);
-
+                log.info("providerId: {}", providerId);
                 UserDetails userDetails = principalOAuth2UserService.loadUserByUsername(providerId);
+                log.info("userDetail.getAuthorities: {}",userDetails.getAuthorities());
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 OAuth2UserImpl oAuth2User = (OAuth2UserImpl) userDetails;
@@ -51,16 +57,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
 
             }
-        } catch (BadCredentialsException e) {
+        } catch (Exception e) {
             loginFailure(request, response);
+            e.printStackTrace();
         }
 //        catch(NeedNicknameAndLocation e){
 //            request.setAttribute("exception","NeedNicknameAndLocation");
 //            request.setAttribute("token" , token);
 //        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
 
         filterChain.doFilter(request, response);
 

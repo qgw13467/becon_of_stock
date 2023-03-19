@@ -38,10 +38,13 @@ public class SecurityConfig {
 //        http.authorizeRequests()
 //                        .antMatchers("/login/oauth2/code/kakao").permitAll()
 //                        .anyRequest().authenticated();
+        http.authorizeRequests()
+                        .anyRequest().authenticated();
 
         http
                 .httpBasic().disable()
-                .cors(Customizer.withDefaults())
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement()
@@ -50,8 +53,8 @@ public class SecurityConfig {
         http.oauth2Login()
                 .userInfoEndpoint() // 필수
                 .userService(principalOAuth2UserService)
-                .and().
-                successHandler(oAuth2AuthenticationSucessHandler);
+                .and()
+                .successHandler(oAuth2AuthenticationSucessHandler);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
