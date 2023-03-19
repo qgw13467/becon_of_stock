@@ -7,9 +7,11 @@ import com.ssafy.beconofstock.member.dto.UserInfoDto;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import java.util.stream.LongStream;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -32,20 +35,17 @@ public class MemberController {
 
         UserInfoDto userInfoDto = memberService.getUserInfoDto(userId);
 
-
         return new ResponseEntity<>(userInfoDto,HttpStatus.OK);
     }
 
-    @GetMapping("/floows")
-    public ResponseEntity<?> getFollows(Authentication authentication){
+    @GetMapping("/follows")
+    public ResponseEntity<?> getFollows(@AuthenticationPrincipal OAuth2UserImpl oAuth2User){
 
-        UserDetails userDetails = (UserDetails) authentication.getDetails();
-        OAuth2UserImpl oAuth2User = (OAuth2UserImpl) userDetails;
-        Member member = oAuth2User.getMember();
-
-        List<FollowedDto> follows = memberService.getFollows(member);
-
+        log.info("member.getProviderId: {}",oAuth2User.getMember().getProviderId());
+        List<FollowedDto> follows = memberService.getFollows(oAuth2User.getMember());
 
         return new ResponseEntity<>(follows,HttpStatus.OK);
     }
+
+
 }
