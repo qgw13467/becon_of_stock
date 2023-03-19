@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.authentication;
 
 import java.io.IOException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.authentication.user.PrincipalOAuth2UserService;
 import com.ssafy.beconofstock.member.entity.Member;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SelectBeforeUpdate;
@@ -31,22 +33,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
         Member member = new Member();
         String token = "";
         try {
             token = jwtTokenProvider.parseJwt(request);
-            log.info("request: {}",request.getHeader("Authentication"));
+            log.info("request: {}", request.getHeader("Authentication"));
             log.info("=============== token: {}", token);
 
-            if (token != null && jwtTokenProvider.isValidate(token)) {
-                String providerId = (String)jwtTokenProvider.getProviderId(token);
+            if (token != null) {
+                String providerId = (String) jwtTokenProvider.getProviderId(token);
                 log.info("providerId: {}", providerId);
                 UserDetails userDetails = principalOAuth2UserService.loadUserByUsername(providerId);
-                log.info("userDetail.getAuthorities: {}",userDetails.getAuthorities());
+                log.info("userDetail.getAuthorities: {}", userDetails.getAuthorities());
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 OAuth2UserImpl oAuth2User = (OAuth2UserImpl) userDetails;
@@ -57,8 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
 
             }
-        } catch (Exception e) {
+        } catch (BadCredentialsException e) {
+//            request.setAttribute("exception", "bad credential");
             loginFailure(request, response);
+            e.printStackTrace();
+        } catch (ExpiredJwtException e) {
+//            request.setAttribute("exception", "jwt expired");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 //        catch(NeedNicknameAndLocation e){
