@@ -3,6 +3,7 @@ package com.ssafy.beconofstock.testutil;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
+import com.ssafy.beconofstock.member.entity.Follow;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.member.entity.Role;
 import com.ssafy.beconofstock.strategy.entity.AccessType;
@@ -92,6 +93,10 @@ public class TestUtil {
         }
         return contestMembers;
 
+    }
+
+    static public Follow getFollow(Long id,Member following, Member followed){
+         return new Follow(id,following,followed);
     }
 
 
