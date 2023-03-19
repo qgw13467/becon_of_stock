@@ -4,6 +4,7 @@ import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.contest.repository.ContestMemberRepository;
 import com.ssafy.beconofstock.member.dto.UserInfoDto;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.member.repository.FollowRepository;
 import com.ssafy.beconofstock.member.repository.MemberRepository;
 import com.ssafy.beconofstock.member.service.MemberService;
 import com.ssafy.beconofstock.member.service.MemberServiceImpl;
@@ -29,7 +30,8 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private ContestMemberRepository contestMemberRepository;
-
+    @Mock
+    private FollowRepository followRepository;
     @InjectMocks
     private MemberServiceImpl memberService;
 
@@ -44,7 +46,7 @@ public class MemberServiceTest {
 
         Mockito.lenient().doReturn(contestMembers).when(contestMemberRepository).findByMemberFetch(member);
         Mockito.lenient().doReturn(Optional.of(member)).when(memberRepository).findById(Mockito.any());
-        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository);
+        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository);
 
         //when
         UserInfoDto userInfoDto = memberService.getUserInfoDto(1L);
