@@ -9,9 +9,11 @@ import java.util.Collections;
 import com.ssafy.beconofstock.authentication.OAuth2AuthenticationSucessHandler;
 import com.ssafy.beconofstock.authentication.user.PrincipalOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Request;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,6 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -38,10 +42,13 @@ public class SecurityConfig {
 //        http.authorizeRequests()
 //                        .antMatchers("/login/oauth2/code/kakao").permitAll()
 //                        .anyRequest().authenticated();
+        http.authorizeRequests()
+                        .anyRequest().authenticated();
 
         http
                 .httpBasic().disable()
-                .cors(Customizer.withDefaults())
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement()
@@ -50,10 +57,17 @@ public class SecurityConfig {
         http.oauth2Login()
                 .userInfoEndpoint() // 필수
                 .userService(principalOAuth2UserService)
-                .and().
-                successHandler(oAuth2AuthenticationSucessHandler);
+                .and()
+                .successHandler(oAuth2AuthenticationSucessHandler);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        http.exceptionHandling()
+                .authenticationEntryPoint((request, response, authException)->{
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                });
         return http.build();
 
     }

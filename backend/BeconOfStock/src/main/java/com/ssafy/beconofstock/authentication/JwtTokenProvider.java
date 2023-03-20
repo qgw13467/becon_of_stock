@@ -143,6 +143,12 @@ public class JwtTokenProvider {
 
     public String parseJwt(HttpServletRequest request){
         String headerAuth=null;
+
+        if(headerAuth == null){
+            headerAuth= request.getHeader("Authentication");
+            return headerAuth;
+        }
+
         Cookie[] cookies = request.getCookies();
         if(cookies!=null){
             for(int i=0;i<cookies.length;i++){
@@ -152,10 +158,7 @@ public class JwtTokenProvider {
             }
             return headerAuth;
         }
-        if(headerAuth == null){
-            headerAuth= request.getHeader("Authentication");
-            return headerAuth;
-        }
+
         return null;
     }
 
