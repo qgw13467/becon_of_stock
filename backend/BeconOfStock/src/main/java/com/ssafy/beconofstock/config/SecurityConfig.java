@@ -39,11 +39,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                        .antMatchers("/login/oauth2/code/kakao").permitAll()
-//                        .anyRequest().authenticated();
         http.authorizeRequests()
-                        .anyRequest().authenticated();
+                .antMatchers("/login/oauth2/code/kakao").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
+                .anyRequest().authenticated();
 
         http
                 .httpBasic().disable()

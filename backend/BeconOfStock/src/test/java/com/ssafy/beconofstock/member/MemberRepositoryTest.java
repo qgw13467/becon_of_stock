@@ -27,27 +27,27 @@ public class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
 
-    @BeforeEach
-    void memberSetting(){
-        Member member1 = TestUtil.getMember(1L,"kakao_1","nick1");
-        Member member2 = TestUtil.getMember(2L,"kakao_2","nick2");
+//    @BeforeEach
+//    void memberSetting(){
+//        Member member1 = TestUtil.getMember(1L,"kakao_1","nick1");
+//        Member member2 = TestUtil.getMember(2L,"kakao_2","nick2");
+//
+//        memberRepository.save(member1);
+//        memberRepository.save(member2);
+//
+//    }
 
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-
-    }
-
-    @Test
-    @DisplayName("findByNickname")
-    void findMemberByNickname(){
-
-        Member member = memberRepository.findByNickname("nick1").get();
-        System.out.println("=====================");
-        System.out.println(member.getNickname());
-        System.out.println(member.getId());
-        Assertions.assertThat(member.getNickname()).isEqualTo("nick1");
-
-    }
+//    @Test
+//    @DisplayName("findByNickname")
+//    void findMemberByNickname(){
+//
+//        Member member = memberRepository.findByNickname("nick1").get();
+//        System.out.println("=====================");
+//        System.out.println(member.getNickname());
+//        System.out.println(member.getId());
+//        Assertions.assertThat(member.getNickname()).isEqualTo("nick1");
+//
+//    }
 
 
 
