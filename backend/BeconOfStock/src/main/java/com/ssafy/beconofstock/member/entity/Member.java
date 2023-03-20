@@ -45,11 +45,11 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-    private List<Board> boards = new ArrayList<>();
+//    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+//    private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<Strategy> strategies = new ArrayList<>();
+//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+//    private List<Strategy> strategies = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
 //    private List<ContestMember> contestMembers = new ArrayList<>();
