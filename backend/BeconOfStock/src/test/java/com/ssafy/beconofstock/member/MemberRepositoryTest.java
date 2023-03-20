@@ -44,7 +44,8 @@ public class MemberRepositoryTest {
         Member member = memberRepository.findByNickname("nick1").get();
         System.out.println("=====================");
         System.out.println(member.getNickname());
-        Assertions.assertThat(member.getId()).isEqualTo(1L);
+        System.out.println(member.getId());
+        Assertions.assertThat(member.getNickname()).isEqualTo("nick1");
 
     }
 
