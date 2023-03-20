@@ -7,9 +7,9 @@ const BasicSettings = () => {
   const [tradeCost, setTradeCost] = useState<number>(0);
   const [maxNum, setMaxNum] = useState<number>(0);
 
-  // 산업 선택 모달 상태 여부 설정
+  // 산업 선택 모달 활성화 여부 설정
   const showIndustryHandler = () => {
-    setShowIndustry(true);
+    setShowIndustry(!showIndustry);
   };
 
   // 리밸런싱 주기 선택값 가져오기
