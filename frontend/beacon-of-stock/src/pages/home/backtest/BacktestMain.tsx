@@ -1,20 +1,36 @@
 import React from "react";
 
+import BasicSettings from "./BasicSettings";
+import FactorSettings from "./FactorSettings";
+import SelectedItems from "./SelectedItems";
+
+const backTestHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+};
+
 const BacktestMain = () => {
   return (
     <React.Fragment>
-      <h1 className="font-KJCbold">BackTest</h1>
-      <main className="h-[80vh] flex place-content-around align-items: center mt-50">
-        <section className="relative inline-block w-[29%] h-full">
-          <p className="text-[30]">기본 설정</p>
-        </section>
-        <section className="relative inline-block w-[29%] h-full">
-          <p>팩터 설정</p>
-        </section>
-        <section className="relative inline-block w-[29%] h-full">
-          <p>선택 항목 보기</p>
-        </section>
-      </main>
+      <form onSubmit={backTestHandler}>
+        <div className="flex justify-end my-[1%] mr-[8%]">
+          <input
+            className="text-lg font-KJCbold border rounded-xl px-[1%] py-[0.5%]"
+            type="submit"
+            value="백테스트"
+          />
+        </div>
+        <main className="h-[80vh] flex place-content-around items-center mx-[5%]">
+          <section className="relative inline-block w-[29%] h-full border">
+            <BasicSettings />
+          </section>
+          <section className="relative inline-block w-[29%] h-full border">
+            <FactorSettings />
+          </section>
+          <section className="relative inline-block w-[29%] h-full border">
+            <SelectedItems />
+          </section>
+        </main>
+      </form>
     </React.Fragment>
   );
 };
