@@ -23,8 +23,6 @@ public class TestUtil {
                 .role(Role.USER)
                 .followNum(0L)
                 .nickname("test")
-                .boards(new ArrayList<>())
-                .strategies(new ArrayList<>())
                 .build();
     }
 
@@ -35,8 +33,6 @@ public class TestUtil {
                 .nickname(nickname)
                 .role(Role.USER)
                 .followNum(0L)
-                .boards(new ArrayList<>())
-                .strategies(new ArrayList<>())
                 .build();
     }
 
