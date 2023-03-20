@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
@@ -32,9 +31,7 @@ public class Board extends BaseEntity {
 
     private String title;
     private String content;
-    @ColumnDefault("0")
     private Long hit;
-    @ColumnDefault("0")
     private Long likeNum;
 
 }

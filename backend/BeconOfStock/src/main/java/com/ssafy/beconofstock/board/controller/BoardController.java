@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,6 +39,12 @@ public class BoardController {
     public ResponseEntity<?> getBoardList() {
         List<BoardResponseDto> boardList = boardService.getBoardList();
         return new ResponseEntity<>(boardList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<?> getBoardDetail(@RequestParam Long boardId) {
+        BoardResponseDto boardDetail = boardService.getBoardDetail(boardId);
+
     }
 
 

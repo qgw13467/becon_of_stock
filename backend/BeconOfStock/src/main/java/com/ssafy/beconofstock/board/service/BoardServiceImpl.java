@@ -23,6 +23,8 @@ public class BoardServiceImpl implements BoardService {
                 .content(board.getContent())
 //                .strategy(strategy)
                 .member(member)
+                .hit(0L)
+                .likeNum(0L)
                 .build();
 
         return new BoardResponseDto(boardRepository.save(newBoard));
@@ -34,5 +36,13 @@ public class BoardServiceImpl implements BoardService {
         List<Board> boardList = boardRepository.findAll();
 
         return boardList.stream().map(x -> new BoardResponseDto(x)).collect(Collectors.toList());
+    }
+
+    public BoardResponseDto getBoardDetail(Long boardId) {
+
+        if (boardRepository.findById(boardId) == null) {
+            return null;
+        }
+        return new BoardResponseDto(boardRepository.findById(boardId));
     }
 }
