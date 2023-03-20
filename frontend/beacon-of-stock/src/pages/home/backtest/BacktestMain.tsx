@@ -14,7 +14,7 @@ const BacktestMain = () => {
       <form onSubmit={backTestHandler}>
         <div className="flex justify-end my-[1%] mr-[8%]">
           <input
-            className="text-lg font-KJCbold border rounded-xl px-[1%] py-[0.5%]"
+            className="text-lg font-KJCbold text-[#FEFEFE] border rounded-xl bg-[#A47ECF] px-[1%] py-[0.5%]"
             type="submit"
             value="백테스트"
           />
