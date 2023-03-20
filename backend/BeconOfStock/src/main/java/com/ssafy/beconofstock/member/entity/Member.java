@@ -8,8 +8,12 @@ import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +22,9 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@DynamicInsert
 public class Member extends BaseEntity {
 
     public Member(OAuthUserInfo oAuthUserInfo){
@@ -30,11 +37,11 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String providerId;
-
     private String nickname;
 
+    @ColumnDefault("0")
+    private Long followNum;
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -44,7 +51,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Strategy> strategies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-    private List<ContestMember> contestMembers = new ArrayList<>();
+//    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+//    private List<ContestMember> contestMembers = new ArrayList<>();
 
 }
