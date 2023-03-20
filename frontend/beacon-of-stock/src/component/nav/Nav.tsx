@@ -1,8 +1,13 @@
+// import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useLoginStore } from "../../store/store";
 
 const Nav = () => {
   const logo = require("../../assets/img/bos-logo.png");
   const emptyImg = require("../../assets/img/empty-img.jpg");
+  // 이 부분 주스탠드로 관리.
+  const {isLogin} = useLoginStore()
+
   return (
     <nav className="flex justify-between mx-10">
       <div>
@@ -11,7 +16,7 @@ const Nav = () => {
         </Link>
       </div>
       <div className="flex space-x-20">
-        <div className="m-auto">
+        { isLogin ? <><div className="m-auto">
           <Link to="/">
             <p className="text-lg font-KJCbold">튜토리얼</p>
           </Link>
@@ -32,7 +37,19 @@ const Nav = () => {
             alt="emptyImg"
             className="w-[40px] h-[40px] rounded-full"
           />
-        </div>
+          </div></> : <>
+          <div className="m-auto">
+            <Link to="/login">
+              <p className="text-lg font-KJCbold">회원가입</p>
+            </Link>
+          </div>
+          <div className="m-auto">
+            <Link to="/login">
+              <p className="text-lg font-KJCbold">로그인</p>
+            </Link>
+          </div>
+        </>}
+        
       </div>
     </nav>
   );
