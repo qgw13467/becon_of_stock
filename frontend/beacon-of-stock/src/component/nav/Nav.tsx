@@ -1,12 +1,24 @@
-// import { useState } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLoginStore } from "../../store/store";
+import Profile from "./Profile";
 
-const Nav = () => {
+interface ProfileProps {
+  cProfile: () => void
+}
+const Nav: FC<ProfileProps> = () => {
   const logo = require("../../assets/img/bos-logo.png");
   const emptyImg = require("../../assets/img/empty-img.jpg");
   // 이 부분 주스탠드로 관리.
-  const {isLogin} = useLoginStore()
+  const { isLogin } = useLoginStore()
+  const [isOpen, setIsOpen] = useState(false);
+  const openProfile = () => {
+    setIsOpen(true)
+  }
+  const closeProfile = () => {
+    setIsOpen(false)
+  }
+  
 
   return (
     <nav className="flex justify-between mx-10">
@@ -31,24 +43,29 @@ const Nav = () => {
             <p className="text-lg font-KJCbold">커뮤니티</p>
           </Link>
         </div>
+        {/* 로그인 상태에서 프로필 이미지 들어오는 곳 */}
         <div className="m-auto">
           <img
             src={emptyImg}
             alt="emptyImg"
             className="w-[40px] h-[40px] rounded-full"
+            onClick={openProfile}
           />
-          </div></> : <>
-          <div className="m-auto">
-            <Link to="/login">
-              <p className="text-lg font-KJCbold">회원가입</p>
-            </Link>
-          </div>
-          <div className="m-auto">
-            <Link to="/login">
-              <p className="text-lg font-KJCbold">로그인</p>
-            </Link>
-          </div>
-        </>}
+          {isOpen ? <div>
+              <Profile />
+          </div> : null}
+        </div></> : <>
+        <div className="m-auto">
+          <Link to="/login">
+            <p className="text-lg font-KJCbold">회원가입</p>
+          </Link>
+        </div>
+        <div className="m-auto">
+          <Link to="/login">
+            <p className="text-lg font-KJCbold">로그인</p>
+          </Link>
+        </div>
+      </>}
         
       </div>
     </nav>
