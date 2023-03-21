@@ -9,24 +9,27 @@ import com.ssafy.beconofstock.member.entity.Member;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
+
     private final BoardRepository boardRepository;
 
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
 
 //        Strategy strategy = strategyRepository.findByID();
         Board newBoard = Board.builder()
-                .title(board.getTitle())
-                .content(board.getContent())
+            .title(board.getTitle())
+            .content(board.getContent())
 //                .strategy(strategy)
-                .member(member)
-                .hit(0L)
-                .likeNum(0L)
-                .build();
+            .member(member)
+            .hit(0L)
+            .likeNum(0L)
+            .build();
 
         return new BoardResponseDto(boardRepository.save(newBoard));
     }
@@ -44,12 +47,36 @@ public class BoardServiceImpl implements BoardService {
         return new BoardResponseDto(boardRepository.save(board));
     }
 
+    // 글 삭제
     public Boolean deleteBoard(OAuth2UserImpl user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElse(null);
-        if (board.getMember() == user.getMember()) {
+        if (board.getMember().getId().equals(user.getMember().getId())) {
             boardRepository.deleteById(boardId);
             return true;
         }
         return false;
+    }
+
+    // 글 수정
+    public BoardResponseDto updateBoard(OAuth2UserImpl user, BoardRequestDto updateBoard,
+        Long boardId) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+
+        if (!board.getMember().getId().equals(user.getMember().getId())) {
+            return null;
+        }
+
+        // 수정
+        if (updateBoard.getTitle() != null) {
+            board.setTitle(updateBoard.getTitle());
+        }
+        if (updateBoard.getContent() != null) {
+            board.setContent(updateBoard.getContent());
+        }
+//        if (updateBoard.getStrategyId() != null) {
+//            board.setStrategy(strategyRepository.findById(updateBoard.getStrategyId()));
+//        }
+
+        return new BoardResponseDto(boardRepository.save(board));
     }
 }
