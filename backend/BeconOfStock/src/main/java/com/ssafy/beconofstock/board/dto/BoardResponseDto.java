@@ -18,12 +18,12 @@ public class BoardResponseDto {
     Long likeNum;
 
     public BoardResponseDto(Board board) {
-        this.boardId = board.getId();
-        this.title = board.getTitle();
-        this.content = board.getContent();
-        this.nickname = board.getMember().getNickname();
-        this.strategy = board.getStrategy();
-        this.hit = board.getHit();
-        this.likeNum = board.getLikeNum();
+            this.boardId = board.getId();
+            this.title = board.getTitle();
+            this.content = board.getContent();
+            this.nickname = board.getMember().getNickname();
+            this.strategy = board.getStrategy();
+            this.hit = board.getHit();
+            this.likeNum = board.getLikeNum();
     }
 }

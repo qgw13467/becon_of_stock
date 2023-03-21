@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.board.service;
 
+import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.entity.Board;
@@ -28,21 +29,27 @@ public class BoardServiceImpl implements BoardService {
                 .build();
 
         return new BoardResponseDto(boardRepository.save(newBoard));
-
     }
 
     public List<BoardResponseDto> getBoardList() {
 
         List<Board> boardList = boardRepository.findAll();
 
-        return boardList.stream().map(x -> new BoardResponseDto(x)).collect(Collectors.toList());
+        return boardList.stream().map(BoardResponseDto::new).collect(Collectors.toList());
     }
 
     public BoardResponseDto getBoardDetail(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+        board.setHit(board.getHit() + 1);               // 조회수 업데이트
+        return new BoardResponseDto(boardRepository.save(board));
+    }
 
-        if (boardRepository.findById(boardId) == null) {
-            return null;
+    public Boolean deleteBoard(OAuth2UserImpl user, Long boardId) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+        if (board.getMember() == user.getMember()) {
+            boardRepository.deleteById(boardId);
+            return true;
         }
-        return new BoardResponseDto(boardRepository.findById(boardId));
+        return false;
     }
 }
