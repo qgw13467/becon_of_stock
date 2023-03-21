@@ -1,23 +1,31 @@
-import { FC, useState } from "react";
+import { FC, MouseEventHandler, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLoginStore } from "../../store/store";
-import Profile from "./Profile";
 
-interface ProfileProps {
-  cProfile: () => void
-}
-const Nav: FC<ProfileProps> = () => {
-  const logo = require("../../assets/img/bos-logo.png");
-  const emptyImg = require("../../assets/img/empty-img.jpg");
+const Nav: FC = () => {
+  const logo = require("../../assets/img/bos-logo.png")
+  const emptyImg = require("../../assets/img/empty-img.jpg")
   // 이 부분 주스탠드로 관리.
   const { isLogin } = useLoginStore()
-  const [isOpen, setIsOpen] = useState(false);
+  const userMenu = useRef<HTMLElement>(null)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const openProfile = () => {
     setIsOpen(true)
   }
   const closeProfile = () => {
     setIsOpen(false)
   }
+  const modalCloseHandler: MouseEventHandler = (event: MouseEvent): void => {
+    if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };  
+  useEffect(() => {
+    window.addEventListener('click', modalCloseHandler);
+    return () => {
+      window.removeEventListener('click', modalCloseHandler);
+    };
+  }, [isOpen]);
   
 
   return (
@@ -49,10 +57,16 @@ const Nav: FC<ProfileProps> = () => {
             src={emptyImg}
             alt="emptyImg"
             className="w-[40px] h-[40px] rounded-full"
-            onClick={openProfile}
+            onClick={isOpen ? closeProfile : openProfile}
           />
-          {isOpen ? <div>
-              <Profile />
+        {isOpen ?
+          <div className="absolute border-2 border-black w-[150px] h-[180px] right-6 top-16 grid content-around bg-[#fefefe] rounded-lg z-50"
+            onClick={modalCloseHandler}
+          >
+            <p className="text-center ">내 정보</p>
+            <p className="text-center ">내 전략조회</p>
+            <p className="text-center ">북마크</p>
+            <p className="text-center text-[#DE2727]">로그아웃</p>
           </div> : null}
         </div></> : <>
         <div className="m-auto">
