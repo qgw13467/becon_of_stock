@@ -54,6 +54,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/api/oauth2/authorization")
+                .and()
                 .userInfoEndpoint() // 필수
                 .userService(principalOAuth2UserService)
                 .and()
