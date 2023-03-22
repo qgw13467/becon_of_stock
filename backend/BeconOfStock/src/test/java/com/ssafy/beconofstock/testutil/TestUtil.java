@@ -41,7 +41,6 @@ public class TestUtil {
                 .id(1L)
                 .accessType(accessType)
                 .member(member)
-                .pricePer(true)
                 .build();
     }
     static public Strategy getStrategy(Long id, Member member){
@@ -49,7 +48,6 @@ public class TestUtil {
                 .id(id)
                 .accessType(AccessType.PUBLIC)
                 .member(member)
-                .pricePer(true)
                 .build();
     }
 
