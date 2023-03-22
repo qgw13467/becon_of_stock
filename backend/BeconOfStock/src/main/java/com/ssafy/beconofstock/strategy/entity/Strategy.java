@@ -4,6 +4,7 @@ package com.ssafy.beconofstock.strategy.entity;
 
 import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,11 +30,15 @@ public class Strategy extends BaseEntity {
 
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "strategy")
-    List<StrategyIndicator> strategyIndicatorList = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     private AccessType accessType;
+
+    public Strategy(Member member, StrategyAddDto strategyAddDto){
+        this.member = member;
+        this.title = strategyAddDto.getStrategyName();
+
+        this.accessType = strategyAddDto.getAccessType();
+    }
 
 
 }
