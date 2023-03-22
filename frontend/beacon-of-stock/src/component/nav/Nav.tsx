@@ -64,7 +64,7 @@ const Nav: FC = () => {
           // onClick={modalCloseHandler}
           >
             <Link to='/myProfile' className="text-center">내 정보</Link>
-            <p className="text-center">내 전략조회</p>
+            <Link to='/strategy' className="text-center">내 전략조회</Link>
             <p className="text-center">북마크</p>
             <p className="text-center text-[#DE2727]">로그아웃</p>
           </div> : null}
