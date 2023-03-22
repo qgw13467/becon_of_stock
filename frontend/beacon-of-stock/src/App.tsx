@@ -6,6 +6,7 @@ import CommunityMain from "./pages/community/CommunityMain";
 import NotLoginHome from "./pages/home/NotLoginHome";
 import Login from "./component/login/Login";
 import { MyProfile } from "./pages/profile/MyProfile";
+import { Strategy } from "./pages/profile/strategy/Strategy";
 import { useLoginStore } from "./store/store";
 
 const App = () => {
@@ -19,10 +20,11 @@ const App = () => {
         <Routes>
           {/* 로그인 여부에 따라 보이는 화면 다르게 구성 */}
           {isLogin ?
-            <>
+            <> {/* 로그인 된 상태 */}
               <Route path="/" element={<BacktestMain />} />
               <Route path="/community" element={<CommunityMain />} />
               <Route path="/myProfile" element={<MyProfile />} />
+              <Route path="/strategy" element={<Strategy />} />
             </> :
             <>
               <Route path="/" element={<NotLoginHome />} />
