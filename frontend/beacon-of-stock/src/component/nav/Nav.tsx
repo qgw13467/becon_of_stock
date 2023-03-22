@@ -1,45 +1,33 @@
-import React, { FC, MouseEventHandler, useEffect, useRef, useState, MouseEvent  } from "react";
-import { Link } from "react-router-dom";
+import { FC, useEffect, useRef, useState  } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useLoginStore } from "../../store/store";
+import { MyProfile } from "../../pages/profile/MyProfile";
 
 const Nav: FC = () => {
+  // const navigate = useNavigate()
   const logo = require("../../assets/img/bos-logo.png")
   const emptyImg = require("../../assets/img/empty-img.jpg")
   // 이 부분 주스탠드로 관리.
   const { isLogin } = useLoginStore()
-  const userMenu = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null);
+  // 모달 열리고 닫히고 하는 부분
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const openProfile = () => {
-    setIsOpen(true)
-  }
-  const closeProfile = () => {
-    setIsOpen(false)
-  }
-  // type CustomMouseEvent = MouseEvent<HTMLElement>
-  // const modalCloseHandler = (event: CustomMouseEvent): void => {
-  //   if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
-  //     setIsOpen(false);
-  //   }
-  // };
-
-  // const modalCloseReadHandler: MouseEventHandler<HTMLDivElement> = (
-  //   e: ReactMouseEvent<HTMLDivElement>
-  // ): void => {
-  //   console.log('click onclick')
-  // }
-
+  // 모달 boolean 업데이트 시 실행
   useEffect(() => {
     const modalCloseHandler: EventListener = (event: Event) => {
-      if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
+      if (isOpen && ref.current && !ref.current.contains(event.target as Node)) {
         setIsOpen(false);
+        // console.log('===')
       }
     };
-    window.addEventListener('click', modalCloseHandler);
+    if (isOpen) { 
+      window.addEventListener('click', modalCloseHandler);
+      // console.log('window 클릭 됨.')
+    }
     return () => {
       window.removeEventListener('click', modalCloseHandler);
     };
   }, [isOpen]);
-  
 
   return (
     <nav className="flex justify-between mx-10">
@@ -65,20 +53,19 @@ const Nav: FC = () => {
           </Link>
         </div>
         {/* 로그인 상태에서 프로필 이미지 들어오는 곳 */}
-        <div className="m-auto">
+        <div className="m-auto" onClick={() => setIsOpen(!isOpen)} ref={ref}>
           <img
             src={emptyImg}
             alt="emptyImg"
             className="w-[40px] h-[40px] rounded-full"
-            onClick={isOpen ? closeProfile : openProfile}
           />
         {isOpen ?
           <div className="absolute border-2 border-black w-[150px] h-[180px] right-6 top-16 grid content-around bg-[#fefefe] rounded-lg z-50"
-            // onClick={modalCloseHandler}
+          // onClick={modalCloseHandler}
           >
-            <p className="text-center ">내 정보</p>
-            <p className="text-center ">내 전략조회</p>
-            <p className="text-center ">북마크</p>
+            <Link to='/myProfile' className="text-center">내 정보</Link>
+            <p className="text-center">내 전략조회</p>
+            <p className="text-center">북마크</p>
             <p className="text-center text-[#DE2727]">로그아웃</p>
           </div> : null}
         </div></> : <>

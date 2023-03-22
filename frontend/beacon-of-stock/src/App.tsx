@@ -4,7 +4,8 @@ import Nav from "./component/nav/Nav";
 import BacktestMain from "./pages/home/backtest/BacktestMain";
 import CommunityMain from "./pages/community/CommunityMain";
 import NotLoginHome from "./pages/home/NotLoginHome";
-import Login from "./pages/login/Login";
+import Login from "./component/login/Login";
+import { MyProfile } from "./pages/profile/MyProfile";
 import { useLoginStore } from "./store/store";
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
             <>
               <Route path="/" element={<BacktestMain />} />
               <Route path="/community" element={<CommunityMain />} />
+              <Route path="/myProfile" element={<MyProfile />} />
             </> :
             <>
               <Route path="/" element={<NotLoginHome />} />
