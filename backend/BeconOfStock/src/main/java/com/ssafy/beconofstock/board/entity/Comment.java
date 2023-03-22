@@ -5,6 +5,8 @@ package com.ssafy.beconofstock.board.entity;
 import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.member.entity.Member;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +30,9 @@ public class Comment extends BaseEntity {
     private String content;
     private Long likeNum;
     private Long commentNum;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
+    private List<CommentRel> children;
 
 
 }

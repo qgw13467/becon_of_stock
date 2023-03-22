@@ -7,7 +7,9 @@ import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.board.entity.Comment;
+import com.ssafy.beconofstock.board.entity.CommentRel;
 import com.ssafy.beconofstock.board.repository.BoardRepository;
+import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
 import com.ssafy.beconofstock.member.entity.Member;
 import java.util.List;
@@ -23,6 +25,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final CommentRelRepository commentRelRepository;
 
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
 
@@ -34,6 +37,7 @@ public class BoardServiceImpl implements BoardService {
             .member(member)
             .hit(0L)
             .likeNum(0L)
+            .commentNum(0L)
             .build();
 
         return new BoardResponseDto(boardRepository.save(newBoard));
@@ -138,5 +142,28 @@ public class BoardServiceImpl implements BoardService {
         }
         commentRepository.delete(comment);
         return true;
+    }
+
+    // 대댓글 작성
+    public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
+        Comment comment = Comment.builder()
+            .boardId(boardId)
+            .content(content.getContent())
+            .member(user.getMember())
+            .likeNum(0L)
+            .commentNum(0L)
+            .build();
+
+        Comment child = commentRepository.save(comment);
+        Comment parent = commentRepository.findById(parentId).orElse(null);
+        Long commentNum = parent.getCommentNum() + 1;
+        parent.setCommentNum(commentNum);
+
+        CommentRel commentRel = CommentRel.builder()
+            .parent(commentRepository.save(parent))
+            .child(child)
+            .build();
+
+        return new CommentResponseDto(child);
     }
 }

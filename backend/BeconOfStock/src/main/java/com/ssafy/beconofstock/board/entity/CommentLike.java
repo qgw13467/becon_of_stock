@@ -1,8 +1,7 @@
 package com.ssafy.beconofstock.board.entity;
 
-
-
 import com.ssafy.beconofstock.config.BaseEntity;
+import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 
 import javax.persistence.*;
@@ -17,6 +16,6 @@ public class CommentLike extends BaseEntity {
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Strategy strategy;
+    private Member member;
 
 }
