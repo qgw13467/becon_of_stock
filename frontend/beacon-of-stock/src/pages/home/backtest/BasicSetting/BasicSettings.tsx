@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SelectIndustry from "./SelectIndustry";
+import SelectIndustryBackground from "./SelectIndustryBackground";
 
 const BasicSettings = () => {
   const [industry, setIndustry] = useState<string>("선택");
@@ -9,7 +10,7 @@ const BasicSettings = () => {
 
   // 산업 선택 모달 활성화 여부 설정
   const showIndustryHandler = () => {
-    setShowIndustry(!showIndustry);
+    setShowIndustry(true);
   };
 
   // 리밸런싱 주기 선택값 가져오기
@@ -35,9 +36,12 @@ const BasicSettings = () => {
             onClick={showIndustryHandler}
           />
         </div>
-      </div>
-      {showIndustry && <SelectIndustry />}
-      <div>
+        {showIndustry && (
+          <div>
+            <SelectIndustryBackground setShowIndustry={setShowIndustry} />
+            <SelectIndustry setShowIndustry={setShowIndustry} />
+          </div>
+        )}
         <label htmlFor="tradeCost">거래비용</label>
         <div className="border rounded-xl">
           <input type="number" id="tradeCost" value={tradeCost} />
