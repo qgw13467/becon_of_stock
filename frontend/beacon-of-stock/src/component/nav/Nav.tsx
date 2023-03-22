@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, useEffect, useRef, useState } from "react";
+import React, { FC, MouseEventHandler, useEffect, useRef, useState, MouseEvent  } from "react";
 import { Link } from "react-router-dom";
 import { useLoginStore } from "../../store/store";
 
@@ -15,12 +15,25 @@ const Nav: FC = () => {
   const closeProfile = () => {
     setIsOpen(false)
   }
-  const modalCloseHandler: MouseEventHandler = (event: MouseEvent): void => {
-    if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
-      setIsOpen(false);
-    }
-  };  
+  // type CustomMouseEvent = MouseEvent<HTMLElement>
+  // const modalCloseHandler = (event: CustomMouseEvent): void => {
+  //   if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
+  //     setIsOpen(false);
+  //   }
+  // };
+
+  // const modalCloseReadHandler: MouseEventHandler<HTMLDivElement> = (
+  //   e: ReactMouseEvent<HTMLDivElement>
+  // ): void => {
+  //   console.log('click onclick')
+  // }
+
   useEffect(() => {
+    const modalCloseHandler: EventListener = (event: Event) => {
+      if (isOpen && userMenu.current && !userMenu.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
     window.addEventListener('click', modalCloseHandler);
     return () => {
       window.removeEventListener('click', modalCloseHandler);
@@ -61,7 +74,7 @@ const Nav: FC = () => {
           />
         {isOpen ?
           <div className="absolute border-2 border-black w-[150px] h-[180px] right-6 top-16 grid content-around bg-[#fefefe] rounded-lg z-50"
-            onClick={modalCloseHandler}
+            // onClick={modalCloseHandler}
           >
             <p className="text-center ">내 정보</p>
             <p className="text-center ">내 전략조회</p>
