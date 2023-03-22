@@ -9,7 +9,7 @@ import { useLoginStore } from "./store/store";
 
 const App = () => {
   const { isLogin } = useLoginStore()
-  console.log(isLogin)
+  // console.log(isLogin)
   return (
     <>
       <BrowserRouter>
