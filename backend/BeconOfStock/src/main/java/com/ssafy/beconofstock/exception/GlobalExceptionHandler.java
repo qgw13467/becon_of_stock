@@ -13,6 +13,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("정보를 찾을 수 없습니다.", HttpStatus.OK);
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(Exception e){
+        return new ResponseEntity<>("정보를 찾을 수 없습니다",HttpStatus.NOT_FOUND);
+    }
+
 
 
 }
