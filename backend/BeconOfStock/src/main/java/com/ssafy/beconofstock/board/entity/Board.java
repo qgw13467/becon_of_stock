@@ -33,5 +33,6 @@ public class Board extends BaseEntity {
     private String content;
     private Long hit;
     private Long likeNum;
+    private Long commentNum;
 
 }
