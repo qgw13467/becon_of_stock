@@ -113,6 +113,7 @@ public class BoardServiceImpl implements BoardService {
             .member(user.getMember())
             .likeNum(0L)
             .commentNum(0L)
+            .depth(0)
             .build();
 
         return new CommentResponseDto(commentRepository.save(comment));
@@ -152,6 +153,7 @@ public class BoardServiceImpl implements BoardService {
             .member(user.getMember())
             .likeNum(0L)
             .commentNum(0L)
+            .depth(1)
             .build();
 
         Comment child = commentRepository.save(comment);
