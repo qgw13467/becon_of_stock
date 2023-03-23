@@ -1,10 +1,13 @@
 package com.ssafy.beconofstock.strategy.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
+import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.service.StrategyService;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.StreamDrainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,15 @@ import java.util.Map;
 @RequestMapping("/api")
 public class StrategyContoller {
     private final StrategyService strategyService;
+
+    @GetMapping("/strategies/{strategyId}")
+    public ResponseEntity<?> getStrategyDetails(@AuthenticationPrincipal OAuth2UserImpl oAuth2User,
+                                                @PathVariable("strategyId") Long strategyId){
+
+        StrategyDetailDto strategyDetailDto = strategyService.getStrategyDetail(oAuth2User.getMember(),strategyId);
+
+        return new ResponseEntity<>(strategyDetailDto,HttpStatus.OK);
+    }
 
     @GetMapping("/indicators")
     public ResponseEntity<?> getIndicators() {
