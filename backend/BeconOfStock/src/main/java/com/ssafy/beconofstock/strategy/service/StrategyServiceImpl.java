@@ -51,9 +51,9 @@ public class StrategyServiceImpl implements StrategyService {
 
         }
 
-        result.put("price", price);
-        result.put("quality",quality);
-        result.put("growth", growth);
+        result.put("가치 (가격/매출)", price);
+        result.put("퀄리티 (가격/자산)",quality);
+        result.put("성장성 (이익 성장률)", growth);
 
         return result;
     }
