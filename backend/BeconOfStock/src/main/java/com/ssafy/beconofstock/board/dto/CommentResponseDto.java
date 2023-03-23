@@ -2,6 +2,8 @@ package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Comment;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentResponseDto {
 
-
     private Long commentId;
     private String userNickname;
     private String content;
     private Long likeNum;
     private LocalDateTime createDateTime;
+//    private List<CommentResponseDto> children;
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
@@ -22,6 +24,7 @@ public class CommentResponseDto {
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
         this.createDateTime = comment.getCreatedDateTime();
+//        this.children = comment.getChildren().stream().map(x -> new CommentResponseDto(x.getChild())).collect(Collectors.toList());
     }
 
 }
