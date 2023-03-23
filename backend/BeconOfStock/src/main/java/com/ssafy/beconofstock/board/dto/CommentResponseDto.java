@@ -18,7 +18,7 @@ public class CommentResponseDto {
     private Long commentNum;
     private Long Depth;
     private LocalDateTime createDateTime;
-    private List<CommentResponseDto> children;
+//    private List<CommentResponseDto> children;
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();

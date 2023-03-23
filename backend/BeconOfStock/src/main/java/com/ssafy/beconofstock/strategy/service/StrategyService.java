@@ -14,5 +14,8 @@ public interface StrategyService {
     Map<String, List<Indicator>> getIndicators();
     List<StrategyIndicator> getStrategy(Long id);
     void addStrategy(Member member, StrategyAddDto strategyAddDto);
+    void patchStrategy(Member member, StrategyAddDto strategyAddDto, Long strategyId);
+
+    void deleteStrategy(Member member, Long StrategyId);
 
 }
