@@ -24,12 +24,12 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ContestMemberRepositoryTest {
 
-    @Autowired
-    private ContestMemberRepository contestMemberRepository;
+//    @Autowired
+//    private ContestMemberRepository contestMemberRepository;
 
 
 //    @Test

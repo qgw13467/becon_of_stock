@@ -19,12 +19,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManager;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ExtendWith(SpringExtension.class)
+//@DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@ExtendWith(SpringExtension.class)
 public class MemberRepositoryTest {
-    @Autowired
-    private MemberRepository memberRepository;
+//    @Autowired
+//    private MemberRepository memberRepository;
 
 
 //    @BeforeEach
