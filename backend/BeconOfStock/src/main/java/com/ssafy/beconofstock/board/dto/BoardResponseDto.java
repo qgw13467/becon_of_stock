@@ -15,6 +15,7 @@ public class BoardResponseDto {
     String nickname;
     Strategy strategy;
     Long hit;
+    Long commentNum;
     Long likeNum;
 
     public BoardResponseDto(Board board) {
@@ -25,5 +26,6 @@ public class BoardResponseDto {
             this.strategy = board.getStrategy();
             this.hit = board.getHit();
             this.likeNum = board.getLikeNum();
+            this.commentNum = board.getCommentNum();
     }
 }
