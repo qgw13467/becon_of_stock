@@ -30,9 +30,9 @@ public class Strategy extends BaseEntity {
 
     private String title;
 
-    private Double cumulative_Return;
+    private Double cumulativeReturn;
     private Double cagr;
-    private double sharp;
+    private Double sharpe;
 
 
 
@@ -42,7 +42,10 @@ public class Strategy extends BaseEntity {
     public Strategy(Member member, StrategyAddDto strategyAddDto){
         this.member = member;
         this.title = strategyAddDto.getStrategyName();
-        this.accessType = strategyAddDto.getAccessType();
+        this.accessType = strategyAddDto.getAccess();
+        this.cumulativeReturn= strategyAddDto.getCumulativeReturn();
+        this.cagr = strategyAddDto.getCagr();
+        this.sharpe = strategyAddDto.getSharpe();
     }
 
 

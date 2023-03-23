@@ -12,7 +12,11 @@ public class StrategyAddDto {
 
     private String strategyName;
     private List<Long> indicators;
-    private AccessType accessType;
+    private AccessType access;
+    private Double cumulativeReturn;
+    private Double cagr;
+    private Double sharpe;
+
 
 
 
