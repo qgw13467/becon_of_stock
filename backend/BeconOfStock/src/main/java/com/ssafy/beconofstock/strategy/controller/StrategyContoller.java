@@ -2,10 +2,12 @@ package com.ssafy.beconofstock.strategy.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.strategy.dto.IndicatorsDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.service.StrategyService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.StreamDrainer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class StrategyContoller {
     private final StrategyService strategyService;
 
+    @ApiOperation(value = "전략 상새보기", notes = "자신의 전략 또는 다른 사용자의 PUBLIC 전략을 상세보기 합니다")
     @GetMapping("/strategies/{strategyId}")
     public ResponseEntity<?> getStrategyDetails(@AuthenticationPrincipal OAuth2UserImpl oAuth2User,
                                                 @PathVariable("strategyId") Long strategyId){
@@ -37,8 +40,7 @@ public class StrategyContoller {
     @GetMapping("/indicators")
     public ResponseEntity<?> getIndicators() {
 
-        Map<String, List<Indicator>> indicators = strategyService.getIndicators();
-
+        IndicatorsDto indicators = strategyService.getIndicators();
         return new ResponseEntity<>(indicators, HttpStatus.OK);
     }
 
