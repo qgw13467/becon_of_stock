@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> handleNullPointerException(Exception e) {
-        return new ResponseEntity<>("정보를 찾을 수 없습니다.", HttpStatus.OK);
+        return new ResponseEntity<>("정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NotFoundException.class)

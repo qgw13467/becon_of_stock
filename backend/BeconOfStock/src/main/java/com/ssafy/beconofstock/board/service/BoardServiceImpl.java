@@ -180,6 +180,11 @@ public class BoardServiceImpl implements BoardService {
     // 대댓글 작성
     @Transactional
     public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
+        Comment parent = commentRepository.findById(parentId).orElse(null);
+        if (parent.getDepth() == 1) {
+            return null;
+        }
+
         Comment comment = Comment.builder()
             .boardId(boardId)
             .content(content.getContent())
@@ -190,7 +195,6 @@ public class BoardServiceImpl implements BoardService {
             .build();
 
         Comment child = commentRepository.save(comment);
-        Comment parent = commentRepository.findById(parentId).orElse(null);
         parent.setCommentNum(parent.getCommentNum() + 1);
         parent = commentRepository.save(parent);
 
