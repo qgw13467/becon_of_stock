@@ -4,6 +4,7 @@ import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.exception.NotYourAuthorizationException;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
+import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
@@ -11,15 +12,13 @@ import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import lombok.RequiredArgsConstructor;
-import org.jboss.jandex.Index;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.reader.StreamReader;
-
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,37 @@ public class StrategyServiceImpl implements StrategyService {
     private final StrategyIndicatorRepository strategyIndicatorRepository;
 
     private final IndicatorRepository indicatorRepository;
+
+    @Override
+    public StrategyDetailDto getStrategyDetail(Member member, Long strategyId) {
+
+        Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
+
+        if(strategy.getMember().getId()!= member.getId()){
+            throw new NotYourAuthorizationException();
+        }
+
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
+
+        List<Indicator> indicators = strategyIndicatorList.stream()
+                .map(StrategyIndicator::getIndicator)
+                .collect(Collectors.toList());
+
+        StrategyDetailDto strategyDetailDto =
+                StrategyDetailDto.builder()
+                        .id(strategy.getId())
+                        .title(strategy.getTitle())
+                        .sharpe(strategy.getSharpe())
+                        .cagr(strategy.getCagr())
+                        .cumulativeReturn(strategy.getCumulativeReturn())
+                        .memberNickname(strategy.getMember().getNickname())
+                        .memberId((strategy.getMember().getId()))
+                        .indicators(indicators)
+                        .access(strategy.getAccessType())
+                        .build();
+
+        return strategyDetailDto;
+    }
 
     @Override
     public Map<String, List<Indicator>> getIndicators() {
