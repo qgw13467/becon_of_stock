@@ -16,4 +16,6 @@ public interface StrategyService {
     void addStrategy(Member member, StrategyAddDto strategyAddDto);
     void patchStrategy(Member member, StrategyAddDto strategyAddDto, Long strategyId);
 
+    void deleteStrategy(Member member, Long StrategyId);
+
 }

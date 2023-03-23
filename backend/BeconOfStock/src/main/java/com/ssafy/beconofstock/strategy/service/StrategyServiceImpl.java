@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.exception.NotFoundException;
+import com.ssafy.beconofstock.exception.NotYourAuthorizationException;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
@@ -12,6 +13,7 @@ import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import lombok.RequiredArgsConstructor;
 import org.jboss.jandex.Index;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.reader.StreamReader;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -95,6 +97,9 @@ public class StrategyServiceImpl implements StrategyService {
 
         Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException("strategy not found"));
 
+        if(strategy.getMember().getId() != member.getId()){
+            throw new NotYourAuthorizationException();
+        }
 
         if (strategyAddDto.getIndicators() != null) {
             List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
@@ -116,7 +121,7 @@ public class StrategyServiceImpl implements StrategyService {
             strategy.setAccessType(strategyAddDto.getAccess());
         }
         if (strategyAddDto.getCumulativeReturn() != null) {
-            strategy.setCumulativeReturn(strategy.getCumulativeReturn());
+            strategy.setCumulativeReturn(strategyAddDto.getCumulativeReturn());
         }
         if (strategyAddDto.getCagr() != null) {
             strategy.setCagr(strategyAddDto.getCagr());
@@ -125,6 +130,22 @@ public class StrategyServiceImpl implements StrategyService {
             strategy.setSharpe(strategyAddDto.getSharpe());
         }
 
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteStrategy(Member member, Long StrategyId) {
+        Strategy strategy = strategyRepository.findById(StrategyId).orElseThrow(() -> new NotFoundException());
+
+        if(strategy.getMember().getId() != member.getId()){
+            throw new NotYourAuthorizationException();
+        }
+
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
+        strategyIndicatorRepository.deleteAll(strategyIndicatorList);
+
+        strategyRepository.delete(strategy);
 
     }
 
