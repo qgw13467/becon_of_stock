@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,8 +26,5 @@ public class Contest extends BaseEntity {
     private String title;
     private String description;
     private String content;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
-
 
 }
