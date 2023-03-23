@@ -15,7 +15,7 @@ export const MyProfile: FC = () => {
       // 조건을 만족하는 닉네임을 백 서버로 보내는 코드 작성해야함.
       // 백으로 보낸 후
       setIsInput(true)
-      setOriginalNickname('isNickname')
+      setOriginalNickname(isNickname)
     } else {
       console.log('왜 안 되냐 이거?')
       alert('닉네임 양식이 맞지 않습니다.')
@@ -29,7 +29,7 @@ export const MyProfile: FC = () => {
   }
   
   return <div>
-    <p className="text-5xl m-9">내 정보</p>
+    <p className="font-KJCbold text-5xl m-9">내 정보</p>
     <div id='프로필-프로필' className="flex justify-start m-9">
       <img src={emptyProfile} alt="empty-profile-img" className="rounded-full border-[#131313] border-[2px] w-[200px] h-[200px] m-9"/>
       <div id='프로필-사진-옆-div' className="grid content-evenly w-[400px] relative">
@@ -41,7 +41,7 @@ export const MyProfile: FC = () => {
             </div>}
             {!isInput &&
               <div className="flex justify-end">
-                <input type="text" value={isNickname} onChange={nicknameChange} className='border rounded-sm border-black'/> 
+                <input type="text" value={isNickname} onChange={nicknameChange} className='border rounded-sm border-black' dir="rtl"/> 
               </div>
             }
             {/* 닉네임을 변경할 때 양식이 맞지 않거나 공백으로 제출할 시 onClick 시행 안 되게 메서드 작성.*/}
