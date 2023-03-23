@@ -45,8 +45,6 @@ public class StrategyContoller {
                                            @RequestBody StrategyAddDto strategyAddDto,
                                            @PathVariable("strategyId") Long strategyId) {
 
-        System.out.println("================");
-        System.out.println(strategyAddDto.getCumulativeReturn());
         strategyService.patchStrategy(oAuth2User.getMember(), strategyAddDto, strategyId);
 
         return new ResponseEntity<>(HttpStatus.CREATED);

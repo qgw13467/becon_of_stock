@@ -27,6 +27,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotYourAuthorizationException.class)
     public ResponseEntity<?> handleNotYourAuthorizationException(Exception e){
-        return new ResponseEntity<>("NotYourAuthorizationException",HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>("권한이 없습니다",HttpStatus.FORBIDDEN);
     }
 }
