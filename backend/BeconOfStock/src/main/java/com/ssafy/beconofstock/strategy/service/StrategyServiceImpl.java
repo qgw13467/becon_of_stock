@@ -30,29 +30,29 @@ public class StrategyServiceImpl implements StrategyService {
 
     @Override
     public Map<String, List<Indicator>> getIndicators() {
-        Map<String,List<Indicator>> result = new HashMap<>();
+        Map<String, List<Indicator>> result = new HashMap<>();
 
         List<Indicator> indicators = indicatorRepository.findAll();
 
         List<Indicator> price = new ArrayList<>();
         List<Indicator> quality = new ArrayList<>();
-        List<Indicator> growth=  new ArrayList<>();
+        List<Indicator> growth = new ArrayList<>();
 
-        for(int i=0;i<indicators.size();i++){
+        for (int i = 0; i < indicators.size(); i++) {
             Indicator indicator = indicators.get(i);
 
-            if(indicator.getTitle().startsWith("price")){
+            if (indicator.getTitle().startsWith("price")) {
                 price.add(indicator);
-            } else if(indicator.getTitle().startsWith("quality")){
+            } else if (indicator.getTitle().startsWith("quality")) {
                 quality.add(indicator);
-            } else if(indicator.getTitle().startsWith("growth")){
+            } else if (indicator.getTitle().startsWith("growth")) {
                 growth.add(indicator);
             }
 
         }
 
         result.put("가치 (가격/매출)", price);
-        result.put("퀄리티 (가격/자산)",quality);
+        result.put("퀄리티 (가격/자산)", quality);
         result.put("성장성 (이익 성장률)", growth);
 
         return result;
@@ -77,15 +77,54 @@ public class StrategyServiceImpl implements StrategyService {
 
 
         List<Indicator> indicators = indicatorRepository.findByIdIn(strategyAddDto.getIndicators());
-
-        for(int i=0;i<indicators.size();i++){
-            Indicator indicator = indicators.get(i);
-            Long count = indicator.getCount() +1;
+        List<StrategyIndicator> changeList = new ArrayList<>();
+        for (Indicator indicator : indicators) {
+            Long count = indicator.getCount() + 1;
             indicator.setCount(count);
 
-            StrategyIndicator strategyIndicator = new StrategyIndicator(strategy, indicators.get(i));
-            strategyIndicatorRepository.save(strategyIndicator);
+            StrategyIndicator strategyIndicator = new StrategyIndicator(strategy, indicator);
+            changeList.add(strategyIndicator);
         }
+        strategyIndicatorRepository.saveAll(changeList);
+
+    }
+
+    @Override
+    @Transactional
+    public void patchStrategy(Member member, StrategyAddDto strategyAddDto, Long strategyId) {
+
+        Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException("strategy not found"));
+
+
+        if (strategyAddDto.getIndicators() != null) {
+            List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
+            strategyIndicatorRepository.deleteAll(strategyIndicatorList);
+
+            List<Indicator> indicators = indicatorRepository.findByIdIn(strategyAddDto.getIndicators());
+            List<StrategyIndicator> changed = new ArrayList<>();
+            for (Indicator indicator : indicators) {
+                StrategyIndicator strategyIndicator = new StrategyIndicator(strategy, indicator);
+                changed.add(strategyIndicator);
+            }
+            strategyIndicatorRepository.saveAll(changed);
+        }
+
+        if (strategyAddDto.getStrategyName() != null) {
+            strategy.setTitle(strategyAddDto.getStrategyName());
+        }
+        if (strategyAddDto.getAccess() != null) {
+            strategy.setAccessType(strategyAddDto.getAccess());
+        }
+        if (strategyAddDto.getCumulativeReturn() != null) {
+            strategy.setCumulativeReturn(strategy.getCumulativeReturn());
+        }
+        if (strategyAddDto.getCagr() != null) {
+            strategy.setCagr(strategyAddDto.getCagr());
+        }
+        if (strategyAddDto.getSharpe() != null) {
+            strategy.setSharpe(strategyAddDto.getSharpe());
+        }
+
 
     }
 
