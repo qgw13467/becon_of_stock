@@ -16,7 +16,7 @@ public class CommentResponseDto {
     private String content;
     private Long likeNum;
     private LocalDateTime createDateTime;
-    private List<CommentResponseDto> children;
+//    private List<CommentResponseDto> children;
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
@@ -24,7 +24,7 @@ public class CommentResponseDto {
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
         this.createDateTime = comment.getCreatedDateTime();
-        this.children = comment.getChildren().stream().map(x -> new CommentResponseDto(x.getChild())).collect(Collectors.toList());
+//        this.children = comment.getChildren().stream().map(x -> new CommentResponseDto(x.getChild())).collect(Collectors.toList());
     }
 
 }

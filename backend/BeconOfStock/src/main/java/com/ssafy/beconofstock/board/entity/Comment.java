@@ -31,8 +31,8 @@ public class Comment extends BaseEntity {
     private Long likeNum;
     private Long commentNum;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
-    private List<CommentRel> children;
+//    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
+//    private List<CommentRel> children;
 
 
 }
