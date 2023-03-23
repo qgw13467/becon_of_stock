@@ -10,10 +10,14 @@ import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import lombok.RequiredArgsConstructor;
+import org.jboss.jandex.Index;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +29,33 @@ public class StrategyServiceImpl implements StrategyService {
     private final IndicatorRepository indicatorRepository;
 
     @Override
-    public List<Indicator> getIndicators() {
+    public Map<String, List<Indicator>> getIndicators() {
+        Map<String,List<Indicator>> result = new HashMap<>();
+
         List<Indicator> indicators = indicatorRepository.findAll();
 
-        return indicators;
+        List<Indicator> price = new ArrayList<>();
+        List<Indicator> quality = new ArrayList<>();
+        List<Indicator> growth=  new ArrayList<>();
+
+        for(int i=0;i<indicators.size();i++){
+            Indicator indicator = indicators.get(i);
+
+            if(indicator.getTitle().startsWith("price")){
+                price.add(indicator);
+            } else if(indicator.getTitle().startsWith("quality")){
+                quality.add(indicator);
+            } else if(indicator.getTitle().startsWith("growth")){
+                growth.add(indicator);
+            }
+
+        }
+
+        result.put("price", price);
+        result.put("quality",quality);
+        result.put("growth", growth);
+
+        return result;
     }
 
     @Override
@@ -61,4 +88,6 @@ public class StrategyServiceImpl implements StrategyService {
         }
 
     }
+
+
 }

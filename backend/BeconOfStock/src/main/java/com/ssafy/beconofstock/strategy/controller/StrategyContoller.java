@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class StrategyContoller {
     @GetMapping("/indicators")
     public ResponseEntity<?> getIndicators(){
 
-        List<Indicator> indicators = strategyService.getIndicators();
+        Map<String, List<Indicator>> indicators = strategyService.getIndicators();
 
         return new ResponseEntity<>(indicators,HttpStatus.OK);
     }
