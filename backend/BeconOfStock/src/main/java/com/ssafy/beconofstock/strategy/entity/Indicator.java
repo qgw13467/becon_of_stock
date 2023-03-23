@@ -21,4 +21,6 @@ public class Indicator {
 
     private Long count;
 
+    private String description;
+
 }

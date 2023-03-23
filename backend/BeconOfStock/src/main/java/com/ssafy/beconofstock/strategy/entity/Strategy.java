@@ -30,13 +30,18 @@ public class Strategy extends BaseEntity {
 
     private String title;
 
+    private Double cumulative_Return;
+    private Double cagr;
+    private double sharp;
+
+
+
     @Enumerated(EnumType.STRING)
     private AccessType accessType;
 
     public Strategy(Member member, StrategyAddDto strategyAddDto){
         this.member = member;
         this.title = strategyAddDto.getStrategyName();
-
         this.accessType = strategyAddDto.getAccessType();
     }
 
