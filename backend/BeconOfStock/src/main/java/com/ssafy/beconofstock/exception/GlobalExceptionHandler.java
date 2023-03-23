@@ -25,4 +25,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("메소드가 허용되지 않았습니다",HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    @ExceptionHandler(NotYourAuthorizationException.class)
+    public ResponseEntity<?> handleNotYourAuthorizationException(Exception e){
+        return new ResponseEntity<>("NotYourAuthorizationException",HttpStatus.UNAUTHORIZED);
+    }
 }
