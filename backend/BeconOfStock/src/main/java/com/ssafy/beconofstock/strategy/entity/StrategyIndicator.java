@@ -1,13 +1,16 @@
 package com.ssafy.beconofstock.strategy.entity;
 
 import com.ssafy.beconofstock.config.BaseEntity;
+import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table()
 @Getter
+@NoArgsConstructor
 public class StrategyIndicator extends BaseEntity {
 
     @Id
@@ -19,6 +22,11 @@ public class StrategyIndicator extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Indicator indicator;
+
+    public StrategyIndicator(Strategy strategy, Indicator indicator){
+        this.strategy = strategy;
+        this.indicator = indicator;
+    }
 
 }
 
