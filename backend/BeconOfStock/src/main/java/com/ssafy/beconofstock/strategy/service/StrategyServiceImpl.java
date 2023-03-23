@@ -73,7 +73,7 @@ public class StrategyServiceImpl implements StrategyService {
     public void addStrategy(Member member, StrategyAddDto strategyAddDto) {
 
         Strategy strategy = new Strategy(member, strategyAddDto);
-        Strategy save = strategyRepository.save(strategy);
+        strategyRepository.save(strategy);
 
 
         List<Indicator> indicators = indicatorRepository.findByIdIn(strategyAddDto.getIndicators());
