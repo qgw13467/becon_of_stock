@@ -97,7 +97,18 @@ public class BoardServiceImpl implements BoardService {
 
     // 단일 댓글 조회
     public CommentResponseDto getComment(Long commentId) {
-        return new CommentResponseDto(commentRepository.findById(commentId).orElse(null));
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+//        if ((0 == comment.getDepth()) && (0 < comment.getCommentNum())) {
+        if (0 < comment.getCommentNum()) {
+            log.info("자식 있음");
+            List<CommentRel> relList = commentRelRepository.findAllByParent(comment);
+            log.info(relList.toString());
+            List<Comment> childrenList = relList.stream().map(CommentRel::getChild).collect(Collectors.toList());
+            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(
+                Collectors.toList());
+            return new CommentResponseDto(comment, children);
+        }
+        return new CommentResponseDto(comment);
     }
 
     // 댓글 생성
@@ -115,7 +126,6 @@ public class BoardServiceImpl implements BoardService {
             .commentNum(0L)
             .depth(0)
             .build();
-
         return new CommentResponseDto(commentRepository.save(comment));
     }
 
@@ -160,11 +170,14 @@ public class BoardServiceImpl implements BoardService {
         Comment parent = commentRepository.findById(parentId).orElse(null);
         Long commentNum = parent.getCommentNum() + 1;
         parent.setCommentNum(commentNum);
+        parent = commentRepository.save(parent);
 
         CommentRel commentRel = CommentRel.builder()
-            .parent(commentRepository.save(parent))
+            .parent(parent)
             .child(child)
             .build();
+
+        commentRelRepository.save(commentRel);
 
         return new CommentResponseDto(child);
     }
