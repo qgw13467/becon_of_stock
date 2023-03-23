@@ -5,6 +5,7 @@ import com.ssafy.beconofstock.exception.NotYourAuthorizationException;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
+import com.ssafy.beconofstock.strategy.entity.AccessType;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
@@ -34,7 +35,8 @@ public class StrategyServiceImpl implements StrategyService {
 
         Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
 
-        if(strategy.getMember().getId()!= member.getId()){
+        if(strategy.getAccessType() == AccessType.PRIVATE
+                && strategy.getMember().getId()!= member.getId()){
             throw new NotYourAuthorizationException();
         }
 
