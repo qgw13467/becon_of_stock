@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/boards")
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardServiceImpl boardService;
@@ -123,7 +123,6 @@ public class BoardController {
     @PostMapping("/{boardId}/comments/{parentId}")
     public ResponseEntity<?> createReply(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
         CommentResponseDto comment = boardService.createComment(boardId, parentId, content, user);
-        log.info("컨트롤러 : ", String.valueOf(comment));
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
