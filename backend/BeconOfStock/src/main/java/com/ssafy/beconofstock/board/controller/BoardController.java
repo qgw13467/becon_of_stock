@@ -8,6 +8,9 @@ import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.service.BoardServiceImpl;
 import com.ssafy.beconofstock.member.entity.Member;
 import java.util.List;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Api(tags = {"Board 관련 API"})
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +36,8 @@ public class BoardController {
 
     // 게시판
     // 글 작성 -> strategy 작성 이후 strategy도 연결 필요
+    @ApiOperation(value = "글 작성",  notes =
+            "새 글을 작성합니다.")
     @PostMapping("/")
     public ResponseEntity<?> writeBoard(@RequestBody BoardRequestDto board, @AuthenticationPrincipal OAuth2UserImpl user) {
 

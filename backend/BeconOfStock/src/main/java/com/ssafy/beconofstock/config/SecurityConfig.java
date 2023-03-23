@@ -42,6 +42,24 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/login/oauth2/code/kakao").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
+                .antMatchers(
+                        "/",
+                        "/user/signup",
+                        "/user/login",
+                        "/user/oauth2",
+                        "/oauth2/**",
+                        "/user/refresh",    // accessToken 재발급
+                        "/user/redirectTest",
+                        "/user/check/**",
+                        "/user/validate/**",
+                        // Swagger 관련 URL
+                        "/v2/api-docs/**",
+                        "/swagger-resources/**",
+                        "/swagger-ui/**",
+                        "/webjars/**",
+                        "/swagger/**",
+                        "/sign-api/exception/**"
+                ).permitAll()
                 .anyRequest().authenticated();
 
         http
