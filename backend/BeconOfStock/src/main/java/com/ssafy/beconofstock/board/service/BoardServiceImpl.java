@@ -95,7 +95,7 @@ public class BoardServiceImpl implements BoardService {
 
     // 댓글 목록 전체 조회
     public List<CommentResponseDto> getCommentList(Long boardId) {
-        List<Comment> commentList= commentRepository.findAllByBoardId(boardId);
+        List<Comment> commentList= commentRepository.findAllByBoardIdAndDepthEquals(boardId, 0);
         return commentList.stream().map(x -> getComment(x.getId())).collect(Collectors.toList());
     }
 
