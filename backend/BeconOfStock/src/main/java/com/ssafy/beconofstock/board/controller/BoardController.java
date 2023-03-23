@@ -127,7 +127,7 @@ public class BoardController {
 
     // 대댓글 작성
     @PostMapping("/{boardId}/comments/{parentId}")
-    public ResponseEntity<?> createReply(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
+    public ResponseEntity<?> createComment(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
         CommentResponseDto comment = boardService.createComment(boardId, parentId, content, user);
         if (comment == null) {
             return new ResponseEntity<>("유효하지 않은 요청입니다.", HttpStatus.OK);
