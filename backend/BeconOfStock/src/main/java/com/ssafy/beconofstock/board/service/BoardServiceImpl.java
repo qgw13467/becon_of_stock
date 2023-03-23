@@ -28,6 +28,7 @@ public class BoardServiceImpl implements BoardService {
     private final CommentRepository commentRepository;
     private final CommentRelRepository commentRelRepository;
 
+    @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
 
 //        Strategy strategy = strategyRepository.findByID();
@@ -58,8 +59,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 글 삭제
+    @Transactional
     public Boolean deleteBoard(OAuth2UserImpl user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElse(null);
+        List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
+        commentList.forEach(x -> deleteComment(x.getId(), user));
         if (board.getMember().getId().equals(user.getMember().getId())) {
             boardRepository.deleteById(boardId);
             return true;
@@ -75,7 +79,6 @@ public class BoardServiceImpl implements BoardService {
         if (!board.getMember().getId().equals(user.getMember().getId())) {
             return null;
         }
-
         // 수정
         if (updateBoard.getTitle() != null) {
             board.setTitle(updateBoard.getTitle());
@@ -110,6 +113,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 댓글 생성
+    @Transactional
     public CommentResponseDto createComment(Long boardId, CommentRequestDto content, OAuth2UserImpl user) {
         Board board = boardRepository.findById(boardId).orElse(null);
         Long commentNum = board.getCommentNum() + 1;
@@ -174,6 +178,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 대댓글 작성
+    @Transactional
     public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
         Comment comment = Comment.builder()
             .boardId(boardId)
