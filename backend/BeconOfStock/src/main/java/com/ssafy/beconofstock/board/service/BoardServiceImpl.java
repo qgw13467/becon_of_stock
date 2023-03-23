@@ -181,7 +181,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
         Comment parent = commentRepository.findById(parentId).orElse(null);
-        if (parent.getDepth() == 1) {
+        if ((parent.getDepth() == 1) || (!boardId.equals(parent.getBoardId()))) {
             return null;
         }
 
