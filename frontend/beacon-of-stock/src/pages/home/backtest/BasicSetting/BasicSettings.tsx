@@ -126,7 +126,7 @@ const BasicSettings = () => {
     // value 값
     console.log(event.target.value);
     setBasicSettings((prevState) => {
-      return { ...prevState, balance: event.target.value };
+      return { ...prevState, rebalance: event.target.value };
     });
   };
   // 정렬 기준
