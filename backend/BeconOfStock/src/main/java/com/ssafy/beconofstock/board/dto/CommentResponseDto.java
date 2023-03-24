@@ -1,9 +1,9 @@
 package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Comment;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,20 +11,35 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentResponseDto {
 
+    @ApiModelProperty(example = "댓글 아이디")
     private Long commentId;
-    private String userNickname;
-    private String content;
-    private Long likeNum;
+    @ApiModelProperty(example = "작성자 닉네임")
+    private String userNickname;    @ApiModelProperty(example = "내용")
+    private String content;    @ApiModelProperty(example = "좋아요 수")
+    private Long likeNum;    @ApiModelProperty(example = "댓글 숫자")
+    private Long commentNum;
+//    private Long depth;
+    @ApiModelProperty(example = "작성시간")
     private LocalDateTime createDateTime;
-//    private List<CommentResponseDto> children;
+    @ApiModelProperty(example = "대댓글")
+    private List<CommentResponseDto> children;
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
         this.userNickname = comment.getMember().getNickname();
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
+        this.commentNum = comment.getCommentNum();
         this.createDateTime = comment.getCreatedDateTime();
-//        this.children = comment.getChildren().stream().map(x -> new CommentResponseDto(x.getChild())).collect(Collectors.toList());
+    }
+    public CommentResponseDto(Comment comment, List<CommentResponseDto> children) {
+        this.commentId = comment.getId();
+        this.userNickname = comment.getMember().getNickname();
+        this.content = comment.getContent();
+        this.likeNum = comment.getLikeNum();
+        this.commentNum = comment.getCommentNum();
+        this.children = children;
+        this.createDateTime = comment.getCreatedDateTime();
     }
 
 }
