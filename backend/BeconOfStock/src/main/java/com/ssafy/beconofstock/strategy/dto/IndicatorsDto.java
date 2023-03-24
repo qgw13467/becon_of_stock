@@ -14,7 +14,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IndicatorsDto {
-    Map<String, List<Indicator>> indicators = new HashMap<>();
-    List<Map<String,String>> fators = new ArrayList<>();
+    List<Map<String,Object>> factors = new ArrayList<>();
 
 }
