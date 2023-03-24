@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class BoardServiceImpl implements BoardService {
     private final CommentRepository commentRepository;
     private final CommentRelRepository commentRelRepository;
 
+    @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
 
 //        Strategy strategy = strategyRepository.findByID();
@@ -57,8 +59,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 글 삭제
+    @Transactional
     public Boolean deleteBoard(OAuth2UserImpl user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElse(null);
+        List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
+        commentList.forEach(x -> deleteComment(x.getId(), user));
         if (board.getMember().getId().equals(user.getMember().getId())) {
             boardRepository.deleteById(boardId);
             return true;
@@ -74,7 +79,6 @@ public class BoardServiceImpl implements BoardService {
         if (!board.getMember().getId().equals(user.getMember().getId())) {
             return null;
         }
-
         // 수정
         if (updateBoard.getTitle() != null) {
             board.setTitle(updateBoard.getTitle());
@@ -82,25 +86,31 @@ public class BoardServiceImpl implements BoardService {
         if (updateBoard.getContent() != null) {
             board.setContent(updateBoard.getContent());
         }
-//        if (updateBoard.getStrategyId() != null) {
-//            board.setStrategy(strategyRepository.findById(updateBoard.getStrategyId()));
-//        }
 
         return new BoardResponseDto(boardRepository.save(board));
     }
 
     // 댓글 목록 전체 조회
     public List<CommentResponseDto> getCommentList(Long boardId) {
-        List<Comment> commentList= commentRepository.findAllByBoardId(boardId);
-        return commentList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        List<Comment> commentList= commentRepository.findAllByBoardIdAndDepthEquals(boardId, 0);
+        return commentList.stream().map(x -> getComment(x.getId())).collect(Collectors.toList());
     }
 
     // 단일 댓글 조회
     public CommentResponseDto getComment(Long commentId) {
-        return new CommentResponseDto(commentRepository.findById(commentId).orElse(null));
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (0 < comment.getCommentNum()) {
+            List<CommentRel> relList = commentRelRepository.findAllByParent(comment);
+            List<Comment> childrenList = relList.stream().map(CommentRel::getChild).collect(Collectors.toList());
+            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(
+                Collectors.toList());
+            return new CommentResponseDto(comment, children);
+        }
+        return new CommentResponseDto(comment);
     }
 
     // 댓글 생성
+    @Transactional
     public CommentResponseDto createComment(Long boardId, CommentRequestDto content, OAuth2UserImpl user) {
         Board board = boardRepository.findById(boardId).orElse(null);
         Long commentNum = board.getCommentNum() + 1;
@@ -113,8 +123,8 @@ public class BoardServiceImpl implements BoardService {
             .member(user.getMember())
             .likeNum(0L)
             .commentNum(0L)
+            .depth(0)
             .build();
-
         return new CommentResponseDto(commentRepository.save(comment));
     }
 
@@ -130,39 +140,70 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 댓글 삭제
+    @Transactional
     public Boolean deleteComment(Long commentId, OAuth2UserImpl user) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        Board board = boardRepository.findById(comment.getBoardId()).orElse(null);
-        Long commentNum = board.getCommentNum() - 1;
-        board.setCommentNum(commentNum);
-        boardRepository.save(board);
 
         if (!comment.getMember().getId().equals(user.getMember().getId())) {
             return false;
         }
+        Board board = boardRepository.findById(comment.getBoardId()).orElse(null);
+        int commentNum = 1;
+
+        // 부모 댓글인 경우
+        if (0 < comment.getCommentNum()) {
+            List<CommentRel> children = commentRelRepository.findAllByParent(comment);
+            commentNum += children.size();
+            children.forEach(c -> commentRepository.delete(c.getChild())); // 자식 댓글 삭제
+            commentRelRepository.deleteAllInBatch(children);
+        }
+
+        // 자식 댓글인 경우
+        if (comment.getDepth() == 1) {
+            Comment parent = commentRelRepository.findByChild(comment).getParent();
+            commentRelRepository.deleteByChild(comment);
+            parent.decreaseCommentNum(1);
+            commentRepository.save(parent);
+        }
+
         commentRepository.delete(comment);
+
+        board.decreaseCommentNum(commentNum);
+        boardRepository.save(board);
+
         return true;
     }
 
     // 대댓글 작성
+    @Transactional
     public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
+        Comment parent = commentRepository.findById(parentId).orElse(null);
+        if ((parent.getDepth() == 1) || (!boardId.equals(parent.getBoardId()))) {
+            return null;
+        }
+
         Comment comment = Comment.builder()
             .boardId(boardId)
             .content(content.getContent())
             .member(user.getMember())
             .likeNum(0L)
             .commentNum(0L)
+            .depth(1)
             .build();
 
         Comment child = commentRepository.save(comment);
-        Comment parent = commentRepository.findById(parentId).orElse(null);
-        Long commentNum = parent.getCommentNum() + 1;
-        parent.setCommentNum(commentNum);
+        parent.increaseCommentNum(1);
+        parent = commentRepository.save(parent);
+        Board board = boardRepository.findById(boardId).orElse(null);
+        board.increaseCommentNum(1);
+        boardRepository.save(board);
 
         CommentRel commentRel = CommentRel.builder()
-            .parent(commentRepository.save(parent))
+            .parent(parent)
             .child(child)
             .build();
+
+        commentRelRepository.save(commentRel);
 
         return new CommentResponseDto(child);
     }
