@@ -86,9 +86,6 @@ public class BoardServiceImpl implements BoardService {
         if (updateBoard.getContent() != null) {
             board.setContent(updateBoard.getContent());
         }
-//        if (updateBoard.getStrategyId() != null) {
-//            board.setStrategy(strategyRepository.findById(updateBoard.getStrategyId()));
-//        }
 
         return new BoardResponseDto(boardRepository.save(board));
     }
@@ -151,12 +148,12 @@ public class BoardServiceImpl implements BoardService {
             return false;
         }
         Board board = boardRepository.findById(comment.getBoardId()).orElse(null);
-        Long commentNum = board.getCommentNum() - 1;
+        int commentNum = 1;
 
         // 부모 댓글인 경우
         if (0 < comment.getCommentNum()) {
             List<CommentRel> children = commentRelRepository.findAllByParent(comment);
-            commentNum -= children.size();
+            commentNum += children.size();
             children.forEach(c -> commentRepository.delete(c.getChild())); // 자식 댓글 삭제
             commentRelRepository.deleteAllInBatch(children);
         }
@@ -165,13 +162,13 @@ public class BoardServiceImpl implements BoardService {
         if (comment.getDepth() == 1) {
             Comment parent = commentRelRepository.findByChild(comment).getParent();
             commentRelRepository.deleteByChild(comment);
-            parent.setCommentNum(parent.getCommentNum() - 1);
+            parent.decreaseCommentNum(1);
             commentRepository.save(parent);
         }
 
         commentRepository.delete(comment);
 
-        board.setCommentNum(commentNum);
+        board.decreaseCommentNum(commentNum);
         boardRepository.save(board);
 
         return true;
@@ -195,8 +192,11 @@ public class BoardServiceImpl implements BoardService {
             .build();
 
         Comment child = commentRepository.save(comment);
-        parent.setCommentNum(parent.getCommentNum() + 1);
+        parent.increaseCommentNum(1);
         parent = commentRepository.save(parent);
+        Board board = boardRepository.findById(boardId).orElse(null);
+        board.increaseCommentNum(1);
+        boardRepository.save(board);
 
         CommentRel commentRel = CommentRel.builder()
             .parent(parent)
