@@ -1,13 +1,10 @@
 package com.ssafy.beconofstock.authentication;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,16 +12,15 @@ import com.ssafy.beconofstock.member.entity.Member;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
-//    @Value("${JWT.SECRET}")
+
+    //    @Value("${JWT.SECRET}")
     private String securityKey ="as09df8h0e8fhs0d8fhs08fh0sd8fhse08fhs0ef8hse08fhse08fhse0f8hq08f";
+
     private final Long shortTokeneExpiredTime = 1000 * 60 * 30L;
     private final Long longTokenExpiredTime = 1000 * 60 * 60 * 24 * 7L;
 
@@ -144,22 +140,23 @@ public class JwtTokenProvider {
     public String parseJwt(HttpServletRequest request){
         String headerAuth=null;
 
-        if(headerAuth == null){
-            headerAuth= request.getHeader("Authentication");
-            return headerAuth;
-        }
-
         Cookie[] cookies = request.getCookies();
         if(cookies!=null){
-            for(int i=0;i<cookies.length;i++){
-                if(cookies[i].getName().equals("Authentication")){
-                    headerAuth = cookies[i].getValue();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Authentication")) {
+                    headerAuth = cookie.getValue();
+                    break;
                 }
             }
-            return headerAuth;
+
+            if(headerAuth!=null){
+                return headerAuth;
+            }
         }
 
-        return null;
+        headerAuth = request.getHeader("Authentication");
+        return headerAuth;
+
     }
 
 

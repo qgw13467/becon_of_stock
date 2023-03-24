@@ -160,7 +160,7 @@ public class StrategyServiceImpl implements StrategyService {
 
         if (strategyAddDto.getIndicators() != null) {
             List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
-            strategyIndicatorRepository.deleteAll(strategyIndicatorList);
+            strategyIndicatorRepository.deleteAllInBatch(strategyIndicatorList);
 
             List<Indicator> indicators = indicatorRepository.findByIdIn(strategyAddDto.getIndicators());
             List<StrategyIndicator> changed = new ArrayList<>();
@@ -200,7 +200,7 @@ public class StrategyServiceImpl implements StrategyService {
         }
 
         List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
-        strategyIndicatorRepository.deleteAll(strategyIndicatorList);
+        strategyIndicatorRepository.deleteAllInBatch(strategyIndicatorList);
 
         strategyRepository.delete(strategy);
 
