@@ -15,6 +15,7 @@ import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public class StrategyServiceImpl implements StrategyService {
 
         Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
 
-        if(strategy.getAccessType() == AccessType.PRIVATE
-                && strategy.getMember().getId()!= member.getId()){
+        if (strategy.getAccessType() == AccessType.PRIVATE
+                && strategy.getMember().getId() != member.getId()) {
             throw new NotYourAuthorizationException();
         }
 
@@ -69,7 +70,7 @@ public class StrategyServiceImpl implements StrategyService {
     public IndicatorsDto getIndicators() {
         IndicatorsDto result = new IndicatorsDto();
         Map<String, List<Indicator>> indicators = new HashMap<>();
-        List<Map<String,String>> fators = new ArrayList<>();
+        List<Map<String, Object>> fators = new ArrayList<>();
 
         List<Indicator> indicatorList = indicatorRepository.findAll();
         List<Indicator> price = new ArrayList<>();
@@ -80,13 +81,13 @@ public class StrategyServiceImpl implements StrategyService {
             Indicator indicator = indicatorList.get(i);
             em.detach(indicator);
             if (indicator.getTitle().startsWith("price")) {
-                indicator.setTitle(getIndicatorName("price",indicator.getTitle()));
+                indicator.setTitle(getIndicatorName("price", indicator.getTitle()));
                 price.add(indicator);
             } else if (indicator.getTitle().startsWith("quality")) {
-                indicator.setTitle(getIndicatorName("quality",indicator.getTitle()));
+                indicator.setTitle(getIndicatorName("quality", indicator.getTitle()));
                 quality.add(indicator);
             } else if (indicator.getTitle().startsWith("growth")) {
-                indicator.setTitle(getIndicatorName("growth",indicator.getTitle()));
+                indicator.setTitle(getIndicatorName("growth", indicator.getTitle()));
                 growth.add(indicator);
             }
         }
@@ -96,22 +97,25 @@ public class StrategyServiceImpl implements StrategyService {
         indicators.put("성장성 (이익 성장률)", growth);
 
 
-        fators.add(getMapByStringString("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표"));
-        fators.add(getMapByStringString("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표"));
-        fators.add(getMapByStringString("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표"));
+        fators.add(getMapByStringString(1L, List.of("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표")));
+        fators.add(getMapByStringString(2L, List.of("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표")));
+        fators.add(getMapByStringString(3L, List.of("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표")));
 
         result.setFators(fators);
         result.setIndicators(indicators);
 
         return result;
     }
-    private String getIndicatorName(String factor, String indicatorName){
+
+    private String getIndicatorName(String factor, String indicatorName) {
         return new StringBuffer(indicatorName).delete(0, factor.length()).toString();
     }
 
-    private Map<String,String> getMapByStringString(String key, String value){
-        Map<String,String> result = new HashMap<>();
-        result.put(key,value);
+    private Map<String, Object> getMapByStringString(Long id, List<String> list) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("title", list.get(0));
+        result.put("description", list.get(1));
         return result;
 
     }
@@ -154,7 +158,7 @@ public class StrategyServiceImpl implements StrategyService {
 
         Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException("strategy not found"));
 
-        if(strategy.getMember().getId() != member.getId()){
+        if (strategy.getMember().getId() != member.getId()) {
             throw new NotYourAuthorizationException();
         }
 
@@ -195,7 +199,7 @@ public class StrategyServiceImpl implements StrategyService {
     public void deleteStrategy(Member member, Long StrategyId) {
         Strategy strategy = strategyRepository.findById(StrategyId).orElseThrow(() -> new NotFoundException());
 
-        if(strategy.getMember().getId() != member.getId()){
+        if (strategy.getMember().getId() != member.getId()) {
             throw new NotYourAuthorizationException();
         }
 
