@@ -52,7 +52,6 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
-//    public Page<BoardResponseDto> getBoardList(int page, boolean direction, String property) {
         List<Sort.Order> sorts = new ArrayList<>();
         if (direction) {
             sorts.add(Sort.Order.asc(property));
@@ -61,7 +60,6 @@ public class BoardServiceImpl implements BoardService {
         }
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         Page<Board> boardList = boardRepository.findAll(pageable);
-//        return boardList.map(BoardResponseDto::new);
         return new BoardListResponseDto(boardList);
     }
 
