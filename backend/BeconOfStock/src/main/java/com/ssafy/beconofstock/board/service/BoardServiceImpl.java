@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
         } else {
             sorts.add(Sort.Order.desc(property));
         }
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 30, Sort.by(sorts));
         Page<Board> boardList = boardRepository.findAll(pageable);
         return new BoardListResponseDto(boardList);
     }
