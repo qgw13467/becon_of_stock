@@ -7,6 +7,8 @@ import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.service.BoardServiceImpl;
 import com.ssafy.beconofstock.member.entity.Member;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import io.swagger.annotations.Api;
@@ -34,10 +36,22 @@ public class BoardController {
 
     private final BoardServiceImpl boardService;
 
-    // 게시판
+    @ApiOperation(value = "글 목록 조회", notes = "커뮤니티 게시판 전체 목록을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
+    })
+    @GetMapping("/")
+    public ResponseEntity<?> getBoardList() {
+        List<BoardResponseDto> boardList = boardService.getBoardList();
+        return new ResponseEntity<>(boardList, HttpStatus.OK);
+    }
+
     // 글 작성 -> strategy 작성 이후 strategy도 연결 필요
-    @ApiOperation(value = "글 작성",  notes =
-            "새 글을 작성합니다.")
+    @ApiOperation(value = "글 작성",  notes = "새 글을 작성합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다", response = BoardResponseDto.class),
+        @ApiResponse(code = 403, message = "정보를 찾을 수 없습니다.")
+    })
     @PostMapping("/")
     public ResponseEntity<?> writeBoard(@RequestBody BoardRequestDto board, @AuthenticationPrincipal OAuth2UserImpl user) {
 
@@ -47,14 +61,10 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, HttpStatus.CREATED);
     }
 
-    // 게시판 글 목록 조회
-    @GetMapping("/")
-    public ResponseEntity<?> getBoardList() {
-        List<BoardResponseDto> boardList = boardService.getBoardList();
-        return new ResponseEntity<>(boardList, HttpStatus.OK);
-    }
-
-    // 게시판 글 확인
+    @ApiOperation(value = "글 상세보기", notes = "커뮤니티 게시판 글의 상세 내용을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(code=200, message = "성공입니다", response = BoardResponseDto.class)
+    })
     @GetMapping("/{boardId}")
     public ResponseEntity<?> getBoardDetail(@PathVariable Long boardId) {
         BoardResponseDto boardDetail = boardService.getBoardDetail(boardId);
@@ -62,6 +72,11 @@ public class BoardController {
     }
 
     // 게시판 글 수정
+    @ApiOperation(value = "글 수정하기", notes = "작성한 글을 수정합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다", response = BoardResponseDto.class),
+        @ApiResponse(code = 403, message = "권한이 없습니다.")
+    })
     @PatchMapping("/{boardId}")
     public ResponseEntity<?> updateBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto board, @AuthenticationPrincipal OAuth2UserImpl user) {
         BoardResponseDto newBoard = boardService.updateBoard(user, board, boardId);
@@ -72,6 +87,11 @@ public class BoardController {
     }
 
     // 게시판 글 삭제
+    @ApiOperation(value = "글 삭제하기", notes = "작성한 글을 삭제합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다"),
+        @ApiResponse(code = 403, message = "권한이 없습니다.")
+    })
     @DeleteMapping("/{boardId}")
     public ResponseEntity<HttpStatus> deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
         Boolean result = boardService.deleteBoard(user, boardId);
@@ -80,24 +100,31 @@ public class BoardController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
-    // 댓글
-    
-    // 댓글 목록 조회
+
+    @ApiOperation(value = "댓글 목록 조회하기", notes = "해당 글에 작성된 댓글 목록을 조회합니다")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class)
+    })
     @GetMapping("/{boardId}/comments")
     public ResponseEntity<?> getCommentList(@PathVariable Long boardId) {
         List<CommentResponseDto> commentList = boardService.getCommentList(boardId);
         return new ResponseEntity<>(commentList, HttpStatus.OK);
     }
 
-    // 댓글 디테일 조회
+    @ApiOperation(value = "댓글 상세 조회", notes = "댓글의 상세 내용을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class)
+    })
     @GetMapping("/comments/{commentId}")
     public ResponseEntity<?> getCommentDetail(@PathVariable Long commentId) {
         CommentResponseDto comment = boardService.getComment(commentId);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
-    // 게시글 댓글 작성
+    @ApiOperation(value = "댓글 작성", notes = "새 댓글을 작성합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class)
+    })
     @PostMapping("/{boardId}/comments")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @RequestBody
         CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
@@ -105,7 +132,11 @@ public class BoardController {
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
-    // 댓글 수정
+    @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class),
+        @ApiResponse(code = 403, message = "권한이 없습니다")
+    })
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
         CommentResponseDto comment = boardService.updateComment(commentId, content, user);
@@ -115,7 +146,11 @@ public class BoardController {
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
-    // 댓글 삭제
+    @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class),
+        @ApiResponse(code = 403, message = "권한이 없습니다")
+    })
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<HttpStatus> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal OAuth2UserImpl user) {
         Boolean result = boardService.deleteComment(commentId, user);
@@ -125,7 +160,11 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 대댓글 작성
+    @ApiOperation(value = "대댓글 작성", notes = "댓글에 새로운 대댓글을 작성합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다", response = CommentResponseDto.class),
+        @ApiResponse(code = 403, message = "유효하지 않은 요청입니다")
+    })
     @PostMapping("/{boardId}/comments/{parentId}")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
         CommentResponseDto comment = boardService.createComment(boardId, parentId, content, user);
