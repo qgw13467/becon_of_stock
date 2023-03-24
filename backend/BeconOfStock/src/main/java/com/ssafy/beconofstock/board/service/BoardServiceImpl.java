@@ -12,10 +12,15 @@ import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
 import com.ssafy.beconofstock.member.entity.Member;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +50,16 @@ public class BoardServiceImpl implements BoardService {
         return new BoardResponseDto(boardRepository.save(newBoard));
     }
 
-    public List<BoardResponseDto> getBoardList() {
-
-        List<Board> boardList = boardRepository.findAll();
-
-        return boardList.stream().map(BoardResponseDto::new).collect(Collectors.toList());
+    public Page<BoardResponseDto> getBoardList(int page, boolean direction, String property) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (direction) {
+            sorts.add(Sort.Order.asc(property));
+        } else {
+            sorts.add(Sort.Order.desc(property));
+        }
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Page<Board> boardList = boardRepository.findAll(pageable);
+        return boardList.map(BoardResponseDto::new);
     }
 
     public BoardResponseDto getBoardDetail(Long boardId) {

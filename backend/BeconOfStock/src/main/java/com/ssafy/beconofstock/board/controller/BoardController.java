@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Api(tags = {"Board 관련 API"})
 @Controller
@@ -41,10 +43,11 @@ public class BoardController {
         @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
     })
     @GetMapping("/")
-    public ResponseEntity<?> getBoardList() {
-        List<BoardResponseDto> boardList = boardService.getBoardList();
-        return new ResponseEntity<>(boardList, HttpStatus.OK);
+    public ResponseEntity<?> getBoardList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "false") Boolean direction, @RequestParam(defaultValue = "createdDateTime") String property) {
+        Page<BoardResponseDto> paging = boardService.getBoardList(page, direction, property);
+        return new ResponseEntity<>(paging, HttpStatus.OK);
     }
+
 
     // 글 작성 -> strategy 작성 이후 strategy도 연결 필요
     @ApiOperation(value = "글 작성",  notes = "새 글을 작성합니다.")
