@@ -45,6 +45,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private boolean expired;
+
 //    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
 //    private List<Board> boards = new ArrayList<>();
 
