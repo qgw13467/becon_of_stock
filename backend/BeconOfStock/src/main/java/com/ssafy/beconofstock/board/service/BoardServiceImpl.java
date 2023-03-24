@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.board.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.board.dto.BoardListResponseDto;
 import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
@@ -50,7 +51,8 @@ public class BoardServiceImpl implements BoardService {
         return new BoardResponseDto(boardRepository.save(newBoard));
     }
 
-    public Page<BoardResponseDto> getBoardList(int page, boolean direction, String property) {
+    public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
+//    public Page<BoardResponseDto> getBoardList(int page, boolean direction, String property) {
         List<Sort.Order> sorts = new ArrayList<>();
         if (direction) {
             sorts.add(Sort.Order.asc(property));
@@ -59,7 +61,8 @@ public class BoardServiceImpl implements BoardService {
         }
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         Page<Board> boardList = boardRepository.findAll(pageable);
-        return boardList.map(BoardResponseDto::new);
+//        return boardList.map(BoardResponseDto::new);
+        return new BoardListResponseDto(boardList);
     }
 
     public BoardResponseDto getBoardDetail(Long boardId) {

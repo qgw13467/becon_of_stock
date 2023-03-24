@@ -1,12 +1,14 @@
 package com.ssafy.beconofstock.board.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.board.dto.BoardListResponseDto;
 import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.service.BoardServiceImpl;
 import com.ssafy.beconofstock.member.entity.Member;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
@@ -43,8 +45,12 @@ public class BoardController {
         @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
     })
     @GetMapping("/")
-    public ResponseEntity<?> getBoardList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "false") Boolean direction, @RequestParam(defaultValue = "createdDateTime") String property) {
-        Page<BoardResponseDto> paging = boardService.getBoardList(page, direction, property);
+    public ResponseEntity<?> getBoardList(
+        @ApiParam(name = "페이지", value = "미입력시 0에서 시작", example = "0") @RequestParam(defaultValue = "0") int page,
+        @ApiParam(name = "정렬방향", value = "정렬 내림차순 false, 오름차순 true", example = "false") @RequestParam(defaultValue = "false") Boolean direction,
+        @ApiParam(name = "정렬조건", allowableValues = "boardId, title, hit, likeNum, commentNum", example = "boardId", defaultValue = "boardId") @RequestParam(defaultValue = "id") String property) {
+//        Page<BoardResponseDto> paging = boardService.getBoardList(page, direction, property);
+        BoardListResponseDto paging = boardService.getBoardList(page, direction, property);
         return new ResponseEntity<>(paging, HttpStatus.OK);
     }
 
