@@ -3,18 +3,14 @@ FROM nginx:stable-alpine
 ARG USER_ID
 ARG GROUP_ID
 
+RUN mkdir /app/build \
+  && addgroup -g ${GROUP_ID} mygroup \
+  && adduser -D -u ${USER_ID} -G mygroup myuser
+
 WORKDIR /app
 
-RUN mkdir ./build \
-    && addgroup -g ${GROUP_ID} mygroup \
-    && adduser -D -u ${USER_ID} -G mygroup myuser
+COPY . /app
 
-ADD ./build ./build
-
-RUN rm /etc/nginx/conf.d/default.conf
-
-COPY ./nginx.conf /etc/nginx/conf.d
-
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
