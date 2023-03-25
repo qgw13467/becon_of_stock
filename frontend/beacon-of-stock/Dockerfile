@@ -6,6 +6,8 @@ RUN adduser -D -g '' www-data
 
 RUN mkdir ./build
 
+RUN useradd -ms /bin/bash www-data
+
 ADD ./build ./build
 
 RUN rm /etc/nginx/conf.d/default.conf
