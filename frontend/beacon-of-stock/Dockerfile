@@ -6,8 +6,8 @@ ARG GROUP_ID
 WORKDIR /app
 
 RUN mkdir ./build \
-    && addgroup -g ${GROUP_ID} www-data \
-    && adduser -D -u ${USER_ID} -G www-data www-data
+    && addgroup -g ${GROUP_ID} mygroup \
+    && adduser -D -u ${USER_ID} -G mygroup myuser
 
 ADD ./build ./build
 
