@@ -2,11 +2,9 @@ FROM nginx:stable-alpine
 
 WORKDIR /app
 
-RUN adduser -D -g '' www-data
-
 RUN mkdir ./build
 
-RUN useradd -ms /bin/bash www-data
+RUN adduser -D -g '' www-data
 
 ADD ./build ./build
 
