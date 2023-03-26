@@ -13,7 +13,8 @@ export const Strategy = () => {
 
   return (
     <section>
-      <p className='font-KJCbold text-5xl m-9'>내 전략조회</p>
+      <p className='font-KJCbold text-4xl m-9'>내 전략조회</p>
+      {/* 필터링 부분 */}
       <StrategySelect />
       <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly mx-32'>
         {items.map((item, index) => (

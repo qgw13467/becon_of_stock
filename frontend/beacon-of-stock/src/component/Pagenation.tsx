@@ -11,7 +11,7 @@ export const Pagenation = ({ pageEA }: pagebationProps) => {
   // let first = 0;
   // let end = 10;
   // let this_page = 1;
-  console.log('시작점', first, end, page);
+  // console.log('시작점', first, end, page);
   // const pageItems: number[] = Array(pageEA).fill(0);
   const [pageItems, setPageItems] = useState<number[]>([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -28,10 +28,10 @@ export const Pagenation = ({ pageEA }: pagebationProps) => {
     // first = Math.max(0, first - 10); // first에 -10을 주되, 0보다 작아지지 않도록 조정
     // end -= 10; // end에 -10을 주기
     // prenex();
-    console.log('prev', first, end, page);
+    // console.log('prev', first, end, page);
   };
   const nextClick = () => {
-    console.log('next 실행 됨');
+    // console.log('next 실행 됨');
     if (page >= pageEA) {
       return; // 마지막 페이지인 경우, 넘어가지 않음
     }
@@ -42,7 +42,7 @@ export const Pagenation = ({ pageEA }: pagebationProps) => {
     // first += 10; // first에 +10을 주기
     // end = Math.min(pageEA, end + 10); // end에 +10을 주되, 게시물 수를 넘어가지 않도록 조정
     // prenex();
-    console.log('next', first, end, page);
+    // console.log('next', first, end, page);
   };
   // 버튼 누르고 first와 end가 모두 바뀐 이후에 prenex가 발동해서 pageItems가 바뀌게 된다.
   useEffect(() => {
@@ -55,8 +55,8 @@ export const Pagenation = ({ pageEA }: pagebationProps) => {
     }
     setPageItems(arr);
   };
-  console.log(pageItems);
-  console.log('끝', first, end, page);
+  // console.log(pageItems);
+  // console.log('끝', first, end, page);
   return (
     <article className='flex justify-center m-auto p-auto'>
       <button

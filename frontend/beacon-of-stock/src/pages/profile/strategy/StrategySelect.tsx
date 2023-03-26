@@ -13,7 +13,7 @@ const StrategySelect: React.FC = () => {
     <select
       value={selectedElement ?? 'Element 1'}
       onChange={handleSelectionChange}
-      className='border-2 rounded-sm border-black mx-9 mb-5'
+      className='border-2 rounded-sm border-black mx-9 mb-3'
     >
       <option value='Element 1'>최신순</option>
       <option value='Element 2'>조회순</option>
