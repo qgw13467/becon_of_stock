@@ -18,8 +18,7 @@ public class CommentResponseDto {
     private String content;    @ApiModelProperty(example = "좋아요 수")
     private Long likeNum;    @ApiModelProperty(example = "댓글 숫자")
     private Long commentNum;
-//    private Long depth;
-    @ApiModelProperty(example = "작성시간")
+    @ApiModelProperty(example = "작성일")
     private LocalDateTime createDateTime;
     @ApiModelProperty(example = "대댓글")
     private List<CommentResponseDto> children;
@@ -38,8 +37,8 @@ public class CommentResponseDto {
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
         this.commentNum = comment.getCommentNum();
-        this.children = children;
         this.createDateTime = comment.getCreatedDateTime();
+        this.children = children;
     }
 
 }
