@@ -17,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,9 +45,9 @@ public class BoardController {
     })
     @GetMapping("/")
     public ResponseEntity<?> getBoardList(
-        @ApiParam(name = "페이지", value = "미입력시 0에서 시작", example = "0") @RequestParam(defaultValue = "0") int page,
-        @ApiParam(name = "정렬방향", value = "정렬 내림차순 false, 오름차순 true", example = "false") @RequestParam(defaultValue = "false") Boolean direction,
-        @ApiParam(name = "정렬조건", allowableValues = "boardId, title, hit, likeNum, commentNum", example = "boardId", defaultValue = "boardId") @RequestParam(defaultValue = "id") String property) {
+        @ApiParam(name = "page", value = "페이지 번호. 미입력시 0에서 시작", example = "0") @RequestParam(defaultValue = "0") int page,
+        @ApiParam(name = "direction", value = "정렬방향. 정렬 내림차순 false, 오름차순 true", example = "false") @RequestParam(defaultValue = "false") Boolean direction,
+        @ApiParam(name = "property", value = "정렬조건", allowableValues = "id, title, hit, likeNum, commentNum", example = "id", defaultValue = "id") @RequestParam(defaultValue = "id") String property) {
 //        Page<BoardResponseDto> paging = boardService.getBoardList(page, direction, property);
         BoardListResponseDto paging = boardService.getBoardList(page, direction, property);
         return new ResponseEntity<>(paging, HttpStatus.OK);
