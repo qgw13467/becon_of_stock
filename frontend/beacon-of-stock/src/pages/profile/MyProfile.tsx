@@ -29,7 +29,7 @@ export const MyProfile: FC = () => {
   }
   
   return <div>
-    <p className="font-KJCbold text-5xl m-9">내 정보</p>
+    <p className="font-KJCbold text-4xl m-9">내 프로필</p>
     <div id='프로필-프로필' className="flex justify-start m-9">
       <img src={emptyProfile} alt="empty-profile-img" className="rounded-full border-[#131313] border-[2px] w-[200px] h-[200px] m-9"/>
       <div id='프로필-사진-옆-div' className="grid content-evenly w-[400px] relative">

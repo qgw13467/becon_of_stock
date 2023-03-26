@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export const CommunityNav = () => {
   return (
     <aside className=' py-4 grid justify-center gap-y-4 border-2 border-[#D7609E] rounded-md w-40 m-9'>
