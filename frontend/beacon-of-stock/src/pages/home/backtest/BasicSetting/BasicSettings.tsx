@@ -37,43 +37,49 @@ const BasicSettings = () => {
   const tradeCostChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // console.log(event.target.value);
-    // 숫자만 보이도록 정규식 작성
-    console.log(event.target.value.replace(/[^.0-9]/g, ''));
-    console.log(typeof event.target.value.replace(/[^.0-9]/g, ''));
-    const newVal = event.target.value.replace(/[^.0-9]/g, '');
+    // 입력값에서 숫자와 소수점 이외의 문자를 모두 제거
+    console.log(event.target.value);
+    console.log(event.target.value.replace(/[^\d.]/g, ''));
+    let newVal = event.target.value.replace(/[^\d.]/g, '');
+
+    // 입력값에서 소수점이 여러 개인 경우 첫 번째 소수점만 남김
+    const dotIndex = newVal.indexOf('.');
+    const hasMultipleDots =
+      dotIndex !== -1 && newVal.indexOf('.', dotIndex + 1) !== -1;
+    if (hasMultipleDots) {
+      newVal = newVal.substring(0, newVal.lastIndexOf('.'));
+    }
+
+    // 입력값에서 소수점 아래 둘째 자리 이후의 숫자를 모두 제거
+    const decimalIndex = newVal.indexOf('.');
+    if (decimalIndex !== -1) {
+      const decimalLength = newVal.substring(decimalIndex + 1).length;
+      if (decimalLength > 2) {
+        newVal = newVal.substring(0, decimalIndex + 3);
+      }
+    }
     if (newVal === '') {
-      console.log('빈 값');
       setBasicSettings((prevState) => {
         return {
           ...prevState,
           tradeCost: '0',
         };
       });
-      // } else if (newVal.length > 1 && newVal[0] === '0') {
-      //   const newVal0 = newVal.replace('0', '');
-      //   setBasicSettings((prevState) => {
-      //     return {
-      //       ...prevState,
-      //       tradeCost: newVal0,
-      //     };
-      //   });
-    } else if ('.' in new String(newVal)) {
-      console.log('1234');
-    } else if (Number(newVal) === 0) {
-      console.log('값이 0');
+    } else if (
+      newVal.indexOf('.') + 1 === newVal.length ||
+      (newVal.indexOf('.') + 2 === newVal.length &&
+        newVal[newVal.indexOf('.') + 1] === '0')
+      // 소수점 표시가 있는 경우 혹은 소수점 아래 첫번째 자리가 0인 경우 그대로
+    ) {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
           tradeCost: newVal,
         };
       });
-    } else if (
-      0 <= Number(newVal) &&
-      Number(newVal) <= 100 &&
-      // 0을 계속 입력하는 것을 방지하기 위함
-      newVal.length <= 4
-    ) {
+    } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
+      console.log('큰수변환');
+      newVal = String(parseFloat(newVal));
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -95,24 +101,11 @@ const BasicSettings = () => {
           maxNum: '0',
         };
       });
-    } else if (newVal.length > 1 && newVal[0] === '0') {
-      const newVal0 = newVal.replace('0', '');
+    } else if (0 <= Number(newVal) && Number(newVal) <= 30) {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          maxNum: newVal0,
-        };
-      });
-    } else if (
-      0 <= Number(event.target.value.replace(/[^0-9]/g, '')) &&
-      Number(event.target.value.replace(/[^0-9]/g, '')) <= 30 &&
-      // 0을 계속 입력하는 것을 방지하기 위함
-      event.target.value.replace(/[^0-9]/g, '').length <= 2
-    ) {
-      setBasicSettings((prevState) => {
-        return {
-          ...prevState,
-          maxNum: event.target.value.replace(/[^0-9]/g, ''),
+          maxNum: String(parseFloat(newVal)),
         };
       });
     }
