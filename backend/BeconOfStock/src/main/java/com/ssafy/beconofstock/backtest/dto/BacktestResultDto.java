@@ -9,8 +9,8 @@ import java.util.List;
 @Setter
 public class BacktestResultDto {
 
-    List<BacktestPrice> strategyValues;
-    List<BacktestPrice> marketValues;
+    List<BacktestPriceDto> strategyValues;
+    List<BacktestPriceDto> marketValues;
     private Double cumulativeReturn;
     private Double cagr;
     private Double sharpe;
