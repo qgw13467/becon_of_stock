@@ -51,7 +51,13 @@ const BasicFactor = (props: Props) => {
           onMouseLeave={mouseLeaveHandler}
         />
       </div>
-      {showDescription && <p className='text-sm'>{props.description}</p>}
+      {showDescription && (
+        <div className='flex justify-center'>
+          <p className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] w-[90%] px-[3%] py-[2%]'>
+            {props.description}
+          </p>
+        </div>
+      )}
       {showIndicator && (
         <ul>
           {props.indicators.map((indicator) => {
