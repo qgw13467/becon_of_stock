@@ -73,9 +73,9 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public Boolean deleteBoard(OAuth2UserImpl user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElse(null);
-        List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
-        commentList.forEach(x -> deleteComment(x.getId(), user));
         if (board.getMember().getId().equals(user.getMember().getId())) {
+            List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
+            commentRepository.deleteAllInBatch(commentList);        // 댓글 삭제
             boardRepository.deleteById(boardId);
             return true;
         }
@@ -111,10 +111,10 @@ public class BoardServiceImpl implements BoardService {
     public CommentResponseDto getComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (0 < comment.getCommentNum()) {
-            List<CommentRel> relList = commentRelRepository.findAllByParent(comment);
-            List<Comment> childrenList = relList.stream().map(CommentRel::getChild).collect(Collectors.toList());
-            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(
-                Collectors.toList());
+//            List<CommentRel> relList = commentRelRepository.findAllByParent(comment);
+//            List<Comment> childrenList = relList.stream().map(CommentRel::getChild).collect(Collectors.toList());
+            List<Comment> childrenList = commentRelRepository.findAllByJoinParent(comment);
+            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
             return new CommentResponseDto(comment, children);
         }
         return new CommentResponseDto(comment);
@@ -155,6 +155,7 @@ public class BoardServiceImpl implements BoardService {
     public Boolean deleteComment(Long commentId, OAuth2UserImpl user) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
+        // 댓글 작성자가 아니면 진행 x
         if (!comment.getMember().getId().equals(user.getMember().getId())) {
             return false;
         }
@@ -163,10 +164,14 @@ public class BoardServiceImpl implements BoardService {
 
         // 부모 댓글인 경우
         if (0 < comment.getCommentNum()) {
-            List<CommentRel> children = commentRelRepository.findAllByParent(comment);
+//            List<CommentRel> children = commentRelRepository.findAllByParent(comment);
+//            commentNum += children.size();
+//            children.forEach(c -> commentRepository.delete(c.getChild())); // 자식 댓글 삭제
+
+            List<Comment> children = commentRelRepository.findAllByJoinParent(comment);
             commentNum += children.size();
-            children.forEach(c -> commentRepository.delete(c.getChild())); // 자식 댓글 삭제
-            commentRelRepository.deleteAllInBatch(children);
+            commentRelRepository.deleteAllInBatch(commentRelRepository.findAllByParent(comment)); // 관계 삭제
+            commentRepository.deleteAllInBatch(children);   // 자식 삭제
         }
 
         // 자식 댓글인 경우
