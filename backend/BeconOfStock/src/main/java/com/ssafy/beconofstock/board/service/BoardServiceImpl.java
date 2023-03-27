@@ -233,17 +233,22 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 좋아요 상태 변경
+    @Transactional
     public void updateLike(Long boardId, OAuth2UserImpl user) {
         Board board = boardRepository.findById(boardId).orElse(null);
         Member member = user.getMember();
         if (boardLikeRepository.existsByBoardAndMember(board, member)) {
             boardLikeRepository.deleteByBoardAndMember(board, member);
+            board.decreaseLikeNum();
+            boardRepository.save(board);
         } else {
             BoardLike like = BoardLike.builder()
                 .board(board)
                 .member(member)
                 .build();
             boardLikeRepository.save(like);
+            board.increaseLikeNum();
+            boardRepository.save(board);
         }
     }
 }

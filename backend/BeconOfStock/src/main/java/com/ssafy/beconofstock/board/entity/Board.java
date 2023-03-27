@@ -43,4 +43,7 @@ public class Board extends BaseEntity {
         this.commentNum -= num;
     }
 
+    public void increaseLikeNum() { this.likeNum += 1;}
+    public void decreaseLikeNum() { this.likeNum -= 1; }
+
 }
