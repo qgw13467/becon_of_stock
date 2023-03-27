@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ContestRequestDto {
 
-    private Long contestId;
+    private String title;
     private String description;
     private String content;
+    private Long type;
 }

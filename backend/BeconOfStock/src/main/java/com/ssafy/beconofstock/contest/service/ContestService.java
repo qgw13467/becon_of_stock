@@ -20,7 +20,7 @@ public interface ContestService {
      * 대회 리스트 가져오기
      * @return ContestResponseDto
      */
-    List<ContestResponseDto> getContestList();
+    List<ContestResponseDto> getContestAllList();
 
     /**
      * 대회 상세정보
@@ -37,9 +37,10 @@ public interface ContestService {
     void deleteContest(Long contestId);
 
     /**
-     * 대회 수정
+     * 대회 type 수정
      * @param contestId
+     * @param contestRes
      * @return
      */
-//    ContestResponseDto updateContest(Long contestId);
+    ContestResponseDto typeUpdateContest(Long contestId, ContestResponseDto contestRes);
 }

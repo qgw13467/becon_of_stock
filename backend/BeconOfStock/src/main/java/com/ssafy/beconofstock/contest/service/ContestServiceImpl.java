@@ -1,7 +1,5 @@
 package com.ssafy.beconofstock.contest.service;
 
-
-import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.contest.dto.ContestRequestDto;
 import com.ssafy.beconofstock.contest.dto.ContestResponseDto;
 import com.ssafy.beconofstock.contest.entity.Contest;
@@ -23,15 +21,16 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public ContestResponseDto createContest(ContestRequestDto contestReq) {
         Contest contest = Contest.builder()
-                .id(contestReq.getContestId())
+                .title(contestReq.getTitle())
                 .description(contestReq.getDescription())
                 .content(contestReq.getContent())
+                .type(0L)
                 .build();
         return new ContestResponseDto(contestRepo.save(contest));
     }
 
     @Override
-    public List<ContestResponseDto> getContestList() {
+    public List<ContestResponseDto> getContestAllList() {
         List<Contest> contestList = contestRepo.findAll();
         return contestList.stream().map(ContestResponseDto::new).collect(Collectors.toList());
     }
@@ -46,8 +45,12 @@ public class ContestServiceImpl implements ContestService {
         contestRepo.deleteById(contestId);
     }
 
-//    @Override
-//    public ContestResponseDto updateContest(Long contestId) {
-//        return null;
-//    }
+    @Override
+    public ContestResponseDto typeUpdateContest(Long contestId, ContestResponseDto contestRes) {
+        Contest contest = contestRepo.findById(contestId).orElse(null);
+        if (contestRes.getType() == 0) {
+            contest.setType(1L);
+        }
+        return new ContestResponseDto(contestRepo.save(contest));
+    }
 }
