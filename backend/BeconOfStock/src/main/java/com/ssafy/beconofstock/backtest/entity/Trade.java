@@ -16,7 +16,6 @@ public class Trade {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Finance finance;
-
     private String corcode;
     private String corname;
     private Long corclose;
@@ -36,6 +35,22 @@ public class Trade {
     private Long corrank;
     private Integer year;
     private Integer month;
+
+    //indicator
+
+    private Double pricePER;
+    private Double pricePBR;
+    private Double pricePSR;
+    private Double pricePOR;
+    private Double qualityROE;
+    private Double qualityROA;
+    private Double growth3MonthTake;
+    private Double growth12MonthTake;
+    private Double growth3MonthOperatingProfit;
+    private Double growth12MonthOperatingProfit;
+    private Double growth3MonthNetProfit;
+    private Double growth12MonthNetProfit;
+
 
     @Transient
     private String indicator;
