@@ -21,4 +21,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         + "WHERE dibs.member = :paramMember")
     Page<Board> findBoardsByDibs(@Param(value = "paramMember") Member member, Pageable pageable);
 
+     Page<Board> findBoardByTitleContaining(String title, Pageable pageable);
+
+    Page<Board> findBoardByContentContaining(String content, Pageable pageable);
+
+    @Query(value = "select board, member.nickname"
+        + "from Board board "
+        + "Left outer Join Member member ON board.member = member"
+        + "where board.member.nickname = :nickname")
+    Page<Board> findBoardByNicknameLike(@Param(value = "nickname") String nickname, Pageable pageable);
+
 }
