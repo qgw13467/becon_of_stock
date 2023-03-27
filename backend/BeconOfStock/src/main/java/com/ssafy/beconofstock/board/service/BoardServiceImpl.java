@@ -7,8 +7,10 @@ import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.entity.Board;
+import com.ssafy.beconofstock.board.entity.BoardLike;
 import com.ssafy.beconofstock.board.entity.Comment;
 import com.ssafy.beconofstock.board.entity.CommentRel;
+import com.ssafy.beconofstock.board.repository.BoardLikeRepository;
 import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
@@ -33,6 +35,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final CommentRelRepository commentRelRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -227,5 +230,20 @@ public class BoardServiceImpl implements BoardService {
         commentRelRepository.save(commentRel);
 
         return getCommentList(boardId);
+    }
+
+    // 좋아요 상태 변경
+    public void updateLike(Long boardId, OAuth2UserImpl user) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+        Member member = user.getMember();
+        if (boardLikeRepository.existsByBoardAndMember(board, member)) {
+            boardLikeRepository.deleteByBoardAndMember(board, member);
+        } else {
+            BoardLike like = BoardLike.builder()
+                .board(board)
+                .member(member)
+                .build();
+            boardLikeRepository.save(like);
+        }
     }
 }

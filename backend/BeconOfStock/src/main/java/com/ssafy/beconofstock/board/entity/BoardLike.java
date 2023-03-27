@@ -6,8 +6,14 @@ import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.member.entity.Member;
 
 import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardLike extends BaseEntity {
 
 

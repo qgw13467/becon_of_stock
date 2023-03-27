@@ -182,6 +182,12 @@ public class BoardController {
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
+    @PostMapping("/boards/likes/{boardId}")
+    public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, OAuth2UserImpl user) {
+        boardService.updateLike(boardId, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
 
 
 }
