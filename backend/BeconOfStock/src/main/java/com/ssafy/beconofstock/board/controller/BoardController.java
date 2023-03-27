@@ -6,6 +6,7 @@ import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
+import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.board.service.BoardServiceImpl;
 import com.ssafy.beconofstock.member.entity.Member;
 import io.swagger.annotations.ApiParam;
@@ -202,6 +203,12 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/likes/dibs")
+    public ResponseEntity<?> getBoardDibsList(@AuthenticationPrincipal OAuth2UserImpl user) {
+//        List<CommentResponseDto> dibsList = boardService.getBoardDibsList(user);
+        List<BoardResponseDto> dibsList = boardService.getBoardDibsList(user);
+        return new ResponseEntity<>(dibsList, HttpStatus.OK);
+    }
 
 
 }

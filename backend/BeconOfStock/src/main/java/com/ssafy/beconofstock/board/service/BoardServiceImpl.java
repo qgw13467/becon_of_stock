@@ -274,4 +274,9 @@ public class BoardServiceImpl implements BoardService {
             boardDibsRepository.save(dibs);
         }
     }
+
+    public List<BoardResponseDto> getBoardDibsList(OAuth2UserImpl user) {
+        List<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember());
+        return dibsList.stream().map(x -> new BoardResponseDto(x, false, false)).collect(Collectors.toList());
+    }
 }
