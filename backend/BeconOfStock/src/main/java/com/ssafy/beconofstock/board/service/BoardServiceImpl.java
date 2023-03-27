@@ -122,7 +122,7 @@ public class BoardServiceImpl implements BoardService {
 
     // 댓글 생성
     @Transactional
-    public CommentResponseDto createComment(Long boardId, CommentRequestDto content, OAuth2UserImpl user) {
+    public List<CommentResponseDto> createComment(Long boardId, CommentRequestDto content, OAuth2UserImpl user) {
         Board board = boardRepository.findById(boardId).orElse(null);
         Long commentNum = board.getCommentNum() + 1;
         board.setCommentNum(commentNum);
@@ -135,8 +135,11 @@ public class BoardServiceImpl implements BoardService {
             .likeNum(0L)
             .commentNum(0L)
             .depth(0)
+            .modified(false)
             .build();
-        return new CommentResponseDto(commentRepository.save(comment));
+        commentRepository.save(comment);
+
+        return getCommentList(boardId);
     }
 
     // 댓글 수정
@@ -147,6 +150,7 @@ public class BoardServiceImpl implements BoardService {
             return null;
         }
         comment.setContent(content.getContent());
+        comment.setModified(true);
         return new CommentResponseDto(commentRepository.save(comment));
     }
 
@@ -192,7 +196,7 @@ public class BoardServiceImpl implements BoardService {
 
     // 대댓글 작성
     @Transactional
-    public CommentResponseDto createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
+    public List<CommentResponseDto> createComment(Long boardId, Long parentId, CommentRequestDto content, OAuth2UserImpl user) {
         Comment parent = commentRepository.findById(parentId).orElse(null);
         if ((parent.getDepth() == 1) || (!boardId.equals(parent.getBoardId()))) {
             return null;
@@ -205,6 +209,7 @@ public class BoardServiceImpl implements BoardService {
             .likeNum(0L)
             .commentNum(0L)
             .depth(1)
+            .modified(false)
             .build();
 
         Comment child = commentRepository.save(comment);
@@ -221,6 +226,6 @@ public class BoardServiceImpl implements BoardService {
 
         commentRelRepository.save(commentRel);
 
-        return new CommentResponseDto(child);
+        return getCommentList(boardId);
     }
 }

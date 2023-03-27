@@ -136,7 +136,7 @@ public class BoardController {
     @PostMapping("/{boardId}/comments")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @RequestBody
         CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
-        CommentResponseDto comment = boardService.createComment(boardId, content, user);
+        List<CommentResponseDto> comment = boardService.createComment(boardId, content, user);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
@@ -175,11 +175,11 @@ public class BoardController {
     })
     @PostMapping("/{boardId}/comments/{parentId}")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
-        CommentResponseDto comment = boardService.createComment(boardId, parentId, content, user);
+        List<CommentResponseDto> comment = boardService.createComment(boardId, parentId, content, user);
         if (comment == null) {
             return new ResponseEntity<>("유효하지 않은 요청입니다.", HttpStatus.OK);
         }
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
 
