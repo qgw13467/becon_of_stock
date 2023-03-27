@@ -7,9 +7,11 @@ import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.entity.Board;
+import com.ssafy.beconofstock.board.entity.BoardDibs;
 import com.ssafy.beconofstock.board.entity.BoardLike;
 import com.ssafy.beconofstock.board.entity.Comment;
 import com.ssafy.beconofstock.board.entity.CommentRel;
+import com.ssafy.beconofstock.board.repository.BoardDibsRepository;
 import com.ssafy.beconofstock.board.repository.BoardLikeRepository;
 import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
@@ -36,6 +38,7 @@ public class BoardServiceImpl implements BoardService {
     private final CommentRepository commentRepository;
     private final CommentRelRepository commentRelRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final BoardDibsRepository boardDibsRepository;
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -51,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
             .commentNum(0L)
             .build();
 
-        return new BoardResponseDto(boardRepository.save(newBoard), false);
+        return new BoardResponseDto(boardRepository.save(newBoard), false, false);
     }
 
     public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
@@ -70,8 +73,9 @@ public class BoardServiceImpl implements BoardService {
         Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
         Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
+        Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
-        return new BoardResponseDto(boardRepository.save(board), likeStatus);
+        return new BoardResponseDto(boardRepository.save(board), likeStatus, dibStatus);
     }
 
     // 글 삭제
@@ -105,7 +109,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board newBoard = boardRepository.save(board);
 
-        return new BoardResponseDto(newBoard, boardLikeRepository.existsByBoardAndMember(newBoard, user.getMember()));
+        return new BoardResponseDto(newBoard, boardLikeRepository.existsByBoardAndMember(newBoard, user.getMember()), boardDibsRepository.existsByBoardAndMember(newBoard, user.getMember()));
     }
 
     // 댓글 목록 전체 조회
@@ -254,5 +258,28 @@ public class BoardServiceImpl implements BoardService {
             board.increaseLikeNum();
             boardRepository.save(board);
         }
+    }
+
+    @Transactional
+    public void updateDibs(Long boardId, OAuth2UserImpl user) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+        Member member = user.getMember();
+        if (boardDibsRepository.existsByBoardAndMember(board, member)) {
+            boardDibsRepository.deleteByBoardAndMember(board, member);
+        } else {
+            BoardDibs dibs = BoardDibs.builder()
+                .board(board)
+                .member(member)
+                .build();
+            boardDibsRepository.save(dibs);
+        }
+    }
+
+    public BoardListResponseDto getBoardDibsList(int page, OAuth2UserImpl user) {
+
+        Sort.Order dibsOrder = Sort.Order.desc("dibs.id");
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(dibsOrder));
+        Page<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember(), pageable);
+        return new BoardListResponseDto(dibsList);
     }
 }
