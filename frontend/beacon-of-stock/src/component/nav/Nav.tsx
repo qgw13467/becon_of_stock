@@ -34,7 +34,7 @@ const Nav: FC = () => {
   }, [isOpen]);
 
   return (
-    <nav className='flex justify-between mx-10'>
+    <nav className='flex justify-between mx-10 cursor-pointer'>
       <div>
         <Link to='/'>
           <img src={logo} alt='logo' className='w-[60px] h-[60px]' />
