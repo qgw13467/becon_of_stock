@@ -54,7 +54,7 @@ const Nav: FC = () => {
               </Link>
             </div>
             <div className='m-auto'>
-              <Link to='/community'>
+              <Link to='/community/dibs'>
                 <p className='text-lg font-KJCbold'>커뮤니티</p>
               </Link>
             </div>

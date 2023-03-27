@@ -4,6 +4,8 @@ import Nav from './component/nav/Nav';
 import BacktestMain from './pages/home/backtest/BacktestMain';
 import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
+import { Contests } from './component/contests/Contests';
+import { CommunityDibs } from './pages/community/CommunityDibs';
 import Login from './component/login/Login';
 import { MyProfile } from './pages/profile/MyProfile';
 import { Strategy } from './pages/profile/strategy/Strategy';
@@ -24,7 +26,10 @@ const App = () => {
               {' '}
               {/* 로그인 된 상태 */}
               <Route path='/' element={<BacktestMain />} />
-              <Route path='/community' element={<CommunityMain />} />
+              <Route path='/community' element={<CommunityMain />}>
+                <Route path='dibs' element={<CommunityDibs />} />
+                <Route path='contests/:id' element={<Contests />} />
+              </Route>
               <Route path='/myProfile' element={<MyProfile />} />
               <Route path='/strategy' element={<Strategy />} />
             </>
