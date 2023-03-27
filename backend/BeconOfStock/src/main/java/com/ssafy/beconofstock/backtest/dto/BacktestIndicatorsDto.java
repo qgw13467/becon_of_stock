@@ -9,15 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 public class BacktestIndicatorsDto {
-
-
-    List<Integer> indicatos;
+    List<Integer> indicators;
     List<String> industries;
     Integer startYear;
     Integer startMonth;
     Integer endYear;
     Integer endMonth;
     BacktestSortType backtestSortType;
+    Integer sortRatio;
     Integer maxStocks;
     Double fee;
     Integer rebalance;
