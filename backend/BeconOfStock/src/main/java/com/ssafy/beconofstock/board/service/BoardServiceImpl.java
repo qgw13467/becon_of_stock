@@ -275,8 +275,11 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    public List<BoardResponseDto> getBoardDibsList(OAuth2UserImpl user) {
-        List<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember());
-        return dibsList.stream().map(x -> new BoardResponseDto(x, false, false)).collect(Collectors.toList());
+    public BoardListResponseDto getBoardDibsList(int page, OAuth2UserImpl user) {
+
+        Sort.Order dibsOrder = Sort.Order.desc("dibs.id");
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(dibsOrder));
+        Page<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember(), pageable);
+        return new BoardListResponseDto(dibsList);
     }
 }

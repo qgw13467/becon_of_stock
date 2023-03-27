@@ -6,7 +6,6 @@ import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
-import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.board.service.BoardServiceImpl;
 import com.ssafy.beconofstock.member.entity.Member;
 import io.swagger.annotations.ApiParam;
@@ -203,10 +202,14 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/likes/dibs")
-    public ResponseEntity<?> getBoardDibsList(@AuthenticationPrincipal OAuth2UserImpl user) {
+    @ApiOperation(value = "찜 목록 조회", notes = "커뮤니티 게시판 찜 목록을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
+    })
+    @GetMapping("/dibs")
+    public ResponseEntity<?> getBoardDibsList(@ApiParam(name = "page", defaultValue = "0") @RequestParam int page, @AuthenticationPrincipal OAuth2UserImpl user) {
 //        List<CommentResponseDto> dibsList = boardService.getBoardDibsList(user);
-        List<BoardResponseDto> dibsList = boardService.getBoardDibsList(user);
+        BoardListResponseDto dibsList = boardService.getBoardDibsList(page, user);
         return new ResponseEntity<>(dibsList, HttpStatus.OK);
     }
 
