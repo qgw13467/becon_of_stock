@@ -1,6 +1,7 @@
 import { TileBoard } from '../../../component/TileBoard';
-import StrategySelect from './StrategySelect';
 import { Pagenation } from '../../../component/Pagenation';
+import { SearchbarNone } from '../../../component/search/SearchbarNone';
+import StrategySelect from '../../../component/select_box/StrategySelect';
 
 export const Strategy = () => {
   const PAGE_SIZE = 20; // 한 페이지에 보여질 게시글 수
@@ -15,14 +16,21 @@ export const Strategy = () => {
     <section>
       <p className='font-KJCbold text-4xl m-9'>내 전략조회</p>
       {/* 필터링 부분 */}
-      <StrategySelect />
+      <article className='flex justify-between'>
+        <StrategySelect />
+        <SearchbarNone />
+      </article>
       <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly mx-32'>
         {items.map((item, index) => (
           <TileBoard key={index} item={item} />
         ))}
       </article>
-      <Pagenation pageEA={pageEA} />
-      <article></article>
+      <article className='my-8'>
+        <Pagenation pageEA={pageEA} />
+      </article>
+      <article className='flex justify-center ml-32 my-8'>
+        <SearchbarNone />
+      </article>
     </section>
   );
 };
