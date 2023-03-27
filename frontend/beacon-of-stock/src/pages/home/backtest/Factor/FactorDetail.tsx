@@ -29,7 +29,7 @@ const FactorDetail = (props: Props) => {
 
   return (
     <div className='flex justify-center'>
-      <div className='flex my-[2%] w-[70%] justify-between items-center'>
+      <div className='flex my-[1%] w-[70%] justify-between items-center'>
         <div className='flex items-center'>
           {factorSelected ? (
             <img
@@ -46,7 +46,7 @@ const FactorDetail = (props: Props) => {
               onClick={factorSelectedHandler}
             />
           )}
-          <p className='ml-1'>{props.title}</p>
+          <p className='ml-1 text-sm'>{props.title}</p>
           <img
             src={question}
             alt='question'
