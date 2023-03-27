@@ -35,7 +35,7 @@ const BasicFactor = (props: Props) => {
 
   return (
     <React.Fragment>
-      <div className='flex items-center my-[5%]'>
+      <div className='flex items-center mt-[5%]'>
         <img
           src={dropdownImg}
           alt='dropdownImg'

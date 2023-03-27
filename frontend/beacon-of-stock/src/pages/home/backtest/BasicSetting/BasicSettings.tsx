@@ -14,14 +14,24 @@ const BasicSettings = () => {
     rebalance: '3개월',
     // 정렬 기준
     sort: '시가총액 높은 순',
+    // 정렬 기준 값
+    sortRatio: '20',
     // 시작 시점
     start: '2000-01',
     // 종료 시점
     end: '2022-12',
   });
 
-  const { industry, tradeCost, maxNum, rebalance, sort, start, end } =
-    basicSettings;
+  const {
+    industry,
+    tradeCost,
+    maxNum,
+    rebalance,
+    sort,
+    sortRatio,
+    start,
+    end,
+  } = basicSettings;
 
   // 산업 모달 상태
   const [showIndustry, setShowIndustry] = useState(false);
@@ -38,8 +48,8 @@ const BasicSettings = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     // 입력값에서 숫자와 소수점 이외의 문자를 모두 제거
-    console.log(event.target.value);
-    console.log(event.target.value.replace(/[^\d.]/g, ''));
+    // console.log(event.target.value);
+    // console.log(event.target.value.replace(/[^\d.]/g, ''));
     let newVal = event.target.value.replace(/[^\d.]/g, '');
 
     // 입력값에서 소수점이 여러 개인 경우 첫 번째 소수점만 남김
@@ -78,7 +88,6 @@ const BasicSettings = () => {
         };
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
-      console.log('큰수변환');
       newVal = String(parseFloat(newVal));
       setBasicSettings((prevState) => {
         return {
@@ -90,9 +99,9 @@ const BasicSettings = () => {
   };
   // 최대 종목 수
   const maxNumChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     // 숫자만 보이도록 정규식 작성
-    console.log(event.target.value.replace(/[^0-9]/g, ''));
+    // console.log(event.target.value.replace(/[^0-9]/g, ''));
     const newVal = event.target.value.replace(/[^0-9]/g, '');
     if (newVal === '') {
       setBasicSettings((prevState) => {
@@ -117,7 +126,7 @@ const BasicSettings = () => {
     // text 값
     // console.log(event.target.options[event.target.selectedIndex].text);
     // value 값
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, rebalance: event.target.value };
     });
@@ -125,35 +134,49 @@ const BasicSettings = () => {
   // 정렬 기준
   const sortChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     // value 값
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, sort: event.target.value };
     });
   };
+  // 정렬 기준 값
+  const sortRatioChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    // console.log(event.target.value);
+    // 숫자만 보이도록 정규식 작성
+    // console.log(event.target.value.replace(/[^0-9]/g, ''));
+    const newVal = event.target.value.replace(/[^0-9]/g, '');
+    if (newVal === '') {
+      setBasicSettings((prevState) => {
+        return {
+          ...prevState,
+          sortRatio: '0',
+        };
+      });
+    } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
+      setBasicSettings((prevState) => {
+        return {
+          ...prevState,
+          sortRatio: String(parseFloat(newVal)),
+        };
+      });
+    }
+  };
   // 시작 시점
   const startChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, start: event.target.value };
     });
   };
   // 종료 시점
   const endChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, end: event.target.value };
     });
   };
-
-  // console.log(basicSettings);
-  // console.log(industry);
-  // console.log(showIndustry);
-  // console.log(tradeCost);
-  // console.log(maxNum);
-  // console.log(rebalance);
-  // console.log(sort);
-  // console.log(start);
-  // console.log(end);
 
   return (
     <React.Fragment>
@@ -168,7 +191,7 @@ const BasicSettings = () => {
               id='industry'
               defaultValue={industry}
               onClick={showIndustryHandler}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             />
           </div>
 
@@ -181,15 +204,16 @@ const BasicSettings = () => {
         </div>
 
         <div className='my-1'>
-          <label htmlFor='tradeCost'>거래비용(%)</label>
-          <div className='border rounded-xl'>
+          <label htmlFor='tradeCost'>거래비용</label>
+          <div className='flex items-center border flex-between rounded-xl'>
             <input
               type='text'
               id='tradeCost'
               onChange={tradeCostChangeHandler}
               value={tradeCost}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             />
+            <p className='mr-[3%] text-sm'>%</p>
           </div>
         </div>
 
@@ -200,10 +224,8 @@ const BasicSettings = () => {
               type='text'
               id='maxNum'
               value={maxNum}
-              // min='1'
-              // max='30'
               onChange={maxNumChangeHandler}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             />
           </div>
         </div>
@@ -216,7 +238,7 @@ const BasicSettings = () => {
               id='rebalance'
               value={rebalance}
               onChange={rebalanceChangeHandler}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             >
               <option value='3개월'>3개월</option>
               <option value='6개월'>6개월</option>
@@ -227,20 +249,32 @@ const BasicSettings = () => {
 
         <div className='my-1'>
           <label htmlFor='sort'>정렬 기준</label>
-          <div className='border rounded-xl'>
-            <select
-              name='sort'
-              id='sort'
-              value={sort}
-              onChange={sortChangeHandler}
-              className='flex m-1 w-[95%]'
-            >
-              <option value='시가총액 높은 순'>시가총액 높은 순</option>
-              <option value='시가총액 낮은 순'>시가총액 낮은 순</option>
-              <option value='영업이익률 우선'>영업이익률 우선</option>
-              <option value='자본수익률 우선'>자본수익률 우선</option>
-              <option value='F-score 높은 순'>F-score 높은 순</option>
-            </select>
+          <div className='flex justify-between'>
+            <div className='border rounded-xl w-[60%]'>
+              <select
+                name='sort'
+                id='sort'
+                value={sort}
+                onChange={sortChangeHandler}
+                className='flex m-1 w-[95%] text-sm'
+              >
+                <option value='시가총액 높은 순'>시가총액 높은 순</option>
+                <option value='시가총액 낮은 순'>시가총액 낮은 순</option>
+                <option value='영업이익률 우선'>영업이익률 우선</option>
+                <option value='자본수익률 우선'>자본수익률 우선</option>
+                <option value='F-score 높은 순'>F-score 높은 순</option>
+              </select>
+            </div>
+            <div className='flex items-center justify-center border rounded-xl w-[35%]'>
+              <input
+                type='text'
+                id='sortRatio'
+                value={sortRatio}
+                onChange={sortRatioChangeHandler}
+                className='w-[90%] m-1 text-sm'
+              />
+              <p className='mr-[5%] text-sm'>%</p>
+            </div>
           </div>
         </div>
 
@@ -254,7 +288,7 @@ const BasicSettings = () => {
               min='2000-01'
               max='2022-12'
               onChange={startChangeHandler}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             />
           </div>
         </div>
@@ -269,7 +303,7 @@ const BasicSettings = () => {
               min='2000-01'
               max='2022-12'
               onChange={endChangeHandler}
-              className='flex m-1 w-[95%]'
+              className='flex m-1 w-[95%] text-sm'
             />
           </div>
         </div>
