@@ -25,10 +25,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findBoardByContentContaining(String content, Pageable pageable);
 
-    @Query(value = "select board, member.nickname"
-        + "from Board board "
-        + "Left outer Join Member member ON board.member = member"
-        + "where board.member.nickname = :nickname")
-    Page<Board> findBoardByNicknameLike(@Param(value = "nickname") String nickname, Pageable pageable);
+    @Query(value = "select b "
+        + "FROM Board b JOIN Member m ON m = b.member "
+        + "WHERE m.nickname LIKE %:paramNickname%")
+    Page<Board> findBoardByNickname(@Param(value = "paramNickname") String nickname, Pageable pageable);
 
 }

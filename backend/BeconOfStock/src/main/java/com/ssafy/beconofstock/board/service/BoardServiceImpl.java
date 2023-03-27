@@ -295,7 +295,7 @@ public class BoardServiceImpl implements BoardService {
             Page<Board> searchList = boardRepository.findBoardByContentContaining(content, pageable);
             return new BoardListResponseDto(searchList);
         }
-        Page<Board> searchList = boardRepository.findBoardByNicknameLike(nickname, pageable);
+        Page<Board> searchList = boardRepository.findBoardByNickname(nickname, pageable);
         return new BoardListResponseDto(searchList);
 
     }
