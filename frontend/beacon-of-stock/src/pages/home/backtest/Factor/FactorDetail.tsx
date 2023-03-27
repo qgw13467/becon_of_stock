@@ -28,43 +28,44 @@ const FactorDetail = (props: Props) => {
   };
 
   return (
-    <div>
-      <div className='flex ml-[18%] my-[2%] justify-between items-center'>
-        <div className='flex'>
+    <div className='flex justify-center'>
+      <div className='flex my-[2%] w-[70%] justify-between items-center'>
+        <div className='flex items-center'>
           {factorSelected ? (
             <img
               src={checkboxChecked}
               alt='checkboxChecked'
-              className='ml-[1%] mr-[1.1%]'
+              className='w-5'
               onClick={factorSelectedHandler}
             />
           ) : (
             <img
               src={checkboxBlank}
               alt='checkboxBlank'
+              className='w-5'
               onClick={factorSelectedHandler}
             />
           )}
-          <p className='ml-[3%]'>{props.title}</p>
+          <p className='ml-1'>{props.title}</p>
           <img
             src={question}
             alt='question'
-            className='w-4 ml-[3%]'
+            className='w-5 ml-[3%]'
             onMouseEnter={mouseEnterHandler}
             onMouseLeave={mouseLeaveHandler}
           />
         </div>
-        <div className='flex justify-center rounded-full border-[#131313] bg-[#FAF6FF] w-[10%] mr-[5%]'>
+        {showDescription && (
+          <div className='flex justify-center'>
+            <p className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[3%] py-[2%]'>
+              {props.description}
+            </p>
+          </div>
+        )}
+        <div className='flex justify-center rounded-full border-[#131313] bg-[#FAF6FF]'>
           <p>{props.count}</p>
         </div>
       </div>
-      {showDescription && (
-        <div className='flex justify-center'>
-          <p className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[3%] py-[2%]'>
-            {props.description}
-          </p>
-        </div>
-      )}
     </div>
   );
 };
