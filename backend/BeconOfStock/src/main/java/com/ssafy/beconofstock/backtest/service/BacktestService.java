@@ -7,8 +7,8 @@ import com.ssafy.beconofstock.backtest.entity.Trade;
 import java.util.List;
 
 public interface BacktestService {
-    List<Trade> mappingTradeFinance(Integer year, Integer month);
-    void preprocess(Integer year, Integer month);
+    void mappingTradeFinance(Integer year);
+    void preprocess(Integer year);
     BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto);
 
 }

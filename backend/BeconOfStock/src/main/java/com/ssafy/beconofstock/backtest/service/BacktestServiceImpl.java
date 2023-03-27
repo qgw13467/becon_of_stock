@@ -1,5 +1,7 @@
 package com.ssafy.beconofstock.backtest.service;
 
+import com.fasterxml.jackson.core.sym.Name1;
+import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
 import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
 import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.entity.Finance;
@@ -13,9 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.nio.channels.NonWritableChannelException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -28,63 +29,160 @@ public class BacktestServiceImpl implements BacktestService {
     private final IndicatorRepository indicatorRepository;
 
     @Override
-    public List<Trade> mappingTradeFinance(Integer year, Integer month) {
-        List<Trade> trades = tradeRepository.findByYearAndMonth(year, month);
+    public void mappingTradeFinance(Integer year) {
 
+        for (Integer month = 1; month <= 12; month++) {
+            Integer userYear = year;
+            List<Trade> trades = tradeRepository.findByYearAndMonth(year, month);
 
-        List<Integer> months = new ArrayList<>();
-        if (1 <= month && month <= 3) {
-            months.addAll(List.of(1, 2, 3));
-        }
-        if (4 <= month && month <= 6) {
-            months.addAll(List.of(4, 5, 6));
-        }
-        if (7 <= month && month <= 9) {
-            months.addAll(List.of(7, 8, 9));
-        }
-        if (10 <= month && month <= 12) {
-            months.addAll(List.of(10, 11, 12));
-        }
+            if (1 <= month && month <= 3) {
+                userYear -= 1;
+            }
+            List<Integer> months = getMonths(month);
 
-        List<Finance> finances = financeRepository.findByRptYearAndRptMonth(year, months);
+            List<Finance> finances = financeRepository.findByRptYearAndRptMonth(userYear, months);
 
-        for (Trade trade : trades) {
-            Finance finance = findFinanaceByCorName(trade.getCorname(), finances);
-            if(finance !=null){
-                financeRepository.save(finance);
-                trade.setFinance(finance);
-                tradeRepository.save(trade);
-
+            for (Trade trade : trades) {
+                Finance finance = findFinanaceByCorName(trade.getCorname(), finances);
+                if (finance != null) {
+                    financeRepository.save(finance);
+                    trade.setFinance(finance);
+                    tradeRepository.save(trade);
+                }
             }
         }
+    }
 
-        return trades;
+
+    private List<Integer> getMonths(Integer month) {
+        List<Integer> months = new ArrayList<>();
+        if (1 <= month && month <= 3) {
+            months.addAll(List.of(10, 11, 12));
+        }
+        if (4 <= month && month <= 6) {
+            months.addAll(List.of(1, 2, 3));
+        }
+        if (7 <= month && month <= 9) {
+            months.addAll(List.of(4, 5, 6));
+        }
+        if (10 <= month && month <= 12) {
+            months.addAll(List.of(7, 8, 9));
+        }
+        return months;
     }
 
     @Override
-    @Transactional
-    public void preprocess(Integer year, Integer month) {
-
+    public void preprocess(Integer year) {
+        //지표 목록 조회
         List<Indicator> indicators = indicatorRepository.findAll();
-        for (Indicator indicator : indicators) {
-            List<Trade> trades = mappingTradeFinance(year, month);
-            if (month == 12) {
-                year += 1;
-                month = 1;
-            }
+        Map<Integer, List<Trade>> month12trades = new HashMap<>();
 
-            List<Trade> nextMonthTrades = mappingTradeFinance(year, month + 1);
+        //1년치 trade, fanance 가져오기
+        for (Integer month = 1; month <= 12; month++) {
 
-            for (Trade trade : trades) {
-                if (trade.getFinance() == null) {
-                    continue;
-                }
-                Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
-                trade = calcTradeIndicator(trade, nextTrade, indicator);
-            }
+            List<Trade> temp = tradeRepository.findByYearAndMonthFetch(year, month);
+            month12trades.put(month, temp);
+
+//            List<Trade> oneYearLater = tradeRepository.findByYearAndMonthFetch(year + 1, month);
+//            month12trades.put(month + 12, oneYearLater);
+
         }
 
+        //1년간
+        for (Integer month = 1; month <= 12; month++) {
+            //모은 지표에 대해
+            for (Indicator indicator : indicators) {
+                //각 달의 거래를 가져와
+                List<Trade> trades = month12trades.get(month);
+                //지표의 타입을 확인하고
+                Integer indicatorType = getGrowthByTitle(indicator.getTitle());
+                //growth계열의 지표이면
+                if (indicatorType != 0) {
+                    //단위가 3개월이면,
+                    if (indicatorType == 1) {
+//                        3개월 후의 거래르 가져와서
+//                        List<Trade> next3MonthTrades = month12trades.get(month + 3);
 
+                        //각 거래에 대해
+                        for (Trade trade : trades) {
+//                            같은 회가의 거래를 찾고
+//                            Trade next3MonthTrade = findByCorcode(trade.getCorcode(), next3MonthTrades);
+                            //사용할 연도
+                            Integer userYear = year;
+                            //지금이 4분기면 연도 +1
+                            if (10 <= month && month <= 12) {
+                                userYear += 1;
+                            }
+                            //다음 분기에서 찾아야할 3개월 리스트
+                            List<Integer> months = getMonths(month + 3);
+
+                            Optional<Finance> finance = financeRepository.findByRptYearAndRptMonthAndCorName(userYear, months, trade.getCorname());
+                            //각 거래에서 재무가 not null을 확인하고
+                            if (trade.getFinance() == null || finance.isEmpty()) {
+                                continue;
+                            }
+                            //3개월후와 비교후 저장
+                            trade = calcGrowth(trade, finance.get(), indicator);
+                            tradeRepository.save(trade);
+
+                        }
+
+                    }
+                    //단위가 12개월이면
+//                    List<Trade> next12MonthTrades = month12trades.get(month + 12);
+
+                    //각 거래에 대해
+                    for (Trade trade : trades) {
+//                        같은 회가의 거래를 찾고
+//                        Trade next12MonthTrade = findByCorcode(trade.getCorcode(), next12MonthTrades);
+
+//                        찾아야할 3개월 리스트
+                        List<Integer> months = getMonths(month);
+//                        1년후의 재무 검색
+                        Optional<Finance> finance = financeRepository.findByRptYearAndRptMonthAndCorName(year + 1, months, trade.getCorname());
+                        //각 거래에서 재무가 not null을 확인하고
+                        if (trade.getFinance() == null || finance.isEmpty()) {
+                            continue;
+                        }
+                        //3개월후와 비교후 저장
+                        trade = calcGrowth(trade, finance.get(), indicator);
+                        tradeRepository.save(trade);
+                    }
+                    continue;
+                }
+
+                //다음달 거래를 가져와서
+                List<Trade> nextMonthTrades = month12trades.get(month + 1);
+                //각 거래에 대해
+                for (Trade trade : trades) {
+                    //재무가 not null이면
+                    if (trade.getFinance() == null) {
+                        continue;
+                    }
+                    //다음달 같은 회사의 거래를 찾아
+                    Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
+                    trade = calcTradeIndicator(trade, nextTrade, indicator);
+                    tradeRepository.save(trade);
+                }
+            }
+
+        }
+
+    }
+
+    private Integer getGrowthByTitle(String title) {
+
+        switch (title) {
+            case "growth3MonthTake":
+            case "growth3MonthOperatingProfit":
+            case "growth3MonthNetProfit":
+                return 1;
+            case "growth12MonthOperatingProfit":
+            case "growth12MonthTake":
+            case "growth12MonthNetProfit":
+                return 2;
+        }
+        return 0;
     }
 
     private Finance findFinanaceByCorName(String corName, List<Finance> finances) {
@@ -156,7 +254,7 @@ public class BacktestServiceImpl implements BacktestService {
         Integer nextWon;
 
         switch (indicator.getTitle()) {
-            case "pricePer":
+            case "pricePER":
                 trade.setPricePER(getLowerGoodIndicatorMultipleWon(marcap, 1, netProfit, won));
                 return trade;
             case "pricePBR":
@@ -180,50 +278,58 @@ public class BacktestServiceImpl implements BacktestService {
                 trade.setQualityROA(getBiggerGoodIndicatorMultipleWon(netProfit, won, totalCapital, won));
                 return trade;
 
+
+        }
+        return trade;
+    }
+
+    private Trade calcGrowth(Trade trade, Finance finance, Indicator indicator) {
+        Long marcap = trade.getMarcap();
+        Integer won = trade.getFinance().getWon();
+
+        Long totalAssets, operatingRevenue, operatingProfit, totalCapital;
+        Long nextNetProfit, nextOperatingRevenue, nextOperatingProfit, netProfit;
+        Integer nextWon = finance.getWon();
+        switch (indicator.getTitle()) {
             case "growth3MothTake":
                 operatingRevenue = trade.getFinance().getOperatingRevenue();
-                nextOperatingRevenue = next.getFinance().getOperatingRevenue();
-                nextWon = next.getFinance().getWon();
+                nextOperatingRevenue = finance.getOperatingRevenue();
                 trade.setGrowth3MonthTake(getBiggerGoodIndicatorMultipleWon(
                         nextOperatingRevenue, nextWon, operatingRevenue, won));
                 return trade;
             case "growth12MothTake":
                 operatingRevenue = trade.getFinance().getOperatingRevenue();
-                nextOperatingRevenue = next.getFinance().getOperatingRevenue();
-                nextWon = next.getFinance().getWon();
+                nextOperatingRevenue = finance.getOperatingRevenue();
                 trade.setGrowth12MonthTake(getBiggerGoodIndicatorMultipleWon(
                         nextOperatingRevenue, nextWon, operatingRevenue, won));
                 return trade;
 
             case "growth3MothOperatingProfit":
                 operatingProfit = trade.getFinance().getOperatingProfit();
-                nextOperatingProfit = next.getFinance().getOperatingProfit();
-                nextWon = next.getFinance().getWon();
+                nextOperatingProfit = finance.getOperatingProfit();
                 trade.setGrowth3MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(
                         nextOperatingProfit, nextWon, operatingProfit, won));
                 return trade;
             case "growth12MothOperatingProfit":
                 operatingProfit = trade.getFinance().getOperatingProfit();
-                nextOperatingProfit = next.getFinance().getOperatingProfit();
-                nextWon = next.getFinance().getWon();
+                nextOperatingProfit = finance.getOperatingProfit();
                 trade.setGrowth12MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(
                         nextOperatingProfit, nextWon, operatingProfit, won));
                 return trade;
 
             case "growth3MothNetProfit":
                 netProfit = trade.getFinance().getNetProfit();
-                nextNetProfit = next.getFinance().getNetProfit();
-                nextWon = next.getFinance().getWon();
+                nextNetProfit = finance.getNetProfit();
                 trade.setGrowth3MonthNetProfit(getBiggerGoodIndicatorMultipleWon(
                         nextNetProfit, nextWon, netProfit, won));
                 return trade;
             case "growth12MothNetProfit":
                 netProfit = trade.getFinance().getNetProfit();
-                nextNetProfit = next.getFinance().getNetProfit();
-                nextWon = next.getFinance().getWon();
+                nextNetProfit = finance.getNetProfit();
                 trade.setGrowth12MonthNetProfit(getBiggerGoodIndicatorMultipleWon(
                         nextNetProfit, nextWon, netProfit, won));
                 return trade;
+
 
         }
         return trade;
