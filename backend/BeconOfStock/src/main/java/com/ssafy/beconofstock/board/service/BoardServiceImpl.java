@@ -275,6 +275,7 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    // 찜 목록 조회
     public BoardListResponseDto getBoardDibsList(int page, OAuth2UserImpl user) {
 
         Sort.Order dibsOrder = Sort.Order.desc("dibs.id");
@@ -282,4 +283,29 @@ public class BoardServiceImpl implements BoardService {
         Page<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember(), pageable);
         return new BoardListResponseDto(dibsList);
     }
+
+    // 게시판 검색
+    public BoardListResponseDto searchBoard(int page, String title, String content, String nickname) {
+        Sort.Order searchOrder = Sort.Order.desc("id");
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(searchOrder));
+        if (title != null) {
+            Page<Board> searchList = boardRepository.findBoardByTitleContaining(title, pageable);
+            return new BoardListResponseDto(searchList);
+        } else if (content != null) {
+            Page<Board> searchList = boardRepository.findBoardByContentContaining(content, pageable);
+            return new BoardListResponseDto(searchList);
+        }
+        Page<Board> searchList = boardRepository.findBoardByNickname(nickname, pageable);
+        return new BoardListResponseDto(searchList);
+
+    }
+
+//    public BoardListResponseDto searchBoardByContent(int page, String content) {
+//        Sort.Order searchOrder = Sort.Order.desc("id");
+//        Pageable pageable = PageRequest.of(page, 20, Sort.by(searchOrder));
+//        Page<Board> searchList = boardRepository.findBoardByTitleContaining(content, pageable);
+//        return new BoardListResponseDto(searchList);
+//    }
+
+
 }

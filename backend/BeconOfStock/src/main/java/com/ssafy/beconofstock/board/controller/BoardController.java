@@ -207,10 +207,21 @@ public class BoardController {
         @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
     })
     @GetMapping("/dibs")
-    public ResponseEntity<?> getBoardDibsList(@ApiParam(name = "page", defaultValue = "0") @RequestParam int page, @AuthenticationPrincipal OAuth2UserImpl user) {
+    public ResponseEntity<?> getBoardDibsList(@ApiParam(name = "page", value = "조회할 페이지", defaultValue = "0") @RequestParam int page, @AuthenticationPrincipal OAuth2UserImpl user) {
 //        List<CommentResponseDto> dibsList = boardService.getBoardDibsList(user);
         BoardListResponseDto dibsList = boardService.getBoardDibsList(page, user);
         return new ResponseEntity<>(dibsList, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "게시판 검색", notes = "입력한 단어가 제목, 내용, 작성자 중 선택한 조건에 들어있는 글을 검색합니다")
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBoardByTitle(
+        @ApiParam(name = "page", value = "조회할 페이지", defaultValue = "0") @RequestParam int page,
+        @ApiParam(name = "title", value = "제목 검색할 단어") @RequestParam(required = false) String title,
+        @ApiParam(name = "content", value = "내용 검색할 단어") @RequestParam(required = false) String content,
+        @ApiParam(name = "nickname", value = "닉네임 검색할 단어") @RequestParam(required = false) String nickname) {
+        BoardListResponseDto searchList = boardService.searchBoard(page, title, content, nickname);
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
     }
 
 
