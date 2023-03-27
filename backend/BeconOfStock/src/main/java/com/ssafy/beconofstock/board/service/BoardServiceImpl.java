@@ -51,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
             .commentNum(0L)
             .build();
 
-        return new BoardResponseDto(boardRepository.save(newBoard));
+        return new BoardResponseDto(boardRepository.save(newBoard), false);
     }
 
     public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
@@ -66,10 +66,12 @@ public class BoardServiceImpl implements BoardService {
         return new BoardListResponseDto(boardList);
     }
 
-    public BoardResponseDto getBoardDetail(Long boardId) {
+    public BoardResponseDto getBoardDetail(Long boardId, OAuth2UserImpl user) {
+        Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
+        Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
-        return new BoardResponseDto(boardRepository.save(board));
+        return new BoardResponseDto(boardRepository.save(board), likeStatus);
     }
 
     // 글 삭제
@@ -101,7 +103,9 @@ public class BoardServiceImpl implements BoardService {
             board.setContent(updateBoard.getContent());
         }
 
-        return new BoardResponseDto(boardRepository.save(board));
+        Board newBoard = boardRepository.save(board);
+
+        return new BoardResponseDto(newBoard, boardLikeRepository.existsByBoardAndMember(newBoard, user.getMember()));
     }
 
     // 댓글 목록 전체 조회

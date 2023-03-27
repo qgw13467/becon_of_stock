@@ -74,8 +74,8 @@ public class BoardController {
         @ApiResponse(code=200, message = "성공입니다", response = BoardResponseDto.class)
     })
     @GetMapping("/{boardId}")
-    public ResponseEntity<?> getBoardDetail(@PathVariable Long boardId) {
-        BoardResponseDto boardDetail = boardService.getBoardDetail(boardId);
+    public ResponseEntity<?> getBoardDetail(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        BoardResponseDto boardDetail = boardService.getBoardDetail(boardId, user);
         return new ResponseEntity<>(boardDetail, HttpStatus.OK);
     }
 
@@ -182,8 +182,12 @@ public class BoardController {
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "좋아요 상태 변경", notes = "좋아요 추가/삭제 상태로 변경합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다")
+    })
     @PostMapping("/boards/likes/{boardId}")
-    public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, OAuth2UserImpl user) {
+    public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
         boardService.updateLike(boardId, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
