@@ -7,9 +7,11 @@ import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
 import com.ssafy.beconofstock.board.entity.Board;
+import com.ssafy.beconofstock.board.entity.BoardDibs;
 import com.ssafy.beconofstock.board.entity.BoardLike;
 import com.ssafy.beconofstock.board.entity.Comment;
 import com.ssafy.beconofstock.board.entity.CommentRel;
+import com.ssafy.beconofstock.board.repository.BoardDibsRepository;
 import com.ssafy.beconofstock.board.repository.BoardLikeRepository;
 import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
@@ -36,6 +38,7 @@ public class BoardServiceImpl implements BoardService {
     private final CommentRepository commentRepository;
     private final CommentRelRepository commentRelRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final BoardDibsRepository boardDibsRepository;
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -253,6 +256,21 @@ public class BoardServiceImpl implements BoardService {
             boardLikeRepository.save(like);
             board.increaseLikeNum();
             boardRepository.save(board);
+        }
+    }
+
+    @Transactional
+    public void updateDibs(Long boardId, OAuth2UserImpl user) {
+        Board board = boardRepository.findById(boardId).orElse(null);
+        Member member = user.getMember();
+        if (boardDibsRepository.existsByBoardAndMember(board, member)) {
+            boardDibsRepository.deleteByBoardAndMember(board, member);
+        } else {
+            BoardDibs dibs = BoardDibs.builder()
+                .board(board)
+                .member(member)
+                .build();
+            boardDibsRepository.save(dibs);
         }
     }
 }

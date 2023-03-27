@@ -184,11 +184,21 @@ public class BoardController {
 
     @ApiOperation(value = "좋아요 상태 변경", notes = "좋아요 추가/삭제 상태로 변경합니다.")
     @ApiResponses({
-        @ApiResponse(code = 201, message = "성공입니다")
+        @ApiResponse(code = 201, message = "성공입니다.")
     })
     @PostMapping("/boards/likes/{boardId}")
     public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
         boardService.updateLike(boardId, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "게시글 찜하기", notes = "게시글을 찜 등록/해제 상태로 변경합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다.")
+    })
+    @PostMapping("/boards/dibs/{boardId}")
+    public ResponseEntity<HttpStatus> updateDibs(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        boardService.updateDibs(boardId, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
