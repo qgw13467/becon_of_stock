@@ -1,7 +1,6 @@
 import React from 'react';
 
 import BasicSettings from './BasicSetting/BasicSettings';
-import Factor from './Factor/Factor';
 import FactorSettings from './Factor/FactorSettings';
 import SelectedItems from './Factor/SelectedItems';
 
@@ -21,18 +20,15 @@ const BacktestMain = () => {
           />
         </div>
         <main className='h-[80vh] flex place-content-around items-center mx-[5%]'>
-          <section className='relative inline-block w-[29%] h-full border'>
+          <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
             <BasicSettings />
           </section>
-          <section className='relative inline-block w-[63%] h-full border'>
-            <Factor />
-          </section>
-          {/* <section className="relative inline-block w-[29%] h-full border">
+          <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
             <FactorSettings />
           </section>
-          <section className="relative inline-block w-[29%] h-full border">
+          <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
             <SelectedItems />
-          </section> */}
+          </section>
         </main>
       </form>
     </React.Fragment>
