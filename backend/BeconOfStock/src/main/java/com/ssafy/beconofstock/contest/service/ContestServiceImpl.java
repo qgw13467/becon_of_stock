@@ -6,6 +6,9 @@ import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.repository.ContestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,14 +28,21 @@ public class ContestServiceImpl implements ContestService {
                 .description(contestReq.getDescription())
                 .content(contestReq.getContent())
                 .type(0L)
+                .start_date_time(contestReq.getStart_date_time())
+                .end_date_time(contestReq.getEnd_date_time())
                 .build();
         return new ContestResponseDto(contestRepo.save(contest));
     }
 
     @Override
-    public List<ContestResponseDto> getContestAllList() {
-        List<Contest> contestList = contestRepo.findAll();
-        return contestList.stream().map(ContestResponseDto::new).collect(Collectors.toList());
+    public Page<ContestResponseDto> getContestAllList(Pageable pageable) {
+        Page<Contest> contest = contestRepo.findAll(pageable);
+
+        PageImpl<ContestResponseDto> result = new PageImpl<>(
+                contest.stream().map(ContestResponseDto::new).collect(Collectors.toList()),
+                pageable,
+                contest.getTotalPages());
+        return result;
     }
 
     @Override
