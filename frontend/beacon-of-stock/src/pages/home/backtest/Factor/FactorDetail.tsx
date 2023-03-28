@@ -23,7 +23,7 @@ const FactorDetail = (props: Props) => {
   const factorSelectedHandler = () => {
     setFactorSelected(!factorSelected);
     if (!factorSelected) {
-      backtestFactor.addIndicator(props.id);
+      backtestFactor.addIndicator(props.id, props.title);
     } else if (factorSelected) {
       backtestFactor.removeIndicator(props.id);
     }
