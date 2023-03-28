@@ -4,6 +4,8 @@ import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.contest.dto.ContestRequestDto;
 import com.ssafy.beconofstock.contest.dto.ContestResponseDto;
 import com.ssafy.beconofstock.contest.entity.Contest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,11 +18,13 @@ public interface ContestService {
      */
     ContestResponseDto createContest(ContestRequestDto contestReq);
 
-    /**
-     * 대회 리스트 가져오기
-     * @return ContestResponseDto
-     */
-    List<ContestResponseDto> getContestAllList();
+//    /**
+//     * 대회 리스트 가져오기
+//     * @return ContestResponseDto
+//     */
+//    List<ContestResponseDto> getContestAllList();
+
+    Page<ContestResponseDto> getContestAllList(Pageable pageable);
 
     /**
      * 대회 상세정보
