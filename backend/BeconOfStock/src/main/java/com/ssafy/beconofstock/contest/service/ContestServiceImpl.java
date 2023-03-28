@@ -68,6 +68,10 @@ public class ContestServiceImpl implements ContestService {
         contest.setTitle(contestReq.getTitle());
         contest.setContent(contestReq.getContent());
         contest.setDescription(contestReq.getDescription());
+        contest.setStart_date_time(contestReq.getStart_date_time());
+        contest.setEnd_date_time(contestReq.getEnd_date_time());
         return new ContestResponseDto(contestRepo.save(contest));
     }
+
+
 }
