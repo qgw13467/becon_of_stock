@@ -12,10 +12,7 @@ import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -237,6 +234,8 @@ public class BacktestServiceImpl implements BacktestService {
         return trades;
     }
 
+
+
     //각 지표별 값 계산
     //TODO
     private Trade calcTradeIndicator(Trade trade, Trade next, Indicator indicator) {
@@ -342,5 +341,29 @@ public class BacktestServiceImpl implements BacktestService {
         }
     }
 
+    private Comparator<Trade> sortByIndicator(Indicator indicator) {
+        switch (indicator.getTitle()) {
+            case "pricePER":
+                return Comparator.comparing(Trade::getPricePER);
+            case "pricePBR":
+                return Comparator.comparing(Trade::getPricePBR);
+            case "pricePSR":
+                return Comparator.comparing(Trade::getPricePSR);
+            case "pricePOR":
+                return Comparator.comparing(Trade::getPricePOR);
+            case "qualityROE":
+                return Comparator.comparing(Trade::getQualityROE).reversed();
+            case "qualityROA":
+                return Comparator.comparing(Trade::getQualityROA).reversed();
+            case "growth3MonthTake":
+                return Comparator.comparing(Trade::getGrowth3MonthTake).reversed();
+            case "growth3MonthOperatingProfit":
+                return Comparator.comparing(Trade::getGrowth3MonthOperatingProfit).reversed();
+            case "growth3MonthNetProfit":
+                return Comparator.comparing(Trade::getGrowth3MonthNetProfit).reversed();
+            default:
+                return Comparator.comparing(Trade::getRanking);
+        }
 
+    }
 }
