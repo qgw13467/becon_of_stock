@@ -366,4 +366,51 @@ public class BacktestServiceImpl implements BacktestService {
         }
 
     }
+
+    // TODO : 새로운 지표 ranking 갱신
+    private void calSumTradesIndicator(List<Trade> trades, Indicator indicator) {
+
+        int idx = 0;
+        switch (indicator.getTitle()) {
+            case "pricePER":
+                for (int i = 0; i < trades.size(); i++) {
+                    if (trades.get(i).getPricePER() > 0) {
+                        idx = i;
+                        break;
+                    }
+                }
+                break;
+            case "pricePBR":
+                for (int i = 0; i < trades.size(); i++) {
+                    if (trades.get(i).getPricePBR() > 0) {
+                        idx = i;
+                        break;
+                    }
+                }
+                break;
+            case "pricePSR":
+                for (int i = 0; i < trades.size(); i++) {
+                    if (trades.get(i).getPricePSR() > 0) {
+                        idx = i;
+                        break;
+                    }
+                }
+                break;
+            case "pricePOR":
+                for (int i = 0; i < trades.size(); i++) {
+                    if (trades.get(i).getPricePOR() > 0) {
+                        idx = i;
+                        break;
+                    }
+                }
+                break;
+        }
+
+        for (int i = idx, j = 1; i < trades.size(); i++, j++) {
+            trades.get(i).addRanking(j);
+            trades.get(i).addCnt();
+        }
+
+    }
+
 }
