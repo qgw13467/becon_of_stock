@@ -227,15 +227,6 @@ public class BacktestServiceImpl implements BacktestService {
         return result;
     }
 
-    //리스트의 각 지표 계산 후 정렬
-    //TODO
-    private List<Trade> calcTradesIndicator(List<Trade> trades, Indicator indicator) {
-
-        return trades;
-    }
-
-
-
     //각 지표별 값 계산
     //TODO
     private Trade calcTradeIndicator(Trade trade, Trade next, Indicator indicator) {
@@ -341,30 +332,17 @@ public class BacktestServiceImpl implements BacktestService {
         }
     }
 
-    private Comparator<Trade> sortByIndicator(Indicator indicator) {
-        switch (indicator.getTitle()) {
-            case "pricePER":
-                return Comparator.comparing(Trade::getPricePER);
-            case "pricePBR":
-                return Comparator.comparing(Trade::getPricePBR);
-            case "pricePSR":
-                return Comparator.comparing(Trade::getPricePSR);
-            case "pricePOR":
-                return Comparator.comparing(Trade::getPricePOR);
-            case "qualityROE":
-                return Comparator.comparing(Trade::getQualityROE).reversed();
-            case "qualityROA":
-                return Comparator.comparing(Trade::getQualityROA).reversed();
-            case "growth3MonthTake":
-                return Comparator.comparing(Trade::getGrowth3MonthTake).reversed();
-            case "growth3MonthOperatingProfit":
-                return Comparator.comparing(Trade::getGrowth3MonthOperatingProfit).reversed();
-            case "growth3MonthNetProfit":
-                return Comparator.comparing(Trade::getGrowth3MonthNetProfit).reversed();
-            default:
-                return Comparator.comparing(Trade::getRanking);
-        }
+    // TODO : 각 지표 정렬, 합산 수행
+    private List<Trade> calcTradesIndicator(List<Trade> trades, List<Indicator> indicators, int maxNum) {
 
+        for (Indicator indicator : indicators) {
+            trades.sort(sortByIndicator(indicator));
+            calSumTradesIndicator(trades, indicator);
+        }
+        calAverageRanking(trades);
+        trades.sort(sortByIndicator(new Indicator("ranking")));
+
+        return trades;
     }
 
     // TODO : 모든 지표에 대한 ranking 평균 계산
@@ -420,4 +398,30 @@ public class BacktestServiceImpl implements BacktestService {
 
     }
 
+    // TODO : 지표별 Comparator 리턴
+    private Comparator<Trade> sortByIndicator(Indicator indicator) {
+        switch (indicator.getTitle()) {
+            case "pricePER":
+                return Comparator.comparing(Trade::getPricePER);
+            case "pricePBR":
+                return Comparator.comparing(Trade::getPricePBR);
+            case "pricePSR":
+                return Comparator.comparing(Trade::getPricePSR);
+            case "pricePOR":
+                return Comparator.comparing(Trade::getPricePOR);
+            case "qualityROE":
+                return Comparator.comparing(Trade::getQualityROE).reversed();
+            case "qualityROA":
+                return Comparator.comparing(Trade::getQualityROA).reversed();
+            case "growth3MonthTake":
+                return Comparator.comparing(Trade::getGrowth3MonthTake).reversed();
+            case "growth3MonthOperatingProfit":
+                return Comparator.comparing(Trade::getGrowth3MonthOperatingProfit).reversed();
+            case "growth3MonthNetProfit":
+                return Comparator.comparing(Trade::getGrowth3MonthNetProfit).reversed();
+            default:
+                return Comparator.comparing(Trade::getRanking);
+        }
+
+    }
 }
