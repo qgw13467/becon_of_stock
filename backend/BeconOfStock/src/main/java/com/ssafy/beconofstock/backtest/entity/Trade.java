@@ -45,11 +45,11 @@ public class Trade {
     private Double qualityROE;
     private Double qualityROA;
     private Double growth3MonthTake;
-    private Double growth12MonthTake;
+    private Double growth6MonthTake;
     private Double growth3MonthOperatingProfit;
-    private Double growth12MonthOperatingProfit;
+    private Double growth6MonthOperatingProfit;
     private Double growth3MonthNetProfit;
-    private Double growth12MonthNetProfit;
+    private Double growth6MonthNetProfit;
 
 
     @Transient
