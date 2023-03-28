@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import FactorBasic from './FactorBasic';
+import { useBacktestFactorStore } from '../../../../store/store';
 import axios from 'axios';
 
 const FactorSettings = () => {
+  const backtestFactor = useBacktestFactorStore();
+  console.log(backtestFactor.indicators);
+
+  const resetIndicatorHandler = () => {
+    backtestFactor.resetIndicator();
+  };
+
   type dataType = {
     factors: {
       description: string;
@@ -37,7 +45,15 @@ const FactorSettings = () => {
 
   return (
     <React.Fragment>
-      <p className='text-xl font-KJCbold'>팩터 설정</p>
+      <div className='flex justify-between items-center'>
+        <p className='text-xl font-KJCbold'>팩터 설정</p>
+        <p
+          className='text-sm mr-[5%] cursor-pointer hover:text-[#A47ECF]'
+          onClick={resetIndicatorHandler}
+        >
+          초기화
+        </p>
+      </div>
       <ul>
         {data?.factors.map((factor) => {
           return (
