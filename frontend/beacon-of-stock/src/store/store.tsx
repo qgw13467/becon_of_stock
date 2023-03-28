@@ -18,7 +18,7 @@ export const useLoginStore = create<loginState>((set) => ({
 
 // Backtest
 // standard interface and functions
-export interface Indicator {
+interface Indicator {
   id: number;
   title: string;
 }
