@@ -30,8 +30,7 @@ const removeIndicator = (indicators: number[], id: number): number[] =>
 // zustand implementation
 type backtestFactorStore = {
   indicators: number[];
-  newIndicator: number;
-  addIndicator: () => void;
+  addIndicator: (id: number) => void;
   removeIndicator: (id: number) => void;
   resetIndicator: () => void;
   loadIndicator: (indicators: number[]) => void;
@@ -40,12 +39,10 @@ type backtestFactorStore = {
 // set: mutate the state
 export const useBacktestFactorStore = create<backtestFactorStore>((set) => ({
   indicators: [],
-  newIndicator: 0,
-  addIndicator() {
+  addIndicator(id: number) {
     set((state) => ({
       ...state,
-      indicators: addIndicator(state.indicators, state.newIndicator),
-      newIndicator: 0,
+      indicators: addIndicator(state.indicators, id),
     }));
   },
   removeIndicator(id: number) {
