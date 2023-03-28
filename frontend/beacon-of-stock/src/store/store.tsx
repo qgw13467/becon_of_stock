@@ -18,31 +18,42 @@ export const useLoginStore = create<loginState>((set) => ({
 
 // Backtest
 // standard interface and functions
+interface Indicator {
+  id: number;
+  title: string;
+}
 
-const addIndicator = (indicators: number[], id: number): number[] => [
+const addIndicator = (
+  indicators: Indicator[],
+  id: number,
+  title: string
+): Indicator[] => [
   ...indicators,
-  id,
+  {
+    id,
+    title,
+  },
 ];
 
-const removeIndicator = (indicators: number[], id: number): number[] =>
-  indicators.filter((indicator) => indicator !== id);
+const removeIndicator = (indicators: Indicator[], id: number): Indicator[] =>
+  indicators.filter((indicator) => indicator.id !== id);
 
 // zustand implementation
 type backtestFactorStore = {
-  indicators: number[];
-  addIndicator: (id: number) => void;
+  indicators: Indicator[];
+  addIndicator: (id: number, title: string) => void;
   removeIndicator: (id: number) => void;
   resetIndicator: () => void;
-  loadIndicator: (indicators: number[]) => void;
+  loadIndicator: (indicators: Indicator[]) => void;
 };
 
 // set: mutate the state
 export const useBacktestFactorStore = create<backtestFactorStore>((set) => ({
   indicators: [],
-  addIndicator(id: number) {
+  addIndicator(id: number, title: string) {
     set((state) => ({
       ...state,
-      indicators: addIndicator(state.indicators, id),
+      indicators: addIndicator(state.indicators, id, title),
     }));
   },
   removeIndicator(id: number) {
@@ -54,7 +65,7 @@ export const useBacktestFactorStore = create<backtestFactorStore>((set) => ({
   resetIndicator() {
     set((state) => ({}));
   },
-  loadIndicator(indicators: number[]) {
+  loadIndicator(indicators: Indicator[]) {
     set((state) => ({
       ...state,
       indicators,
