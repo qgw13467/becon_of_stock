@@ -39,8 +39,16 @@ public interface ContestService {
     /**
      * 대회 type 수정
      * @param contestId
-     * @param contestRes
      * @return
      */
-    ContestResponseDto typeUpdateContest(Long contestId, ContestResponseDto contestRes);
+    ContestResponseDto typeUpdateContest(Long contestId);
+
+    /**
+     * 대회 내용 제목 등 수정
+     * @param contestId
+     * @param contestReq
+     * @return
+     */
+    ContestResponseDto updateContest(Long contestId, ContestRequestDto contestReq);
+    
 }

@@ -46,11 +46,18 @@ public class ContestServiceImpl implements ContestService {
     }
 
     @Override
-    public ContestResponseDto typeUpdateContest(Long contestId, ContestResponseDto contestRes) {
+    public ContestResponseDto typeUpdateContest(Long contestId) {
         Contest contest = contestRepo.findById(contestId).orElse(null);
-        if (contestRes.getType() == 0) {
-            contest.setType(1L);
-        }
+        contest.setType(1L);
+        return new ContestResponseDto(contestRepo.save(contest));
+    }
+
+    @Override
+    public ContestResponseDto updateContest(Long contestId, ContestRequestDto contestReq) {
+        Contest contest = contestRepo.findById(contestId).orElse(null);
+        contest.setTitle(contestReq.getTitle());
+        contest.setContent(contestReq.getContent());
+        contest.setDescription(contestReq.getDescription());
         return new ContestResponseDto(contestRepo.save(contest));
     }
 }
