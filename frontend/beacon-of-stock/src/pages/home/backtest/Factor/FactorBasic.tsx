@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Factor from './Factor';
 import FactorDetail from './FactorDetail';
 
 import dropdownImg from '../../../../assets/img/down-arrow.png';
