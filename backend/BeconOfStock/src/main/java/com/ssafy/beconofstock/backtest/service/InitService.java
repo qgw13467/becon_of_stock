@@ -14,11 +14,15 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        backtestService.preprocess(2009,1);
+
+        for (Integer year = 2009; year <= 2015; year++) {
+//            backtestService.mappingTradeFinance(year);
+//            backtestService.preprocess(year);
+        }
+
+//        backtestService.preprocess(2012);
 
     }
-
-
 
 
 }
