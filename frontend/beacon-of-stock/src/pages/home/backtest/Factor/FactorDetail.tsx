@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useBacktestFactorStore } from '../../../../store/store';
 
 import question from '../../../../assets/img/question.png';
 import checkboxBlank from '../../../../assets/img/checkbox-blank.png';
@@ -12,11 +13,20 @@ interface Props {
 }
 
 const FactorDetail = (props: Props) => {
+  const backtestFactor = useBacktestFactorStore();
+  // console.log(backtestFactor.indicators);
+  // console.log(props.id);
+
   const [factorSelected, setFactorSelected] = useState<boolean>(false);
   const [showDescription, setShowDescription] = useState<boolean>(false);
 
   const factorSelectedHandler = () => {
     setFactorSelected(!factorSelected);
+    if (!factorSelected) {
+      backtestFactor.addIndicator(props.id);
+    } else if (factorSelected) {
+      backtestFactor.removeIndicator(props.id);
+    }
   };
 
   const mouseEnterHandler = () => {
