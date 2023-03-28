@@ -1,23 +1,21 @@
 package com.ssafy.beconofstock.backtest.service;
 
-import com.fasterxml.jackson.core.sym.Name1;
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
+
 import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
 import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.entity.Finance;
 import com.ssafy.beconofstock.backtest.entity.Trade;
 import com.ssafy.beconofstock.backtest.repository.FinanceRepository;
 import com.ssafy.beconofstock.backtest.repository.TradeRepository;
-import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.channels.NonWritableChannelException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -82,10 +80,15 @@ public class BacktestServiceImpl implements BacktestService {
 
             List<Trade> temp = tradeRepository.findByYearAndMonthFetch(year, month);
             month12trades.put(month, temp);
+        }
+        //12월의 다음달
+        List<Trade> temp = tradeRepository.findByYearAndMonthFetch(year+1, 1);
+        month12trades.put(13, temp);
 
-            List<Trade> oneYearLater = tradeRepository.findByYearAndMonthFetch(year + 1, month);
-            month12trades.put(month + 12, oneYearLater);
-
+        //6개월 전의 trade 가져오기
+        for (Integer month = 7; month <= 12; month++) {
+            List<Trade> month6Before = tradeRepository.findByYearAndMonthFetch(year - 1, month);
+            month12trades.put(month - 12, month6Before);
         }
 
         //1년간
@@ -102,11 +105,11 @@ public class BacktestServiceImpl implements BacktestService {
                 //다음달 같은 회사의 거래를 찾아
                 Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
 
-                List<Trade> next3MonthTrades = month12trades.get(month + 3);
-                Trade next3MonthTrade = findByCorcode(trade.getCorcode(), next3MonthTrades);
+                List<Trade> befor3MonthTrades = month12trades.get(month - 3);
+                Trade next3MonthTrade = findByCorcode(trade.getCorcode(), befor3MonthTrades);
 
-                List<Trade> next12MonthTrades = month12trades.get(month + 12);
-                Trade next12MonthTrade = findByCorcode(trade.getCorcode(), next12MonthTrades);
+                List<Trade> befor6MonthTrades = month12trades.get(month - 6);
+                Trade before6MonthTrade = findByCorcode(trade.getCorcode(), befor6MonthTrades);
 
                 for (Indicator indicator : indicators) {
                     int indicatorType = getGrowthByTitle(indicator.getTitle());
@@ -118,17 +121,6 @@ public class BacktestServiceImpl implements BacktestService {
                             if (next3MonthTrade == null) {
                                 continue;
                             }
-                            //사용할 연도
-//                            Integer userYear = year;
-                            //지금이 4분기면 연도 +1
-//                            if (10 <= month && month <= 12) {
-//                                userYear += 1;
-//                            }
-                            //다음 분기에서 찾아야할 3개월 리스트
-//                            List<Integer> months = getMonths(month + 3);
-
-//                            Optional<Finance> finance = financeRepository.findByRptYearAndRptMonthAndCorName(userYear, months, trade.getCorname());
-
 
                             //각 거래에서 재무가 not null을 확인하고
                             if (trade.getFinance() == null || next3MonthTrade.getFinance() == null) {
@@ -139,23 +131,19 @@ public class BacktestServiceImpl implements BacktestService {
 
 
                         } else {
-                            //단위가 12개월이면
+                            //단위가 6개월이면
 
-                            //12개월 후의 거래가 널인지 확인하고
-                            if (next12MonthTrade == null) {
+                            //6개월 후의 거래가 널인지 확인하고
+                            if (before6MonthTrade == null) {
                                 continue;
                             }
 
-//                        찾아야할 3개월 리스트
-//                        List<Integer> months = getMonths(month);
-//                        1년후의 재무 검색
-//                        Optional<Finance> finance = financeRepository.findByRptYearAndRptMonthAndCorName(year + 1, months, trade.getCorname());
                             //각 거래에서 재무가 not null을 확인하고
-                            if (trade.getFinance() == null || next12MonthTrade.getFinance() == null) {
+                            if (trade.getFinance() == null || before6MonthTrade.getFinance() == null) {
                                 continue;
                             }
-                            //12개월후와 비교후 저장
-                            trade = calcGrowth(trade, next12MonthTrade.getFinance(), indicator);
+                            //6개월전과 비교후 저장
+                            trade = calcGrowth(trade, before6MonthTrade.getFinance(), indicator);
 
                         }
                         continue;
@@ -183,9 +171,9 @@ public class BacktestServiceImpl implements BacktestService {
             case "growth3MonthOperatingProfit":
             case "growth3MonthNetProfit":
                 return 1;
-            case "growth12MonthOperatingProfit":
-            case "growth12MonthTake":
-            case "growth12MonthNetProfit":
+            case "growth6MonthOperatingProfit":
+            case "growth6MonthTake":
+            case "growth6MonthNetProfit":
                 return 2;
             default:
                 return 0;
@@ -295,46 +283,40 @@ public class BacktestServiceImpl implements BacktestService {
         Integer won = trade.getFinance().getWon();
 
         Long totalAssets, operatingRevenue, operatingProfit, totalCapital;
-        Long nextNetProfit, nextOperatingRevenue, nextOperatingProfit, netProfit;
-        Integer nextWon = finance.getWon();
+        Long beforeNetProfit, beforeOperatingRevenue, beforeOperatingProfit, netProfit;
+        Integer beforeWon = finance.getWon();
         switch (indicator.getTitle()) {
             case "growth3MonthTake":
                 operatingRevenue = trade.getFinance().getOperatingRevenue();
-                nextOperatingRevenue = finance.getOperatingRevenue();
-                trade.setGrowth3MonthTake(getBiggerGoodIndicatorMultipleWon(
-                        nextOperatingRevenue, nextWon, operatingRevenue, won));
+                beforeOperatingRevenue = finance.getOperatingRevenue();
+                trade.setGrowth3MonthTake(getBiggerGoodIndicatorMultipleWon(operatingRevenue, won, beforeOperatingRevenue, beforeWon));
                 return trade;
-            case "growth12MonthTake":
+            case "growth6MonthTake":
                 operatingRevenue = trade.getFinance().getOperatingRevenue();
-                nextOperatingRevenue = finance.getOperatingRevenue();
-                trade.setGrowth12MonthTake(getBiggerGoodIndicatorMultipleWon(
-                        nextOperatingRevenue, nextWon, operatingRevenue, won));
+                beforeOperatingRevenue = finance.getOperatingRevenue();
+                trade.setGrowth6MonthTake(getBiggerGoodIndicatorMultipleWon(operatingRevenue, won, beforeOperatingRevenue, beforeWon));
                 return trade;
 
             case "growth3MonthOperatingProfit":
                 operatingProfit = trade.getFinance().getOperatingProfit();
-                nextOperatingProfit = finance.getOperatingProfit();
-                trade.setGrowth3MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(
-                        nextOperatingProfit, nextWon, operatingProfit, won));
+                beforeOperatingProfit = finance.getOperatingProfit();
+                trade.setGrowth3MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(operatingProfit, won, beforeOperatingProfit, beforeWon));
                 return trade;
-            case "growth12MonthOperatingProfit":
+            case "growth6MonthOperatingProfit":
                 operatingProfit = trade.getFinance().getOperatingProfit();
-                nextOperatingProfit = finance.getOperatingProfit();
-                trade.setGrowth12MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(
-                        nextOperatingProfit, nextWon, operatingProfit, won));
+                beforeOperatingProfit = finance.getOperatingProfit();
+                trade.setGrowth6MonthOperatingProfit(getBiggerGoodIndicatorMultipleWon(operatingProfit, won, beforeOperatingProfit, beforeWon));
                 return trade;
 
             case "growth3MonthNetProfit":
                 netProfit = trade.getFinance().getNetProfit();
-                nextNetProfit = finance.getNetProfit();
-                trade.setGrowth3MonthNetProfit(getBiggerGoodIndicatorMultipleWon(
-                        nextNetProfit, nextWon, netProfit, won));
+                beforeNetProfit = finance.getNetProfit();
+                trade.setGrowth3MonthNetProfit(getBiggerGoodIndicatorMultipleWon(netProfit, won, beforeNetProfit, beforeWon));
                 return trade;
-            case "growth12MonthNetProfit":
+            case "growth6MonthNetProfit":
                 netProfit = trade.getFinance().getNetProfit();
-                nextNetProfit = finance.getNetProfit();
-                trade.setGrowth12MonthNetProfit(getBiggerGoodIndicatorMultipleWon(
-                        nextNetProfit, nextWon, netProfit, won));
+                beforeNetProfit = finance.getNetProfit();
+                trade.setGrowth6MonthNetProfit(getBiggerGoodIndicatorMultipleWon(netProfit, won, beforeNetProfit, beforeWon));
                 return trade;
 
 
@@ -354,7 +336,7 @@ public class BacktestServiceImpl implements BacktestService {
     //높은게 좋은 지표에서 쓰이는 단위계산
     private Double getBiggerGoodIndicatorMultipleWon(Long upper, Integer upperMuli, Long lower, Integer lowwerMulit) {
         if (lower == null || lower == 0 || upperMuli == 0 || lowwerMulit == 0) {
-            return 0D;
+            return -99D;
         } else {
             return 1.0 * (upper * upperMuli) / (lower * lowwerMulit);
         }
