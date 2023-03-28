@@ -5,15 +5,15 @@ import SelectIndustryBackground from './SelectIndustryBackground';
 const BasicSettings = () => {
   const [basicSettings, setBasicSettings] = useState({
     // 산업
-    industry: '선택',
+    industries: '선택',
     // 거래비용
-    tradeCost: '0',
+    fee: '0',
     // 최대 종목 수
-    maxNum: '10',
+    maxStocks: '10',
     // 리밸런싱 주기
     rebalance: '3개월',
     // 정렬 기준
-    sort: '시가총액 높은 순',
+    backtestSortType: '시가총액 높은 순',
     // 정렬 기준 값
     sortRatio: '20',
     // 시작 시점
@@ -23,11 +23,11 @@ const BasicSettings = () => {
   });
 
   const {
-    industry,
-    tradeCost,
-    maxNum,
+    industries,
+    fee,
+    maxStocks,
     rebalance,
-    sort,
+    backtestSortType,
     sortRatio,
     start,
     end,
@@ -42,11 +42,9 @@ const BasicSettings = () => {
   };
 
   // 산업
-  // const [industry, setIndustry] = useState<string>("선택");
+  // const [industries, setIndustry] = useState<string>("선택");
   // 거래비용
-  const tradeCostChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const feeChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     // 입력값에서 숫자와 소수점 이외의 문자를 모두 제거
     // console.log(event.target.value);
     // console.log(event.target.value.replace(/[^\d.]/g, ''));
@@ -72,7 +70,7 @@ const BasicSettings = () => {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          tradeCost: '0',
+          fee: '0',
         };
       });
     } else if (
@@ -84,7 +82,7 @@ const BasicSettings = () => {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          tradeCost: newVal,
+          fee: newVal,
         };
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
@@ -92,13 +90,15 @@ const BasicSettings = () => {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          tradeCost: newVal,
+          fee: newVal,
         };
       });
     }
   };
   // 최대 종목 수
-  const maxNumChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const maxStocksChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     // console.log(event.target.value);
     // 숫자만 보이도록 정규식 작성
     // console.log(event.target.value.replace(/[^0-9]/g, ''));
@@ -107,14 +107,14 @@ const BasicSettings = () => {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          maxNum: '0',
+          maxStocks: '0',
         };
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 30) {
       setBasicSettings((prevState) => {
         return {
           ...prevState,
-          maxNum: String(parseFloat(newVal)),
+          maxStocks: String(parseFloat(newVal)),
         };
       });
     }
@@ -132,11 +132,13 @@ const BasicSettings = () => {
     });
   };
   // 정렬 기준
-  const sortChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const backtestSortTypeChangeHandler = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     // value 값
     // console.log(event.target.value);
     setBasicSettings((prevState) => {
-      return { ...prevState, sort: event.target.value };
+      return { ...prevState, backtestSortType: event.target.value };
     });
   };
   // 정렬 기준 값
@@ -184,12 +186,12 @@ const BasicSettings = () => {
       {/* <div className='flex flex-col justify-center mx-[5%]'> */}
       <div className='flex flex-col justify-center mx-[5%]'>
         <div className='my-1'>
-          <label htmlFor='industry'>산업</label>
+          <label htmlFor='industries'>산업</label>
           <div className='border rounded-xl'>
             <input
               type='button'
-              id='industry'
-              defaultValue={industry}
+              id='industries'
+              defaultValue={industries}
               onClick={showIndustryHandler}
               className='flex m-1 w-[95%] text-sm'
             />
@@ -204,13 +206,13 @@ const BasicSettings = () => {
         </div>
 
         <div className='my-1'>
-          <label htmlFor='tradeCost'>거래비용</label>
+          <label htmlFor='fee'>거래비용</label>
           <div className='flex items-center border flex-between rounded-xl'>
             <input
               type='text'
-              id='tradeCost'
-              onChange={tradeCostChangeHandler}
-              value={tradeCost}
+              id='fee'
+              onChange={feeChangeHandler}
+              value={fee}
               className='flex m-1 w-[95%] text-sm'
             />
             <p className='mr-[3%] text-sm'>%</p>
@@ -218,13 +220,13 @@ const BasicSettings = () => {
         </div>
 
         <div className='my-1'>
-          <label htmlFor='maxNum'>최대 종목 수 (max 30)</label>
+          <label htmlFor='maxStocks'>최대 종목 수 (max 30)</label>
           <div className='border rounded-xl'>
             <input
               type='text'
-              id='maxNum'
-              value={maxNum}
-              onChange={maxNumChangeHandler}
+              id='maxStocks'
+              value={maxStocks}
+              onChange={maxStocksChangeHandler}
               className='flex m-1 w-[95%] text-sm'
             />
           </div>
@@ -248,14 +250,14 @@ const BasicSettings = () => {
         </div>
 
         <div className='my-1'>
-          <label htmlFor='sort'>정렬 기준</label>
+          <label htmlFor='backtestSortType'>정렬 기준</label>
           <div className='flex justify-between'>
             <div className='border rounded-xl w-[60%]'>
               <select
-                name='sort'
-                id='sort'
-                value={sort}
-                onChange={sortChangeHandler}
+                name='backtestSortType'
+                id='backtestSortType'
+                value={backtestSortType}
+                onChange={backtestSortTypeChangeHandler}
                 className='flex m-1 w-[95%] text-sm'
               >
                 <option value='시가총액 높은 순'>시가총액 높은 순</option>
