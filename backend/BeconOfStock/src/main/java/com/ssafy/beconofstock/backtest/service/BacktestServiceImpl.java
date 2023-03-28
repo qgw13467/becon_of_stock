@@ -367,6 +367,13 @@ public class BacktestServiceImpl implements BacktestService {
 
     }
 
+    // TODO : 모든 지표에 대한 ranking 평균 계산
+    private void calAverageRanking(List<Trade> trades) {
+        for (Trade trade : trades) {
+            trade.setRanking(trade.getRanking() / trade.getCnt());
+        }
+    }
+
     // TODO : 새로운 지표 ranking 갱신
     private void calSumTradesIndicator(List<Trade> trades, Indicator indicator) {
 
