@@ -74,7 +74,7 @@ public class TestUtil {
                 .contest(contest)
                 .strategy(strategy)
                 .ranking(1L)
-                .participateDateTime(LocalDateTime.now())
+//                .participateDateTime(LocalDateTime.now())
                 .build();
     }
 
