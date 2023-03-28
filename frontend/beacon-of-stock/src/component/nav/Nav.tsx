@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginStore } from '../../store/store';
 import { MyProfile } from '../../pages/profile/MyProfile';
+import { ProfileBox } from './ProfileBox';
 
 const Nav: FC = () => {
   // const navigate = useNavigate()
@@ -34,28 +35,34 @@ const Nav: FC = () => {
   }, [isOpen]);
 
   return (
-    <nav className='flex justify-between mx-10 cursor-pointer'>
+    <nav className='flex justify-between mx-10'>
       <div>
         <Link to='/'>
           <img src={logo} alt='logo' className='w-[60px] h-[60px]' />
         </Link>
       </div>
-      <div className='flex space-x-20'>
+      <div className='flex sm:space-x-20 space-x-8'>
         {isLogin ? (
           <>
             <div className='m-auto'>
               <Link to='/'>
-                <p className='text-lg font-KJCbold'>튜토리얼</p>
+                <p className='text-lg font-KJCbold inline cursor-pointer'>
+                  튜토리얼
+                </p>
               </Link>
             </div>
             <div className='m-auto'>
               <Link to='/'>
-                <p className='text-lg font-KJCbold'>백테스트</p>
+                <p className='text-lg font-KJCbold inline cursor-pointer'>
+                  백테스트
+                </p>
               </Link>
             </div>
             <div className='m-auto'>
               <Link to='/community/dibs'>
-                <p className='text-lg font-KJCbold'>커뮤니티</p>
+                <p className='text-lg font-KJCbold inline cursor-pointer'>
+                  커뮤니티
+                </p>
               </Link>
             </div>
             {/* 로그인 상태에서 프로필 이미지 들어오는 곳 */}
@@ -67,37 +74,27 @@ const Nav: FC = () => {
               <img
                 src={emptyImg}
                 alt='emptyImg'
-                className='w-[40px] h-[40px] rounded-full'
+                className='w-[40px] h-[40px] rounded-full cursor-pointer'
               />
-              {isOpen ? (
-                <div
-                  className='absolute border-2 border-black w-[150px] h-[180px] right-6 top-16 grid content-around bg-[#fefefe] rounded-lg z-50'
-                  // onClick={modalCloseHandler}
-                >
-                  <Link to='/myProfile' className='text-center'>
-                    내 정보
-                  </Link>
-                  <Link to='/strategy' className='text-center'>
-                    내 전략조회
-                  </Link>
-                  <p className='text-center'>북마크</p>
-                  <p className='text-center text-[#DE2727]'>로그아웃</p>
-                </div>
-              ) : null}
+              {isOpen && <ProfileBox />}
             </div>
           </>
         ) : (
           <>
-            <div className='m-auto'>
+            <article className='m-auto'>
               <Link to='/login'>
-                <p className='text-lg font-KJCbold'>회원가입</p>
+                <p className='text-lg font-KJCbold inline cursor-pointer'>
+                  회원가입
+                </p>
               </Link>
-            </div>
-            <div className='m-auto'>
+            </article>
+            <article className='m-auto'>
               <Link to='/login'>
-                <p className='text-lg font-KJCbold'>로그인</p>
+                <p className='text-lg font-KJCbold inline cursor-pointer'>
+                  로그인
+                </p>
               </Link>
-            </div>
+            </article>
           </>
         )}
       </div>
