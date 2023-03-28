@@ -90,24 +90,32 @@ public class BacktestServiceImpl implements BacktestService {
 
         //1년간
         for (Integer month = 1; month <= 12; month++) {
-            //모은 지표에 대해
-            for (Indicator indicator : indicators) {
-                //각 달의 거래를 가져와
-                List<Trade> trades = month12trades.get(month);
-                //지표의 타입을 확인하고
-                Integer indicatorType = getGrowthByTitle(indicator.getTitle());
-                //growth계열의 지표이면
-                if (indicatorType != 0) {
-                    //단위가 3개월이면,
-                    if (indicatorType == 1) {
-//                        3개월 후의 거래르 가져와서
-                        List<Trade> next3MonthTrades = month12trades.get(month + 3);
 
-                        //각 거래에 대해
-                        for (Trade trade : trades) {
-//                            같은 회사의 거래를 찾고
-                            Trade next3MonthTrade = findByCorcode(trade.getCorcode(), next3MonthTrades);
-                            if(next3MonthTrade == null){
+            for (Trade trade : month12trades.get(month)) {
+
+                //다음달 거래를 가져와서
+                List<Trade> nextMonthTrades = month12trades.get(month + 1);
+                //각 거래에 대해
+                if (trade.getFinance() == null) {
+                    continue;
+                }
+                //다음달 같은 회사의 거래를 찾아
+                Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
+
+                List<Trade> next3MonthTrades = month12trades.get(month + 3);
+                Trade next3MonthTrade = findByCorcode(trade.getCorcode(), next3MonthTrades);
+
+                List<Trade> next12MonthTrades = month12trades.get(month + 12);
+                Trade next12MonthTrade = findByCorcode(trade.getCorcode(), next12MonthTrades);
+
+                for (Indicator indicator : indicators) {
+                    int indicatorType = getGrowthByTitle(indicator.getTitle());
+                    //growth계열의 지표이면
+                    if (indicatorType != 0) {
+                        //단위가 3개월이면,
+                        if (indicatorType == 1) {
+
+                            if (next3MonthTrade == null) {
                                 continue;
                             }
                             //사용할 연도
@@ -123,57 +131,46 @@ public class BacktestServiceImpl implements BacktestService {
 
 
                             //각 거래에서 재무가 not null을 확인하고
-                            if (trade.getFinance() == null || next3MonthTrade.getFinance() ==null) {
+                            if (trade.getFinance() == null || next3MonthTrade.getFinance() == null) {
                                 continue;
                             }
                             //3개월후와 비교후 저장
                             trade = calcGrowth(trade, next3MonthTrade.getFinance(), indicator);
-                            tradeRepository.save(trade);
 
-                        }
 
-                    }
-                    //단위가 12개월이면
-                    List<Trade> next12MonthTrades = month12trades.get(month + 12);
+                        } else {
+                            //단위가 12개월이면
 
-                    //각 거래에 대해
-                    for (Trade trade : trades) {
-
-//                        같은 회가의 거래를 찾고
-                        Trade next12MonthTrade = findByCorcode(trade.getCorcode(), next12MonthTrades);
-                        if(next12MonthTrade ==null){
-                            continue;
-                        }
+                            //12개월 후의 거래가 널인지 확인하고
+                            if (next12MonthTrade == null) {
+                                continue;
+                            }
 
 //                        찾아야할 3개월 리스트
 //                        List<Integer> months = getMonths(month);
 //                        1년후의 재무 검색
 //                        Optional<Finance> finance = financeRepository.findByRptYearAndRptMonthAndCorName(year + 1, months, trade.getCorname());
-                        //각 거래에서 재무가 not null을 확인하고
-                        if (trade.getFinance() == null || next12MonthTrade.getFinance() == null) {
-                            continue;
-                        }
-                        //3개월후와 비교후 저장
-                        trade = calcGrowth(trade, next12MonthTrade.getFinance(), indicator);
-                        tradeRepository.save(trade);
-                    }
-                    continue;
-                }
+                            //각 거래에서 재무가 not null을 확인하고
+                            if (trade.getFinance() == null || next12MonthTrade.getFinance() == null) {
+                                continue;
+                            }
+                            //12개월후와 비교후 저장
+                            trade = calcGrowth(trade, next12MonthTrade.getFinance(), indicator);
 
-                //다음달 거래를 가져와서
-                List<Trade> nextMonthTrades = month12trades.get(month + 1);
-                //각 거래에 대해
-                for (Trade trade : trades) {
-                    //재무가 not null이면
-                    if (trade.getFinance() == null) {
+                        }
                         continue;
+
                     }
-                    //다음달 같은 회사의 거래를 찾아
-                    Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
+
+//                    지표를 계산해서 trade 변경
                     trade = calcTradeIndicator(trade, nextTrade, indicator);
-                    tradeRepository.save(trade);
+
                 }
+                //trade의 변경이 끝나뭔 쿼리 보냄
+                tradeRepository.save(trade);
+
             }
+
 
         }
 
