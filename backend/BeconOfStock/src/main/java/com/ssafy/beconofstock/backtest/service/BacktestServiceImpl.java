@@ -59,8 +59,24 @@ public class BacktestServiceImpl implements BacktestService {
 
     //샤프지수 계산
     private Double calcSharpe(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
-        List<YearMonth> yearMonths = getRebalanceYearMonth(backtestIndicatorsDto);
+
         Double deviation = getDeviation(changeRate);
+        Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
+        result = 1.0 * result / deviation;
+        return result;
+    }
+
+    //소티노 계산
+    private Double calcSortino(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto){
+        Double nagativeDeviation = getNagativeDeviation(changeRate);
+        Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
+        result = 1.0 * result / nagativeDeviation;
+        return result;
+    }
+
+    //샤프,소티노 공통부분 분리
+    private  Double getRevenueMinusInterest(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto){
+        List<YearMonth> yearMonths = getRebalanceYearMonth(backtestIndicatorsDto);
         List<InterestRate> interestRates =
                 interestRateRepository.findByYearMonthList(
                         backtestIndicatorsDto.getStartYear(),
@@ -71,18 +87,13 @@ public class BacktestServiceImpl implements BacktestService {
         List<Double> interests = new ArrayList<>();
         for (int i = 0; i < changeRate.size(); i++) {
             YearMonth thisYearMonth = yearMonths.get(0);
-
             InterestRate interestRate =
                     getInterestRateByYearMonth(interestRates, thisYearMonth.getYear(), thisYearMonth.getMonth());
-
             interests.add(interestRate.getInterestRate());
         }
-
         Double avgInterest = getAvg(interests);
 
-        Double result = avgRevenue - avgInterest;
-        result = 1.0 * result / deviation;
-        return result;
+        return avgRevenue - avgInterest;
     }
 
     //
@@ -136,6 +147,20 @@ public class BacktestServiceImpl implements BacktestService {
         Double avg = getAvg(list);
         Double sum = 0D;
         for (Double rate : list) {
+            Double temp = rate - avg;
+            sum += temp * temp;
+        }
+        sum = 1.0 * sum / list.size();
+        return Math.sqrt(sum);
+    }
+
+    private Double getNagativeDeviation(List<Double> list){
+        Double avg = getAvg(list);
+        Double sum = 0D;
+        for (Double rate : list) {
+            if(rate>=0){
+                continue;
+            }
             Double temp = rate - avg;
             sum += temp * temp;
         }
