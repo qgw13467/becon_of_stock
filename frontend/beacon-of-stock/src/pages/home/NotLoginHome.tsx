@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const NotLoginHome = () => {
   const beacon = require('../../assets/img/beacon.png');
   return (
-    <div className='bg-gradient-to-t from-indigo-500 via-[#FFE5B2] to-[#FFFFFF] h-[91.4vh] flex justify-center overflow-hidden'>
+    <div className='bg-gradient-to-t from-indigo-500 via-[#FFE5B2] to-[#FFFFFF] h-screen flex justify-center'>
       <div
         id='nlh-div1'
         className='grid content-center lg:ml-48 md:ml-36 sm:ml-24 ml-12'

@@ -7,6 +7,7 @@ import NotLoginHome from './pages/home/NotLoginHome';
 import { Contests } from './component/contests/Contests';
 import { CommunityDibs } from './pages/community/CommunityDibs';
 import Login from './component/login/Login';
+import { Bookmark } from './pages/profile/bookmark/Bookmark';
 import { MyProfile } from './pages/profile/MyProfile';
 import { Strategy } from './pages/profile/strategy/Strategy';
 import { useLoginStore } from './store/store';
@@ -32,6 +33,7 @@ const App = () => {
               </Route>
               <Route path='/myProfile' element={<MyProfile />} />
               <Route path='/strategy' element={<Strategy />} />
+              <Route path='/bookmark' element={<Bookmark />} />
             </>
           ) : (
             <>
