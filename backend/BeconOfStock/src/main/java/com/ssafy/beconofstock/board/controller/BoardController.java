@@ -17,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,9 +45,9 @@ public class BoardController {
     })
     @GetMapping("/")
     public ResponseEntity<?> getBoardList(
-        @ApiParam(name = "페이지", value = "미입력시 0에서 시작", example = "0") @RequestParam(defaultValue = "0") int page,
-        @ApiParam(name = "정렬방향", value = "정렬 내림차순 false, 오름차순 true", example = "false") @RequestParam(defaultValue = "false") Boolean direction,
-        @ApiParam(name = "정렬조건", allowableValues = "boardId, title, hit, likeNum, commentNum", example = "boardId", defaultValue = "boardId") @RequestParam(defaultValue = "id") String property) {
+        @ApiParam(name = "page", value = "페이지 번호. 미입력시 0에서 시작", example = "0") @RequestParam(defaultValue = "0") int page,
+        @ApiParam(name = "direction", value = "정렬방향. 정렬 내림차순 false, 오름차순 true", example = "false") @RequestParam(defaultValue = "false") Boolean direction,
+        @ApiParam(name = "property", value = "정렬조건", allowableValues = "id, title, hit, likeNum, commentNum", example = "id", defaultValue = "id") @RequestParam(defaultValue = "id") String property) {
 //        Page<BoardResponseDto> paging = boardService.getBoardList(page, direction, property);
         BoardListResponseDto paging = boardService.getBoardList(page, direction, property);
         return new ResponseEntity<>(paging, HttpStatus.OK);
@@ -75,8 +74,8 @@ public class BoardController {
         @ApiResponse(code=200, message = "성공입니다", response = BoardResponseDto.class)
     })
     @GetMapping("/{boardId}")
-    public ResponseEntity<?> getBoardDetail(@PathVariable Long boardId) {
-        BoardResponseDto boardDetail = boardService.getBoardDetail(boardId);
+    public ResponseEntity<?> getBoardDetail(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        BoardResponseDto boardDetail = boardService.getBoardDetail(boardId, user);
         return new ResponseEntity<>(boardDetail, HttpStatus.OK);
     }
 
@@ -137,7 +136,7 @@ public class BoardController {
     @PostMapping("/{boardId}/comments")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @RequestBody
         CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
-        CommentResponseDto comment = boardService.createComment(boardId, content, user);
+        List<CommentResponseDto> comment = boardService.createComment(boardId, content, user);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
@@ -176,13 +175,54 @@ public class BoardController {
     })
     @PostMapping("/{boardId}/comments/{parentId}")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @PathVariable Long parentId, @RequestBody CommentRequestDto content, @AuthenticationPrincipal OAuth2UserImpl user) {
-        CommentResponseDto comment = boardService.createComment(boardId, parentId, content, user);
+        List<CommentResponseDto> comment = boardService.createComment(boardId, parentId, content, user);
         if (comment == null) {
             return new ResponseEntity<>("유효하지 않은 요청입니다.", HttpStatus.OK);
         }
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "좋아요 상태 변경", notes = "좋아요 추가/삭제 상태로 변경합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다.")
+    })
+    @PostMapping("/boards/likes/{boardId}")
+    public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        boardService.updateLike(boardId, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "게시글 찜하기", notes = "게시글을 찜 등록/해제 상태로 변경합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "성공입니다.")
+    })
+    @PostMapping("/boards/dibs/{boardId}")
+    public ResponseEntity<HttpStatus> updateDibs(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        boardService.updateDibs(boardId, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "찜 목록 조회", notes = "커뮤니티 게시판 찜 목록을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "성공입니다", response = BoardResponseDto.class)
+    })
+    @GetMapping("/dibs")
+    public ResponseEntity<?> getBoardDibsList(@ApiParam(name = "page", value = "조회할 페이지", defaultValue = "0") @RequestParam int page, @AuthenticationPrincipal OAuth2UserImpl user) {
+//        List<CommentResponseDto> dibsList = boardService.getBoardDibsList(user);
+        BoardListResponseDto dibsList = boardService.getBoardDibsList(page, user);
+        return new ResponseEntity<>(dibsList, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "게시판 검색", notes = "입력한 단어가 제목, 내용, 작성자 중 선택한 조건에 들어있는 글을 검색합니다")
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBoardByTitle(
+        @ApiParam(name = "page", value = "조회할 페이지", defaultValue = "0") @RequestParam int page,
+        @ApiParam(name = "title", value = "제목 검색할 단어") @RequestParam(required = false) String title,
+        @ApiParam(name = "content", value = "내용 검색할 단어") @RequestParam(required = false) String content,
+        @ApiParam(name = "nickname", value = "닉네임 검색할 단어") @RequestParam(required = false) String nickname) {
+        BoardListResponseDto searchList = boardService.searchBoard(page, title, content, nickname);
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
+    }
 
 
 }

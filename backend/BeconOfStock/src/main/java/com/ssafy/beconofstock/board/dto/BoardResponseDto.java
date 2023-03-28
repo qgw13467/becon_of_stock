@@ -29,8 +29,12 @@ public class BoardResponseDto {
     Long commentNum;
     @ApiModelProperty(example = "좋아요 수")
     Long likeNum;
+    @ApiModelProperty(example = "좋아요 상태")
+    Boolean likeStatus;
+    @ApiModelProperty(example = "찜하기 상태")
+    Boolean dibStatus;
 
-    public BoardResponseDto(Board board) {
+    public BoardResponseDto(Board board, Boolean likeStatus, Boolean dibStatus) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
         this.nickname = board.getMember().getNickname();
@@ -40,5 +44,7 @@ public class BoardResponseDto {
         this.strategy = board.getStrategy();
         this.likeNum = board.getLikeNum();
         this.commentNum = board.getCommentNum();
+        this.likeStatus = likeStatus;
+        this.dibStatus = dibStatus;
     }
 }
