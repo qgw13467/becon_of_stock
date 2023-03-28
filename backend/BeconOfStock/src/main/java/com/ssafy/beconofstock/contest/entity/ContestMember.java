@@ -33,7 +33,5 @@ public class ContestMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Strategy strategy;
 
-    private LocalDateTime participateDateTime;
-
     private Long ranking;
 }
