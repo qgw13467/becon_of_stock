@@ -13,9 +13,10 @@ public class Trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Finance finance;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Industry industry;
     private String corcode;
     private String corname;
     private Long corclose;
