@@ -26,7 +26,7 @@ export const Bookmark = () => {
         ))}
       </article>
       <article className='my-8'>
-        <Pagenation pageEA={pageEA} />
+        <Pagenation totalPage={pageEA} />
       </article>
       <article className='flex justify-center ml-32 my-8'>
         <SearchbarNone />
