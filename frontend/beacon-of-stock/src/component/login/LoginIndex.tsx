@@ -18,7 +18,7 @@ export const LoginIndex = () => {
       onLogin();
       navigate('/');
     }
-  }, [token]);
+  }, [token, navigate]);
 
   return <></>;
 };
