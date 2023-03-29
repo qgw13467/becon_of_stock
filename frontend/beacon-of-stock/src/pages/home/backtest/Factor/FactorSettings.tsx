@@ -45,7 +45,7 @@ const FactorSettings = () => {
 
   return (
     <React.Fragment>
-      <div className='flex justify-between items-center'>
+      <div className='flex items-center justify-between'>
         <p className='text-xl font-KJCbold'>팩터 설정</p>
         <p
           className='text-sm mr-[5%] cursor-pointer hover:text-[#A47ECF]'
