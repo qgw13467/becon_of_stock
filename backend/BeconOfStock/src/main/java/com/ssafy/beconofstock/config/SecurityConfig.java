@@ -102,7 +102,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(Arrays.asList(
                 "Accept",
                 "Accept-Language",
-                "Authorization",
+                "Authentication",
                 "Content-Language",
                 "Content-Type"
         ));
