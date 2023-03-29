@@ -1,8 +1,8 @@
 import React from 'react';
 
-import BasicSettings from './BasicSetting/BasicSettings';
-import FactorSettings from './Factor/FactorSettings';
-import SelectedItems from './Factor/SelectedItems';
+import BasicSettings from './basic_setting/BasicSettings';
+import FactorSettings from './factor/FactorSettings';
+import SelectedItems from './factor/SelectedItems';
 
 const backTestHandler = (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
