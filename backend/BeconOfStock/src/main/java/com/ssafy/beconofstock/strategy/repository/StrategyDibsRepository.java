@@ -15,11 +15,7 @@ import java.util.List;
 @Repository
 public interface StrategyDibsRepository extends JpaRepository<StrategyDibs, Long> {
 
-//    Boolean existsByStrategyAndMember(Strategy strategy, Member member);
-
-//    void deleteByStrategyAndMember(Strategy strategy, Member member);
-
-    @Query("select sd from StrategyDibs sd where sd.member=:member")
-    Page<StrategyDibs> findStrategyDibsByMember (Member member, Pageable pageable);
-
+//    @Query("select sd from StrategyDibs sd left join fetch sd.member left join fetch sd.strategy where sd.member=:member")
+//    Page<StrategyDibs> findStrategyDibsByMember(Member member, Pageable pageable);
+    Page<StrategyDibs> findByMember(Member member, Pageable pageable);
 }

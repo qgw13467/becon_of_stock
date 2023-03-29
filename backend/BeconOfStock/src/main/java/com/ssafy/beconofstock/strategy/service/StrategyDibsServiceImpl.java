@@ -27,8 +27,8 @@ public class StrategyDibsServiceImpl implements StrategyDibsService{
         Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
         Member member = user.getMember();
         StrategyDibs dibs = StrategyDibs.builder()
-                .strategy(strategy)
                 .member(member)
+                .strategy(strategy)
                 .build();
         strategyDibsRepository.save(dibs);
     }
@@ -45,12 +45,7 @@ public class StrategyDibsServiceImpl implements StrategyDibsService{
 
     @Override
     public Page<StrategyDibs> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable) {
-        Page<StrategyDibs> dibs = strategyDibsRepository.findStrategyDibsByMember(user.getMember(), pageable);
-
-        PageImpl<StrategyDibs> result = new PageImpl<>(
-                dibs.stream().collect(Collectors.toList()),
-                pageable,
-                dibs.getTotalPages());
+        Page<StrategyDibs> result = strategyDibsRepository.findByMember(user.getMember(), pageable);
         return result;
     }
 }

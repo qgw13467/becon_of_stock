@@ -26,7 +26,8 @@ public interface StrategyDibsService {
     /**
      * 나의 찜 전략 리스트
      * @param user
-     * @param pageable
+     * @param page
+     * @param isze
      * @return
      */
     Page<StrategyDibs> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable);

@@ -8,6 +8,7 @@ import com.ssafy.beconofstock.strategy.dto.StrategyListDto;
 import com.ssafy.beconofstock.strategy.entity.StrategyDibs;
 import com.ssafy.beconofstock.strategy.service.StrategyDibsService;
 import com.ssafy.beconofstock.strategy.service.StrategyService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -87,29 +88,42 @@ public class StrategyController {
         return new ResponseEntity<>(strategyService.getStrategyMyList(user, pageable), HttpStatus.OK);
     }
 
-    @GetMapping("/strategies/dibs")
-    @ApiOperation(value = "자신의 찜 전략 조회")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<Page<StrategyDibs>> getStrategyDibsMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+//    @GetMapping("/strategies/dibs")   // 실패..
+//    @ApiOperation(value = "자신의 찜 전략 조회")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "성공"),
+//            @ApiResponse(code = 401, message = "인증 실패"),
+//            @ApiResponse(code = 404, message = "사용자 없음"),
+//            @ApiResponse(code = 500, message = "서버 오류")
+//    })
+//    public ResponseEntity<Page<StrategyDibs>> getStrategyDibsMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+//        Page<StrategyDibs> result = strategyDibsService.getStrategyDibsMyList(user, pageable);
+//        return ResponseEntity.ok(result);
+//    }
 
-        return new ResponseEntity<>(strategyDibsService.getStrategyDibsMyList(user, pageable), HttpStatus.OK);
-    }
-
-    @PostMapping("/strategies/dibs")
+    @PostMapping("/dibs/{strategyId}")
     @ApiOperation(value = "전략 찜")
     @ApiResponses({
+            @ApiResponse(code = 201, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> dibsStrategy(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long strategyId) {
+        strategyDibsService.dibsStrategy(strategyId, user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/dibs/{strategyDibsId}")
+    @ApiOperation(value = "전략 찜 삭제")
+    @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "인증 실패"),
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> dibsStrategy(@AuthenticationPrincipal OAuth2UserImpl user, @RequestParam Long strategyId) {
-
-        return ResponseEntity<>()
+    public ResponseEntity<?> deleteStrategyDibs(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long strategyDibsId) {
+        strategyDibsService.deleteDibs(strategyDibsId, user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
