@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SelectIndustry from './SelectIndustry';
-import SelectIndustryBackground from './SelectIndustryBackground';
+import SelectIndustries from './SelectIndustries';
+import SelectIndustriesBackground from './SelectIndustriesBackground';
 
 const BasicSettings = () => {
   const [basicSettings, setBasicSettings] = useState({
@@ -199,8 +199,8 @@ const BasicSettings = () => {
 
           {showIndustry && (
             <div>
-              <SelectIndustryBackground setShowIndustry={setShowIndustry} />
-              <SelectIndustry setShowIndustry={setShowIndustry} />
+              <SelectIndustriesBackground setShowIndustry={setShowIndustry} />
+              <SelectIndustries setShowIndustry={setShowIndustry} />
             </div>
           )}
         </div>
