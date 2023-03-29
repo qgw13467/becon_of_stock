@@ -15,6 +15,7 @@ import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,12 +101,15 @@ public class BacktestServiceImpl implements BacktestService {
 
 
     //리벨런스 횟수 계산
-    //todo %연산시 나머지가 있으면 +1
     private int getRebalanceCount(int startYear, int startMonth,
                                   int endYear, int endMonth, int rebalance) {
         int result = 0;
-        result = endMonth - startMonth + 1 + (endYear - startYear) * 12;
+        result = endMonth - startMonth + (endYear - startYear) * 12;
         result = result / rebalance;
+        int temp = result % rebalance;
+        if (temp != 0) {
+            result++;
+        }
         return result;
     }
 
