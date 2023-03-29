@@ -30,10 +30,18 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
 
         String shortToken = jwtTokenProvider.generateJwtToken(member);
 
-        Cookie cookie = new Cookie("Authentication", shortToken);
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
+        Cookie cookie1 = new Cookie("Authentication", shortToken);
+        cookie1.setPath("/");
+        cookie1.setMaxAge(3600);
+
+        Cookie cookie2 = new Cookie("Authentication", shortToken);
+        cookie2.setPath("/");
+        cookie2.setMaxAge(3600);
+        cookie2.setDomain("localhost:3000");
+
+
+        response.addCookie(cookie1);
+        response.addCookie(cookie2);
         response.setStatus(302);
         response.setHeader("Location","/index?token="+shortToken);
 //            response.setStatus(302);
