@@ -12,9 +12,10 @@ const BacktestMain = () => {
   return (
     <React.Fragment>
       <form onSubmit={backTestHandler}>
-        <div className='flex justify-end my-[1%] mr-[8%]'>
+        <div className='flex justify-between items-center my-[1%] mx-[7%]'>
+          <p className='text-2xl font-KJCbold'>백테스트</p>
           <input
-            className='text-lg font-KJCbold text-[#FEFEFE] border rounded-xl bg-[#A47ECF] px-[1%] py-[0.5%]'
+            className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] px-[1%] py-[0.5%] hover:bg-[#A47ECF] hover:text-[#FEFEFE]'
             type='submit'
             value='백테스트'
           />

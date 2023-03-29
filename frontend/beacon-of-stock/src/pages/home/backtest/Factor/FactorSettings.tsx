@@ -48,7 +48,7 @@ const FactorSettings = () => {
       <div className='flex items-center justify-between'>
         <p className='text-xl font-KJCbold'>팩터 설정</p>
         <p
-          className='text-sm mr-[5%] cursor-pointer hover:text-[#A47ECF]'
+          className='text-sm mr-[5%] cursor-pointer text-[#808080] hover:text-[#131313] hover:font-KJCbold'
           onClick={resetIndicatorHandler}
         >
           초기화
