@@ -7,6 +7,8 @@ import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
 import { WriteCommu } from './pages/community/WriteCommu';
 import { Detail } from './pages/community/Detail';
+// import { IndexPage } from './pages/home/IndexPage';
+import { LoginIndex } from './component/login/LoginIndex';
 import { Contests } from './pages/community/contests/Contests';
 import { CommunityDibs } from './pages/community/CommunityDibs';
 import Login from './component/login/Login';
@@ -29,6 +31,7 @@ const App = () => {
             <>
               {/* 로그인 된 상태 */}
               <Route path='/' element={<BacktestMain />} />
+              <Route path='/index' element={<LoginIndex />} />
               <Route path='/result' element={<BacktestResult />} />
               <Route path='/community' element={<CommunityMain />}>
                 <Route path='write' element={<WriteCommu />} />
