@@ -1,7 +1,6 @@
 import React from 'react';
 import { useBacktestFactorStore } from '../../../../store/store';
 import erase from '../../../../assets/img/erase.png';
-import eraseHover from '../../../../assets/img/erase-hover.png';
 
 interface Props {
   id: number;
@@ -16,9 +15,15 @@ const SelectedItem = (props: Props) => {
   };
   return (
     <React.Fragment>
-      <div>{props.id}</div>
-      <div>{props.title}</div>
-      <img src={erase} alt='erase' onClick={eraseIndicatorHandler} />
+      <div className='flex mt-[5%] mx-[10%] justify-between items-center'>
+        <div className='text-sm'>{props.title}</div>
+        <img
+          src={erase}
+          alt='erase'
+          onClick={eraseIndicatorHandler}
+          className='w-4 h-4'
+        />
+      </div>
     </React.Fragment>
   );
 };
