@@ -43,7 +43,8 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         response.addCookie(cookie1);
         response.addCookie(cookie2);
         response.setStatus(302);
-        response.setHeader("Location","/index?token="+shortToken);
+        response.setHeader("Location","http://localhost:3000/index?token="+shortToken);
+
 //            response.setStatus(302);
     }
 }
