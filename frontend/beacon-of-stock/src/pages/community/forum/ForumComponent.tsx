@@ -12,9 +12,9 @@ export const ForumComponent = () => {
   const [totalElement, setTotalElement] = useState<number>(10000); // back에서 총 게시물을 받아오게 할 것인가? x
   // 총 페이지 수
   const [totalPage, setTotalPage] = useState<number>(0);
-  // 더미
+  // content
   // const items: number[] = Array(PageSize).fill(0);
-  const [itemsss, setItems] = useState([]);
+  const [content, setContent] = useState([]);
   //==========================
   const token = getCookie('accessToken');
   // console.log(token);
@@ -29,7 +29,7 @@ export const ForumComponent = () => {
         },
       })
       .then(({ data }) => {
-        console.log(data);
+        setContent(data.content);
       })
       .catch(({ error }) => {
         console.log(error);
@@ -52,7 +52,7 @@ export const ForumComponent = () => {
         <p className='text-center'>추천</p>
       </article>
       <article>
-        {itemsss.map((item, index) => (
+        {content.map((item, index) => (
           <ForumBoard key={index} item={item} />
         ))}
       </article>

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { getCookie } from '../assets/config/Cookie';
 
 interface loginState {
   isLogin: boolean;
@@ -7,7 +8,7 @@ interface loginState {
 }
 
 export const useLoginStore = create<loginState>((set) => ({
-  isLogin: false,
+  isLogin: !!getCookie('accessToken'),
   setIsLogin: (by) => {
     set(() => ({ isLogin: by }));
   },
