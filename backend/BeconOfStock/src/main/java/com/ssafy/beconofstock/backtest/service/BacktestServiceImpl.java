@@ -5,17 +5,16 @@ import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
 import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.dto.YearMonth;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
+import com.ssafy.beconofstock.backtest.entity.Trade;
 import com.ssafy.beconofstock.backtest.repository.FinanceRepository;
 import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
 import com.ssafy.beconofstock.backtest.repository.TradeRepository;
+import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
