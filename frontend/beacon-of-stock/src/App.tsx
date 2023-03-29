@@ -5,7 +5,7 @@ import BacktestMain from './pages/home/backtest/BacktestMain';
 import BacktestResult from './pages/home/backtest/result/BacktestResult';
 import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
-import { Contests } from './component/contests/Contests';
+import { Contests } from './pages/community/contests/Contests';
 import { CommunityDibs } from './pages/community/CommunityDibs';
 import Login from './component/login/Login';
 import { Bookmark } from './pages/profile/bookmark/Bookmark';
