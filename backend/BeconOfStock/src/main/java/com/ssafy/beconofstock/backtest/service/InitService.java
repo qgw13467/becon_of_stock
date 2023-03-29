@@ -165,7 +165,11 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
 
                 }
                 //trade의 변경이 끝나뭔 쿼리 보냄
-                tradeRepository.save(trade);
+                try{
+                    tradeRepository.save(trade);
+                }catch (Exception e){
+                    continue;
+                }
 
             }
         }
