@@ -31,7 +31,6 @@ const App = () => {
             <>
               {/* 로그인 된 상태 */}
               <Route path='/' element={<BacktestMain />} />
-              <Route path='/index' element={<LoginIndex />} />
               <Route path='/result' element={<BacktestResult />} />
               <Route path='/community' element={<CommunityMain />}>
                 <Route path='write' element={<WriteCommu />} />
@@ -47,6 +46,7 @@ const App = () => {
             <>
               <Route path='/' element={<NotLoginHome />} />
               <Route path='/login' element={<Login />} />
+              <Route path='/index' element={<LoginIndex />} />
             </>
           )}
         </Routes>

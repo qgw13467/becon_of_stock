@@ -17,6 +17,7 @@ export const ForumComponent = () => {
   const [itemsss, setItems] = useState([]);
   //==========================
   const token = getCookie('accessToken');
+  // console.log(token);
   useEffect(() => {
     axios_api
       .get('/boards/', {
