@@ -17,6 +17,11 @@ import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.strategy.entity.Indicator;
+import com.ssafy.beconofstock.strategy.entity.Strategy;
+import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
+import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
+import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,22 +44,31 @@ public class BoardServiceImpl implements BoardService {
     private final CommentRelRepository commentRelRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final BoardDibsRepository boardDibsRepository;
+    private final StrategyRepository strategyRepository;
+    private final StrategyIndicatorRepository strategyIndicatorRepository;
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
 
-//        Strategy strategy = strategyRepository.findByID();
+        Strategy strategy = strategyRepository.findById(board.getStrategyId()).orElse(null);
         Board newBoard = Board.builder()
             .title(board.getTitle())
             .content(board.getContent())
-//                .strategy(strategy)
             .member(member)
             .hit(0L)
             .likeNum(0L)
             .commentNum(0L)
+            .strategy(strategy)
             .build();
 
-        return new BoardResponseDto(boardRepository.save(newBoard), false, false);
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
+
+        List<Indicator> indicators = strategyIndicatorList.stream()
+            .map(StrategyIndicator::getIndicator)
+            .collect(Collectors.toList());
+
+        return new BoardResponseDto(boardRepository.save(newBoard), indicators, false, false);
+
     }
 
     public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
@@ -75,7 +89,15 @@ public class BoardServiceImpl implements BoardService {
         Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
         Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
-        return new BoardResponseDto(boardRepository.save(board), likeStatus, dibStatus);
+        boardRepository.save(board);
+
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(board.getStrategy());
+
+        List<Indicator> indicators = strategyIndicatorList.stream()
+            .map(StrategyIndicator::getIndicator)
+            .collect(Collectors.toList());
+
+        return new BoardResponseDto(board, indicators, likeStatus, dibStatus);
     }
 
     // 글 삭제
@@ -106,6 +128,9 @@ public class BoardServiceImpl implements BoardService {
         if (updateBoard.getContent() != null) {
             board.setContent(updateBoard.getContent());
         }
+        if (updateBoard.getStrategyId() != null) {
+            board.setStrategy(strategyRepository.findById(updateBoard.getStrategyId()).orElse(null));
+        }
 
         Board newBoard = boardRepository.save(board);
 
@@ -122,8 +147,6 @@ public class BoardServiceImpl implements BoardService {
     public CommentResponseDto getComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (0 < comment.getCommentNum()) {
-//            List<CommentRel> relList = commentRelRepository.findAllByParent(comment);
-//            List<Comment> childrenList = relList.stream().map(CommentRel::getChild).collect(Collectors.toList());
             List<Comment> childrenList = commentRelRepository.findAllByJoinParent(comment);
             List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
             return new CommentResponseDto(comment, children);
@@ -179,10 +202,6 @@ public class BoardServiceImpl implements BoardService {
 
         // 부모 댓글인 경우
         if (0 < comment.getCommentNum()) {
-//            List<CommentRel> children = commentRelRepository.findAllByParent(comment);
-//            commentNum += children.size();
-//            children.forEach(c -> commentRepository.delete(c.getChild())); // 자식 댓글 삭제
-
             List<Comment> children = commentRelRepository.findAllByJoinParent(comment);
             commentNum += children.size();
             commentRelRepository.deleteAllInBatch(commentRelRepository.findAllByParent(comment)); // 관계 삭제
@@ -299,13 +318,5 @@ public class BoardServiceImpl implements BoardService {
         return new BoardListResponseDto(searchList);
 
     }
-
-//    public BoardListResponseDto searchBoardByContent(int page, String content) {
-//        Sort.Order searchOrder = Sort.Order.desc("id");
-//        Pageable pageable = PageRequest.of(page, 20, Sort.by(searchOrder));
-//        Page<Board> searchList = boardRepository.findBoardByTitleContaining(content, pageable);
-//        return new BoardListResponseDto(searchList);
-//    }
-
 
 }

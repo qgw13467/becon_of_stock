@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.strategy.service;
 
+import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.strategy.repository.IndustryRepository;
 import com.ssafy.beconofstock.exception.NotFoundException;
@@ -9,6 +10,7 @@ import com.ssafy.beconofstock.strategy.dto.IndicatorsDto;
 import com.ssafy.beconofstock.strategy.dto.IndustriesDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
+import com.ssafy.beconofstock.strategy.dto.StrategyListDto;
 import com.ssafy.beconofstock.strategy.entity.AccessType;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
@@ -18,6 +20,9 @@ import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -216,6 +221,17 @@ public class StrategyServiceImpl implements StrategyService {
 
         strategyRepository.delete(strategy);
 
+    }
+
+    @Override
+    public Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
+        Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
+
+        PageImpl<StrategyListDto> result = new PageImpl<>(
+                strategies.stream().map(StrategyListDto::new).collect(Collectors.toList()),
+                pageable,
+                strategies.getTotalPages());
+        return result;
     }
 
 
