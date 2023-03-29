@@ -6,9 +6,11 @@ import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
 import com.ssafy.beconofstock.backtest.dto.YearMonth;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
+import com.ssafy.beconofstock.backtest.entity.Kospi;
 import com.ssafy.beconofstock.backtest.entity.Trade;
 import com.ssafy.beconofstock.backtest.repository.FinanceRepository;
 import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
+import com.ssafy.beconofstock.backtest.repository.KospiRepository;
 import com.ssafy.beconofstock.backtest.repository.TradeRepository;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
@@ -28,6 +30,7 @@ public class BacktestServiceImpl implements BacktestService {
     private final FinanceRepository financeRepository;
     private final IndicatorRepository indicatorRepository;
     private final InterestRateRepository interestRateRepository;
+    private final KospiRepository kospiRepository;
 
     @Override
     public BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto) {
@@ -39,8 +42,14 @@ public class BacktestServiceImpl implements BacktestService {
         List<Double> changeRates = new ArrayList<>();
 
 
+
         //기간동안 매수가 생기는 연도,월
         List<YearMonth> rebalanceYearMonth = getRebalanceYearMonth(backtestIndicatorsDto);
+
+        //시장 리벨런싱별 수익률
+        List<ChangeRateDto> marketChangeRateDtos = getKospiList(backtestIndicatorsDto, rebalanceYearMonth);
+        List<Double> marketChangeRates = changDtoToDoubleList(marketChangeRateDtos);
+
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
 
@@ -64,7 +73,12 @@ public class BacktestServiceImpl implements BacktestService {
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         result.setStrategyValues(cumulativeReturn);
 
+        List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
+        result.setMarketValues(marketCumulativeReturn);
+
         //전략 지표들 계산
+
+        result.setChangeRate(changeRateDtos);
         result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
         result.setStrategyCagr(getAvg(changeRates));
         result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
@@ -72,7 +86,45 @@ public class BacktestServiceImpl implements BacktestService {
         result.setStrategyRevenue(winCount(changeRates));
         result.setStrategyMDD(getMdd(cumulativeReturn));
 
+        //시장 지표들 계산
+        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size()-1).getChageRate());
+        result.setMarketCagr(getAvg(marketChangeRates));
+        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+        result.setMarketRevenue(winCount(marketChangeRates));
+        result.setMarketMDD(getMdd(marketCumulativeReturn));
 
+        result.setTotalMonth(rebalanceYearMonth.size());
+
+        return result;
+    }
+
+    //포스피리스트를 리벨런싱 기간메 맞게 ChangeRateDto리스트로 변환
+    private List<ChangeRateDto> getKospiList(BacktestIndicatorsDto backtestIndicatorsDto, List<YearMonth> yearMonths) {
+        List<ChangeRateDto> result = new ArrayList<>();
+
+        List<Kospi> kospis = kospiRepository.findByStartYearAndEndYear(
+                backtestIndicatorsDto.getStartYear(), backtestIndicatorsDto.getEndYear());
+        int startIdx = 0;
+        for (; startIdx < kospis.size(); startIdx++) {
+            if (kospis.get(startIdx).getYear().equals(backtestIndicatorsDto.getStartYear()) &&
+                    kospis.get(startIdx).getMonth().equals(backtestIndicatorsDto.getStartMonth())) {
+                break;
+            }
+        }
+
+        for (YearMonth yearMonth : yearMonths) {
+            ChangeRateDto changeRateDto = new ChangeRateDto();
+            changeRateDto.setYear(yearMonth.getYear());
+            changeRateDto.setMonth(yearMonth.getMonth());
+            Double val = 1D;
+            for (int i = 0; i < backtestIndicatorsDto.getRebalance(); i++) {
+                val = val * ((100 + kospis.get(startIdx).getVolatility()) / 100.0);
+                startIdx++;
+            }
+            changeRateDto.setChageRate(val);
+            result.add(changeRateDto);
+        }
         return result;
     }
 
@@ -197,6 +249,12 @@ public class BacktestServiceImpl implements BacktestService {
             sum += rate;
         }
         return 1.0 * sum / changeRate.size();
+    }
+
+    //ChangDto리스트의 변화량을 Double리스트로 변환
+    private List<Double> changDtoToDoubleList(List<ChangeRateDto> changeRateDtos) {
+        return changeRateDtos.stream().map(changeRateDto -> changeRateDto.getChageRate()).collect(Collectors.toList());
+
     }
 
 

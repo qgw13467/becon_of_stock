@@ -105,14 +105,11 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
 
             for (Trade trade : month12trades.get(month)) {
 
-                //다음달 거래를 가져와서
-                List<Trade> nextMonthTrades = month12trades.get(month + 1);
+
                 //각 거래에 대해
                 if (trade.getFinance() == null) {
                     continue;
                 }
-                //다음달 같은 회사의 거래를 찾아
-                Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
 
                 List<Trade> befor3MonthTrades = month12trades.get(month - 3);
                 Trade next3MonthTrade = findByCorcode(trade.getCorcode(), befor3MonthTrades);
@@ -160,7 +157,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
                     }
 
 //                    지표를 계산해서 trade 변경
-                    trade = calcTradeIndicator(trade, nextTrade, indicator);
+                    trade = calcTradeIndicator(trade, indicator);
 
                 }
                 //trade의 변경이 끝나뭔 쿼리 보냄
@@ -225,14 +222,12 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
 //    }
 
     //각 지표별 값 계산
-    private Trade calcTradeIndicator(Trade trade, Trade next, Indicator indicator) {
+    private Trade calcTradeIndicator(Trade trade, Indicator indicator) {
         Long marcap = trade.getMarcap();
         Integer won = trade.getFinance().getWon();
         Long netProfit = trade.getFinance().getNetProfit();
 
         Long totalAssets, operatingRevenue, operatingProfit, totalCapital;
-        Long nextNetProfit, nextOperatingRevenue, nextOperatingProfit;
-        Integer nextWon;
 
         switch (indicator.getTitle()) {
             case "pricePER":
