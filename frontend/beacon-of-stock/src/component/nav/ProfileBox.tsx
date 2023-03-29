@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginStore } from '../../store/store';
+import { removeCookie } from '../../assets/config/Cookie';
 
 export const ProfileBox = () => {
   const navigate = useNavigate();
   const { setIsLogout } = useLoginStore();
   const handleLogout = () => {
     setIsLogout(false);
+    removeCookie('accessToken');
     navigate('/');
   };
 
