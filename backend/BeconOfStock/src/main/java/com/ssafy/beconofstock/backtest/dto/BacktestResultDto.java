@@ -9,8 +9,8 @@ import java.util.List;
 @Setter
 public class BacktestResultDto {
 
-    List<BacktestPriceDto> strategyValues;
-    List<BacktestPriceDto> marketValues;
+    List<ChangeRateDto> strategyValues;
+    List<ChangeRateDto> marketValues;
     //누적 수익률
     private Double strategyCumulativeReturn;
     private Double marketCumulativeReturn;
