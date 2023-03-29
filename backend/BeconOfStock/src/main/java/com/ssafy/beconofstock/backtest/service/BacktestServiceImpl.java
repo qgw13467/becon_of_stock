@@ -53,7 +53,7 @@ public class BacktestServiceImpl implements BacktestService {
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
             //이번분기 전략
-            Double revenue = getRevenue(buyList, backtestIndicatorsDto.getRebalance());
+            Double revenue = getRevenue(yearMonth, buyList, backtestIndicatorsDto.getRebalance());
 
             changeRateDtos.add(new ChangeRateDto(revenue, yearMonth.getYear(), yearMonth.getMonth()));
             changeRates.add(revenue);
@@ -61,12 +61,13 @@ public class BacktestServiceImpl implements BacktestService {
 
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
+        result.setStrategyValues(cumulativeReturn);
 
         //전략 지표들 계산
         result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
         result.setStrategyCagr(getAvg(changeRates));
-        result.setStrategySharpe(getSharpe(changeRates, backtestIndicatorsDto));
-        result.setStrategySortino(getSortino(changeRates, backtestIndicatorsDto));
+        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
+        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
         result.setStrategyRevenue(winCount(changeRates));
         result.setStrategyMDD(getMdd(cumulativeReturn));
 
@@ -109,25 +110,24 @@ public class BacktestServiceImpl implements BacktestService {
 
 
     //샤프지수 계산
-    private Double getSharpe(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getSharpe(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         Double deviation = getDeviation(changeRate);
-        Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
+        Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / deviation;
         return result;
     }
 
     //소티노 계산
-    private Double getSortino(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getSortino(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         Double nagativeDeviation = getNagativeDeviation(changeRate);
-        Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
+        Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
         return result;
     }
 
     //샤프,소티노 공통부분 분리
-    private Double getRevenueMinusInterest(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
-        List<YearMonth> yearMonths = getRebalanceYearMonth(backtestIndicatorsDto);
+    private Double getRevenueMinusInterest(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         List<InterestRate> interestRates =
                 interestRateRepository.findByYearMonthList(
                         backtestIndicatorsDto.getStartYear(),
@@ -136,10 +136,10 @@ public class BacktestServiceImpl implements BacktestService {
         Double avgRevenue = getAvg(changeRate);
 
         List<Double> interests = new ArrayList<>();
-        for (int i = 0; i < changeRate.size(); i++) {
-            YearMonth thisYearMonth = yearMonths.get(0);
+
+        for (ChangeRateDto changeRateDto : changeRateDtos) {
             InterestRate interestRate =
-                    getInterestRateByYearMonth(interestRates, thisYearMonth.getYear(), thisYearMonth.getMonth());
+                    getInterestRateByYearMonth(interestRates, changeRateDto.getYear(), changeRateDto.getMonth());
             interests.add(interestRate.getInterestRate());
         }
         Double avgInterest = getAvg(interests);
@@ -175,15 +175,13 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //누적 수익률 계산
-    private List<ChangeRateDto> getCumulativeReturn(List<ChangeRateDto> changeRateDtos, Double fee) {
+    private List<ChangeRateDto> getCumulativeReturn(List<ChangeRateDto> changeRateDtos, double fee) {
         List<ChangeRateDto> result = new ArrayList<>();
-        Double now = 100D;
+        double now = 100D;
         for (ChangeRateDto chageRateDto : changeRateDtos) {
-            now += now * chageRateDto.getChageRate() * fee;
-
+            now = now * chageRateDto.getChageRate() * (100.0 - fee);
             result.add(new ChangeRateDto(now, chageRateDto.getYear(), chageRateDto.getMonth()));
         }
-
         return result;
     }
 
@@ -353,12 +351,12 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //구매한 종목이 한주기 다음 수익이 얼마인지 계산
-    private Double getRevenue(List<Trade> list, Integer rebalance) {
+    private Double getRevenue(YearMonth yearMonth, List<Trade> list, int rebalance) {
         Double result = 0D;
         List<Double> dist = new ArrayList<>();
 
-        Integer useYear = list.get(0).getYear();
-        Integer useMonth = list.get(0).getMonth();
+        int useYear = yearMonth.getYear();
+        int useMonth = yearMonth.getMonth();
 
         useMonth += rebalance;
         if (useMonth > 12) {
@@ -370,7 +368,6 @@ public class BacktestServiceImpl implements BacktestService {
         List<Trade> byYearAndMonthAndCornameList = tradeRepository.findByYearAndMonthAndCornameList(useYear, useMonth, cornames);
 
         for (Trade trade : list) {
-
             Trade find = findByCorcode(trade.getCorname(), byYearAndMonthAndCornameList);
             if (find == null) {
                 dist.add(0D);
