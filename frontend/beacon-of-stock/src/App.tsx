@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Nav from './component/nav/Nav';
 // import Home from './pages/home/Home';
 import BacktestMain from './pages/home/backtest/BacktestMain';
+import BacktestResult from './pages/home/backtest/result/BacktestResult';
 import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
 import { Contests } from './component/contests/Contests';
@@ -27,6 +28,7 @@ const App = () => {
               {' '}
               {/* 로그인 된 상태 */}
               <Route path='/' element={<BacktestMain />} />
+              <Route path='/result' element={<BacktestResult />} />
               <Route path='/community' element={<CommunityMain />}>
                 <Route path='dibs' element={<CommunityDibs />} />
                 <Route path='contests/:id' element={<Contests />} />
