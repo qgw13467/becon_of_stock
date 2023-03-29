@@ -32,7 +32,7 @@ const FactorSettings = () => {
   const token = getCookie('accessToken');
 
   useEffect(() => {
-    const getFactors = axios_api
+    axios_api
       .get('/indicators', {
         headers: {
           authentication: token,
@@ -44,7 +44,7 @@ const FactorSettings = () => {
         setData(response.data);
       })
       .catch((error) => console.log(error));
-  }, [backtestFactor.selectedIndicators, token]);
+  }, [token]);
 
   // console.log(data);
 
