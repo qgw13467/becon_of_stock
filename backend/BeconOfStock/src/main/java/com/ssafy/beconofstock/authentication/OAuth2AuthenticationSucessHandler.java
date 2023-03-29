@@ -34,14 +34,7 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         cookie1.setPath("/");
         cookie1.setMaxAge(3600);
 
-        Cookie cookie2 = new Cookie("Authentication", shortToken);
-        cookie2.setPath("/");
-        cookie2.setMaxAge(3600);
-        cookie2.setDomain("localhost:3000");
-
-
         response.addCookie(cookie1);
-        response.addCookie(cookie2);
         response.setStatus(302);
         response.setHeader("Location","http://localhost:3000/index?token="+shortToken);
 
