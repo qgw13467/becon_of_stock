@@ -34,6 +34,8 @@ const Nav: FC = () => {
     };
   }, [isOpen]);
 
+  const navStyle =
+    'text-lg font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';
   return (
     <nav className='flex justify-between mx-10'>
       <div>
@@ -46,23 +48,17 @@ const Nav: FC = () => {
           <>
             <div className='m-auto'>
               <Link to='/'>
-                <p className='text-lg font-KJCbold inline cursor-pointer'>
-                  튜토리얼
-                </p>
+                <p className={navStyle}>튜토리얼</p>
               </Link>
             </div>
             <div className='m-auto'>
               <Link to='/'>
-                <p className='text-lg font-KJCbold inline cursor-pointer'>
-                  백테스트
-                </p>
+                <p className={navStyle}> 백테스트</p>
               </Link>
             </div>
             <div className='m-auto'>
               <Link to='/community/dibs'>
-                <p className='text-lg font-KJCbold inline cursor-pointer'>
-                  커뮤니티
-                </p>
+                <p className={navStyle}> 커뮤니티</p>
               </Link>
             </div>
             {/* 로그인 상태에서 프로필 이미지 들어오는 곳 */}
@@ -83,16 +79,12 @@ const Nav: FC = () => {
           <>
             <article className='m-auto'>
               <Link to='/login'>
-                <p className='text-lg font-KJCbold inline cursor-pointer'>
-                  회원가입
-                </p>
+                <p className={navStyle}> 회원가입</p>
               </Link>
             </article>
             <article className='m-auto'>
               <Link to='/login'>
-                <p className='text-lg font-KJCbold inline cursor-pointer'>
-                  로그인
-                </p>
+                <p className={navStyle}> 로그인</p>
               </Link>
             </article>
           </>
