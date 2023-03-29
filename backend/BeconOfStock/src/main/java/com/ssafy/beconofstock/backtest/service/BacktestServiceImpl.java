@@ -72,7 +72,7 @@ public class BacktestServiceImpl implements BacktestService {
         result.setStrategyMDD(getMdd(cumulativeReturn));
 
 
-        return null;
+        return result;
     }
 
 
@@ -100,6 +100,7 @@ public class BacktestServiceImpl implements BacktestService {
 
 
     //리벨런스 횟수 계산
+    //todo %연산시 나머지가 있으면 +1
     private int getRebalanceCount(int startYear, int startMonth,
                                   int endYear, int endMonth, int rebalance) {
         int result = 0;
@@ -270,14 +271,12 @@ public class BacktestServiceImpl implements BacktestService {
         return trades;
     }
 
-    // TODO : 모든 지표에 대한 ranking 평균 계산
     private void calAverageRanking(List<Trade> trades) {
         for (Trade trade : trades) {
             trade.setRanking(trade.getRanking() / trade.getCnt());
         }
     }
 
-    // TODO : 새로운 지표 ranking 갱신
     private void calSumTradesIndicator(List<Trade> trades, Indicator indicator) {
 
         int idx = 0;
@@ -323,7 +322,6 @@ public class BacktestServiceImpl implements BacktestService {
 
     }
 
-    // TODO : 지표별 Comparator 리턴
     private Comparator<Trade> sortByIndicator(Indicator indicator) {
         switch (indicator.getTitle()) {
             case "pricePER":
@@ -363,12 +361,12 @@ public class BacktestServiceImpl implements BacktestService {
             useYear++;
             useMonth -= 12;
         }
-        List<String> cornames = list.stream().map(Trade::getCorname).collect(Collectors.toList());
+        List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
 
-        List<Trade> byYearAndMonthAndCornameList = tradeRepository.findByYearAndMonthAndCornameList(useYear, useMonth, cornames);
+        List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
 
         for (Trade trade : list) {
-            Trade find = findByCorcode(trade.getCorname(), byYearAndMonthAndCornameList);
+            Trade find = findByCorcode(trade.getCorname(), byYearAndMonthAndCorcodeList);
             if (find == null) {
                 dist.add(0D);
                 continue;
