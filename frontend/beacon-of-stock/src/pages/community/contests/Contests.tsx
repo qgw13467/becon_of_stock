@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { ForumComponent } from '../../pages/community/forum/ForumComponent';
+import { ForumComponent } from '../forum/ForumComponent';
 
 export const Contests = () => {
   const location = useLocation();
