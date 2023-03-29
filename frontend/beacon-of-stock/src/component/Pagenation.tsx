@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 type pagebationProps = {
-  pageEA: number;
+  totalPage: number;
 };
 
-export const Pagenation = ({ pageEA }: pagebationProps) => {
+export const Pagenation = ({ totalPage }: pagebationProps) => {
   const [first, setFirst] = useState<number>(0);
   const [end, setEnd] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
@@ -32,13 +32,13 @@ export const Pagenation = ({ pageEA }: pagebationProps) => {
   };
   const nextClick = () => {
     // console.log('next 실행 됨');
-    if (page >= pageEA) {
+    if (page >= totalPage) {
       return; // 마지막 페이지인 경우, 넘어가지 않음
     }
     setPage(page + 1);
     // this_page++;
-    setFirst(Math.min(pageEA, end + 10) - 10);
-    setEnd(Math.min(pageEA, end + 10));
+    setFirst(Math.min(totalPage, end + 10) - 10);
+    setEnd(Math.min(totalPage, end + 10));
     // first += 10; // first에 +10을 주기
     // end = Math.min(pageEA, end + 10); // end에 +10을 주되, 게시물 수를 넘어가지 않도록 조정
     // prenex();
