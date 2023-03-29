@@ -6,6 +6,7 @@ import com.ssafy.beconofstock.config.BaseEntity;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Setter
+@DynamicInsert
 public class Strategy extends BaseEntity {
 
     @Id
