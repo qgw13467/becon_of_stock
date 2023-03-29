@@ -3,6 +3,7 @@ package com.ssafy.beconofstock.backtest.service;
 
 import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
 import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
+import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
 import com.ssafy.beconofstock.backtest.dto.YearMonth;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
 import com.ssafy.beconofstock.backtest.entity.Trade;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -29,10 +31,45 @@ public class BacktestServiceImpl implements BacktestService {
     @Override
     public BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto) {
 
-        Double strategyCumulativeReturn, strategyCagr, strategySharpe, strategySortino, correlation,
-                strategyMDD, strategyRevenue, strategyRevenueAvg;
+        BacktestResultDto result = new BacktestResultDto();
 
-        List<Double> changeRate = new ArrayList<>();
+        Double strategySharpe, strategySortino, correlation,
+                strategyMDD, strategyRevenue, strategyRevenueAvg;
+        List<ChangeRateDto> changeRateDtos = new ArrayList<>();
+        List<Double> changeRates = new ArrayList<>();
+//        Integer startYear = backtestIndicatorsDto.getStartYear();
+//        Integer startMonth = backtestIndicatorsDto.getStartMonth();
+//        Integer endYear = backtestIndicatorsDto.getEndYear();
+//        Integer endMonth = backtestIndicatorsDto.getEndMonth();
+//        Integer rebalance = backtestIndicatorsDto.getRebalance();
+
+        //리벨런싱이 일어나는 달 리스트
+        List<YearMonth> rebalanceYearMonth = getRebalanceYearMonth(backtestIndicatorsDto);
+        //입력받은 지표들
+        List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
+
+        for (YearMonth yearMonth : rebalanceYearMonth) {
+
+            //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
+            List<Trade> trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
+
+            //이번분기 전략에서 구매할 회사
+            List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
+
+            //이번분기 전략
+            Double revenue = getRevenue(buyList, backtestIndicatorsDto.getRebalance());
+
+            changeRateDtos.add(new ChangeRateDto(revenue, yearMonth.getYear(), yearMonth.getMonth()));
+            changeRates.add(revenue);
+        }
+
+        //전략 지표들 계산
+        result.setStrategyCumulativeReturn(getCumulativeReturn(changeRates, backtestIndicatorsDto.getFee()));
+        result.setStrategyCagr(getAvg(changeRates));
+        result.setStrategySharpe(getSharpe(changeRates, backtestIndicatorsDto));
+        result.setStrategySortino(getSortino(changeRates, backtestIndicatorsDto));
+        result.setStrategyRevenue(winCount(changeRates));
+
 
         return null;
     }
@@ -59,7 +96,7 @@ public class BacktestServiceImpl implements BacktestService {
 
 
     //샤프지수 계산
-    private Double calcSharpe(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getSharpe(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         Double deviation = getDeviation(changeRate);
         Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
@@ -68,7 +105,7 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //소티노 계산
-    private Double calcSortino(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto){
+    private Double getSortino(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         Double nagativeDeviation = getNagativeDeviation(changeRate);
         Double result = getRevenueMinusInterest(changeRate, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
@@ -76,7 +113,7 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //샤프,소티노 공통부분 분리
-    private  Double getRevenueMinusInterest(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto){
+    private Double getRevenueMinusInterest(List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         List<YearMonth> yearMonths = getRebalanceYearMonth(backtestIndicatorsDto);
         List<InterestRate> interestRates =
                 interestRateRepository.findByYearMonthList(
@@ -125,7 +162,7 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //누적 수익률 계산
-    private Double calcCumulativeReturn(List<Double> changeRate, Double fee) {
+    private Double getCumulativeReturn(List<Double> changeRate, Double fee) {
         Double result = 1D;
         for (Double rate : changeRate) {
             result = result * rate * fee;
@@ -155,11 +192,11 @@ public class BacktestServiceImpl implements BacktestService {
         return Math.sqrt(sum);
     }
 
-    private Double getNagativeDeviation(List<Double> list){
+    private Double getNagativeDeviation(List<Double> list) {
         Double avg = getAvg(list);
         Double sum = 0D;
         for (Double rate : list) {
-            if(rate>=0){
+            if (rate >= 0) {
                 continue;
             }
             Double temp = rate - avg;
@@ -168,7 +205,6 @@ public class BacktestServiceImpl implements BacktestService {
         sum = 1.0 * sum / list.size();
         return Math.sqrt(sum);
     }
-
 
 
     //양수 카운트
@@ -186,7 +222,7 @@ public class BacktestServiceImpl implements BacktestService {
     private InterestRate getInterestRateByYearMonth(List<InterestRate> list, Integer year, Integer month) {
         InterestRate result = null;
         for (InterestRate interestRate : list) {
-            if (interestRate.getYear() == year && interestRate.getMonth() == month) {
+            if (interestRate.getYear().equals(year) && interestRate.getMonth().equals(month)) {
                 result = interestRate;
                 break;
             }
@@ -200,7 +236,6 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
 
-
     // TODO : 각 지표 정렬, 합산 수행
     private List<Trade> calcTradesIndicator(List<Trade> trades, List<Indicator> indicators, int maxNum) {
 
@@ -210,6 +245,12 @@ public class BacktestServiceImpl implements BacktestService {
         }
         calAverageRanking(trades);
         trades.sort(sortByIndicator(new Indicator("ranking")));
+
+//        maxnum만큼 잘라서 반환
+        if (maxNum > trades.size()) {
+            maxNum = trades.size();
+        }
+        trades = trades.subList(0, maxNum);
 
         return trades;
     }
@@ -292,5 +333,46 @@ public class BacktestServiceImpl implements BacktestService {
                 return Comparator.comparing(Trade::getRanking);
         }
 
+    }
+
+    //구매한 종목이 한주기 다음 수익이 얼마인지 계산
+    private Double getRevenue(List<Trade> list, Integer rebalance) {
+        Double result = 0D;
+        List<Double> dist = new ArrayList<>();
+
+        Integer useYear = list.get(0).getYear();
+        Integer useMonth = list.get(0).getMonth();
+
+        useMonth += rebalance;
+        if (useMonth > 12) {
+            useYear++;
+            useMonth -= 12;
+        }
+        List<String> cornames = list.stream().map(Trade::getCorname).collect(Collectors.toList());
+
+        List<Trade> byYearAndMonthAndCornameList = tradeRepository.findByYearAndMonthAndCornameList(useYear, useMonth, cornames);
+
+        for (Trade trade : list) {
+
+            Trade find = findByCorcode(trade.getCorname(), byYearAndMonthAndCornameList);
+            if (find == null) {
+                dist.add(0D);
+                continue;
+            }
+            dist.add((1.0 * find.getCorclose() / trade.getCorclose()));
+        }
+        result = getAvg(dist);
+        return result;
+    }
+
+    private Trade findByCorcode(String corcode, List<Trade> trades) {
+        Trade result = null;
+        for (Trade trade : trades) {
+            if (trade.getCorcode().equals(corcode)) {
+                result = trade;
+                break;
+            }
+        }
+        return result;
     }
 }
