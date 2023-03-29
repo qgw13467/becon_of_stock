@@ -7,6 +7,7 @@ import com.ssafy.beconofstock.strategy.entity.StrategyDibs;
 import com.ssafy.beconofstock.strategy.repository.StrategyDibsRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StrategyDibsServiceImpl implements StrategyDibsService{
 
     private final StrategyRepository strategyRepository;

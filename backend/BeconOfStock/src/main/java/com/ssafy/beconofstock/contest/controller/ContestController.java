@@ -1,9 +1,12 @@
 package com.ssafy.beconofstock.contest.controller;
 
+import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.contest.dto.ContestRequestDto;
 import com.ssafy.beconofstock.contest.dto.ContestResponseDto;
 import com.ssafy.beconofstock.contest.entity.Contest;
+import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.contest.repository.ContestRepository;
+import com.ssafy.beconofstock.contest.service.ContestMemberService;
 import com.ssafy.beconofstock.contest.service.ContestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,8 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 @Api(value = "Contest API", tags = {"Contest"})
 @Controller
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 public class ContestController {
 
     private final ContestService contestService;
+    private final ContestMemberService contestMemberService;
 
     @GetMapping
     @ApiOperation(value = "전체 대회 조회")
@@ -106,5 +112,45 @@ public class ContestController {
     public ResponseEntity<?> updateContest(@PathVariable Long contestId, @RequestBody ContestRequestDto contestReq){
         ContestResponseDto contest = contestService.updateContest(contestId, contestReq);
         return new ResponseEntity<>(contest, HttpStatus.OK);
+    }
+
+//    @GetMapping("/{contestId}")
+//    @ApiOperation(value = "대회 현황 조회")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "성공"),
+//            @ApiResponse(code = 401, message = "인증 실패"),
+//            @ApiResponse(code = 404, message = "사용자 없음"),
+//            @ApiResponse(code = 500, message = "서버 오류")
+//    })
+//    public ResponseEntity<Page<ContestMember>> getContestStatus(@PathVariable Long contestId, Pageable pageable) {
+//
+//        return new ResponseEntity<>(contestMemberService.getContestStatus(contestId, pageable), HttpStatus.OK);
+//    }
+
+    @PostMapping("/{contestId}/{strategyId}")   // contest에 query문 작성하기
+    @ApiOperation(value = "대회 참가")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> joinContestMember(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestId, @PathVariable Long strategyId){
+        ContestMember contestMembers = contestMemberService.joinContestMember(user, contestId, strategyId);
+        return new ResponseEntity<>(contestMembers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/join/{contestMemberId}")
+    @ApiOperation(value = "참가 취소")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> deleteContest(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestMemberId) {
+        contestMemberService.deleteContestMember(user, contestMemberId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

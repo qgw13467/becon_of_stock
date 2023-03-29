@@ -15,4 +15,7 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
 
     @Query("select sm from Strategy sm where sm.member=:member")
     Page<Strategy> findStrategyByMember (Member member, Pageable pageable);
+
+    @Query("select s from Strategy s where s.id=:strategyId")
+    Strategy findByStrategyId(Long strategyId);
 }
