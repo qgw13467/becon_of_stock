@@ -1,10 +1,7 @@
 package com.ssafy.beconofstock.strategy.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
-import com.ssafy.beconofstock.strategy.dto.IndicatorsDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyListDto;
+import com.ssafy.beconofstock.strategy.dto.*;
 import com.ssafy.beconofstock.strategy.entity.StrategyDibs;
 import com.ssafy.beconofstock.strategy.service.StrategyDibsService;
 import com.ssafy.beconofstock.strategy.service.StrategyService;
@@ -44,6 +41,18 @@ public class StrategyController {
 
         IndicatorsDto indicators = strategyService.getIndicators();
         return new ResponseEntity<>(indicators, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "산업군 조회", notes =
+            "산업군 전체 리스트를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공입니다."),
+    })
+    @GetMapping("/industries")
+    public ResponseEntity<?> getIndustries() {
+
+        IndustriesDto industries = strategyService.getIndustries();
+        return new ResponseEntity<>(industries, HttpStatus.OK);
     }
 
     @PostMapping("/strategies")
