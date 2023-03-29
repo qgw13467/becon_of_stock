@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import FactorBasic from './FactorBasic';
 import { useBacktestFactorStore } from '../../../../store/store';
-import axios from 'axios';
+import axios_api from '../../../../assets/config/Axios';
+import { getCookie } from '../../../../assets/config/Cookie';
 
 const FactorSettings = () => {
   const backtestFactor = useBacktestFactorStore();
-  console.log(backtestFactor.indicators);
+  // console.log(backtestFactor.indicators);
+  // console.log(backtestFactor.selectedIndicators);
 
   const resetIndicatorHandler = () => {
     backtestFactor.resetIndicator();
+    backtestFactor.resetSelectedIndicator();
   };
 
   type dataType = {
@@ -24,13 +27,15 @@ const FactorSettings = () => {
       }[];
     }[];
   };
+
   const [data, setData] = useState<dataType>();
+  const token = getCookie('accessToken');
 
   useEffect(() => {
-    const getFactors = axios
-      .get('/api/indicators', {
+    axios_api
+      .get('/indicators', {
         headers: {
-          authentication: '',
+          authentication: token,
         },
       })
       .then((response) => {
@@ -39,7 +44,7 @@ const FactorSettings = () => {
         setData(response.data);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [token]);
 
   // console.log(data);
 

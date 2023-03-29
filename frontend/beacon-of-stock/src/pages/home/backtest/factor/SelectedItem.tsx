@@ -12,7 +12,9 @@ const SelectedItem = (props: Props) => {
 
   const eraseIndicatorHandler = () => {
     backtestFactor.removeIndicator(props.id);
+    backtestFactor.removeSelectedIndicator(props.id);
   };
+
   return (
     <React.Fragment>
       <div className='flex mt-[5%] mx-[10%] justify-between items-center'>
