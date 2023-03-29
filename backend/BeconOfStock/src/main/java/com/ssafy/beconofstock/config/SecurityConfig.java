@@ -82,7 +82,7 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling()
-                .authenticationEntryPoint((request, response, authException)->{
+                .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -102,6 +102,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(Arrays.asList(
                 "Accept",
                 "Accept-Language",
+                "Authentication",
                 "Authorization",
                 "Content-Language",
                 "Content-Type"
