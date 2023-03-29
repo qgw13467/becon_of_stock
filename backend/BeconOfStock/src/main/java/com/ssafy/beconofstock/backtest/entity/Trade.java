@@ -57,6 +57,14 @@ public class Trade {
     @Transient
     private Double indicatorValue;
     @Transient
-    private Integer ranking;
+    private Integer ranking = 0;
+    @Transient
+    private Integer cnt = 0;
+    public void addRanking(int value) {
+        this.ranking += value;
+    }
+    public void addCnt() {
+        this.cnt++;
+    }
 
 }
