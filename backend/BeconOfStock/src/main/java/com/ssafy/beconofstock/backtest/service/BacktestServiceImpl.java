@@ -33,17 +33,12 @@ public class BacktestServiceImpl implements BacktestService {
 
         BacktestResultDto result = new BacktestResultDto();
 
-        Double strategySharpe, strategySortino, correlation,
-                strategyMDD, strategyRevenue, strategyRevenueAvg;
+        //각 기간에서의 변화량
         List<ChangeRateDto> changeRateDtos = new ArrayList<>();
         List<Double> changeRates = new ArrayList<>();
-//        Integer startYear = backtestIndicatorsDto.getStartYear();
-//        Integer startMonth = backtestIndicatorsDto.getStartMonth();
-//        Integer endYear = backtestIndicatorsDto.getEndYear();
-//        Integer endMonth = backtestIndicatorsDto.getEndMonth();
-//        Integer rebalance = backtestIndicatorsDto.getRebalance();
 
-        //리벨런싱이 일어나는 달 리스트
+
+        //기간동안 매수가 생기는 연도,월
         List<YearMonth> rebalanceYearMonth = getRebalanceYearMonth(backtestIndicatorsDto);
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
@@ -51,6 +46,7 @@ public class BacktestServiceImpl implements BacktestService {
         for (YearMonth yearMonth : rebalanceYearMonth) {
 
             //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
+            //이번 분기 매수가 가능한 회사목록
             List<Trade> trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
 
             //이번분기 전략에서 구매할 회사
@@ -63,33 +59,50 @@ public class BacktestServiceImpl implements BacktestService {
             changeRates.add(revenue);
         }
 
+        //누적수익률 (단위 : % )
+        List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
+
         //전략 지표들 계산
-        result.setStrategyCumulativeReturn(getCumulativeReturn(changeRates, backtestIndicatorsDto.getFee()));
+        result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
         result.setStrategyCagr(getAvg(changeRates));
         result.setStrategySharpe(getSharpe(changeRates, backtestIndicatorsDto));
         result.setStrategySortino(getSortino(changeRates, backtestIndicatorsDto));
         result.setStrategyRevenue(winCount(changeRates));
+        result.setStrategyMDD(getMdd(cumulativeReturn));
 
 
         return null;
     }
 
-    //리벨런스 횟수 계산
-    private Integer getRebalanceCount(BacktestIndicatorsDto backtestIndicatorsDto) {
-        Integer startYear = backtestIndicatorsDto.getStartYear();
-        Integer startMonth = backtestIndicatorsDto.getStartMonth();
-        Integer endYear = backtestIndicatorsDto.getEndYear();
-        Integer endMonth = backtestIndicatorsDto.getEndMonth();
-        Integer rebalance = backtestIndicatorsDto.getRebalance();
 
-        return getRebalanceCount(startYear, startMonth, endYear, endMonth, rebalance);
+    private Double getMdd(List<ChangeRateDto> cumulativeReturn) {
+        double mdd = 100D;
+        double max = 0D;
+        double min = 99999999D;
+        for (ChangeRateDto changeRateDto : cumulativeReturn) {
+            if (max < changeRateDto.getChageRate()) {
+                max = changeRateDto.getChageRate();
+                min = 99999999D;
+                continue;
+            }
+
+            if (min > changeRateDto.getChageRate()) {
+                min = changeRateDto.getChageRate();
+                double temp = (min - max) / max;
+                if (mdd > temp) {
+                    mdd = temp;
+                }
+            }
+        }
+        return mdd;
     }
 
+
     //리벨런스 횟수 계산
-    private Integer getRebalanceCount(Integer startYear, Integer startMonth,
-                                      Integer endYear, Integer endMonth, Integer rebalance) {
-        Integer result = 0;
-        result = endMonth - startMonth + (endYear - startYear) * 12;
+    private int getRebalanceCount(int startYear, int startMonth,
+                                  int endYear, int endMonth, int rebalance) {
+        int result = 0;
+        result = endMonth - startMonth + 1 + (endYear - startYear) * 12;
         result = result / rebalance;
         return result;
     }
@@ -134,14 +147,14 @@ public class BacktestServiceImpl implements BacktestService {
         return avgRevenue - avgInterest;
     }
 
-    //
-    private List<YearMonth> getRebalanceYearMonth(Integer startYear, Integer startMonth,
-                                                  Integer endYear, Integer endMonth, Integer rebalance) {
+    //기간동안 매수가 생기는 연도,월 반환
+    private List<YearMonth> getRebalanceYearMonth(int startYear, int startMonth,
+                                                  int endYear, int endMonth, int rebalance) {
         List<YearMonth> result = new ArrayList<>();
-        Integer thisYear = startYear;
-        Integer thisMonth = startMonth;
-        for (Integer start = 0; start < getRebalanceCount(startYear, startMonth, endYear, endMonth, rebalance); start++) {
-            thisMonth += start * rebalance;
+        int thisYear = startYear;
+        int thisMonth = startMonth;
+        for (int start = 0; start < getRebalanceCount(startYear, startMonth, endYear, endMonth, rebalance); start++) {
+            thisMonth += rebalance;
             if (thisMonth > 12) {
                 thisYear++;
                 thisMonth = thisMonth - 12;
@@ -151,22 +164,26 @@ public class BacktestServiceImpl implements BacktestService {
         return result;
     }
 
+    //기간동안 매수가 생기는 연도,월 반환
     private List<YearMonth> getRebalanceYearMonth(BacktestIndicatorsDto backtestIndicatorsDto) {
         Integer startYear = backtestIndicatorsDto.getStartYear();
         Integer startMonth = backtestIndicatorsDto.getStartMonth();
         Integer endYear = backtestIndicatorsDto.getEndYear();
         Integer endMonth = backtestIndicatorsDto.getEndMonth();
         Integer rebalance = backtestIndicatorsDto.getRebalance();
-
         return getRebalanceYearMonth(startYear, startMonth, endYear, endMonth, rebalance);
     }
 
     //누적 수익률 계산
-    private Double getCumulativeReturn(List<Double> changeRate, Double fee) {
-        Double result = 1D;
-        for (Double rate : changeRate) {
-            result = result * rate * fee;
+    private List<ChangeRateDto> getCumulativeReturn(List<ChangeRateDto> changeRateDtos, Double fee) {
+        List<ChangeRateDto> result = new ArrayList<>();
+        Double now = 100D;
+        for (ChangeRateDto chageRateDto : changeRateDtos) {
+            now += now * chageRateDto.getChageRate() * fee;
+
+            result.add(new ChangeRateDto(now, chageRateDto.getYear(), chageRateDto.getMonth()));
         }
+
         return result;
     }
 
