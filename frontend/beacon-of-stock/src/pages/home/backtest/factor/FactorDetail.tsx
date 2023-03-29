@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBacktestFactorStore } from '../../../../store/store';
 
 import question from '../../../../assets/img/question.png';
@@ -13,19 +13,36 @@ interface Props {
 }
 
 const FactorDetail = (props: Props) => {
-  const backtestFactor = useBacktestFactorStore();
-  // console.log(backtestFactor.indicators);
-  // console.log(props.id);
-
   const [factorSelected, setFactorSelected] = useState<boolean>(false);
   const [showDescription, setShowDescription] = useState<boolean>(false);
+
+  const backtestFactor = useBacktestFactorStore();
+  // console.log(backtestFactor.indicators);
+  // console.log(backtestFactor.selectedIndicators);
+  // console.log(props.id);
+
+  // 로드될 때 backtestFactor.selectedIndicators에 id가 있는 경우 factorSelected를 true로
+  // id가 없는 경우 factorSelected를 false로
+  useEffect(() => {
+    if (
+      backtestFactor.selectedIndicators.includes(props.id) &&
+      factorSelected === false
+    ) {
+      setFactorSelected(true);
+      backtestFactor.addIndicator(props.id, props.title);
+    } else if (!backtestFactor.selectedIndicators.includes(props.id)) {
+      setFactorSelected(false);
+    }
+  }, [backtestFactor.selectedIndicators]);
 
   const factorSelectedHandler = () => {
     setFactorSelected(!factorSelected);
     if (!factorSelected) {
       backtestFactor.addIndicator(props.id, props.title);
+      backtestFactor.addSelectedIndicator(props.id);
     } else if (factorSelected) {
       backtestFactor.removeIndicator(props.id);
+      backtestFactor.removeSelectedIndicator(props.id);
     }
   };
 

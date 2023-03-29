@@ -18,6 +18,20 @@ export const useLoginStore = create<loginState>((set) => ({
 
 // Backtest
 // standard interface and functions
+const addSelectedIndicator = (
+  selectedIndicators: number[],
+  id: number
+): number[] => [...selectedIndicators, id];
+
+const removeSelectedIndicator = (
+  selectedIndicators: number[],
+  id: number
+): number[] =>
+  selectedIndicators.filter((selectedIndicator) => selectedIndicator !== id);
+
+const resetSelectedIndicator = (selectedIndicators: number[]): number[] =>
+  selectedIndicators.filter((selectedIndicator) => selectedIndicator === 0);
+
 interface Indicator {
   id: number;
   title: string;
@@ -43,6 +57,11 @@ const resetIndicator = (indicators: Indicator[]): Indicator[] =>
 
 // zustand implementation
 type backtestFactorStore = {
+  selectedIndicators: number[];
+  addSelectedIndicator: (id: number) => void;
+  removeSelectedIndicator: (id: number) => void;
+  resetSelectedIndicator: () => void;
+  loadSelectedIndicator: (selectedIndicators: number[]) => void;
   indicators: Indicator[];
   addIndicator: (id: number, title: string) => void;
   removeIndicator: (id: number) => void;
@@ -52,6 +71,31 @@ type backtestFactorStore = {
 
 // set: mutate the state
 export const useBacktestFactorStore = create<backtestFactorStore>((set) => ({
+  selectedIndicators: [],
+  addSelectedIndicator(id: number) {
+    set((state) => ({
+      ...state,
+      selectedIndicators: addSelectedIndicator(state.selectedIndicators, id),
+    }));
+  },
+  removeSelectedIndicator(id: number) {
+    set((state) => ({
+      ...state,
+      selectedIndicators: removeSelectedIndicator(state.selectedIndicators, id),
+    }));
+  },
+  resetSelectedIndicator() {
+    set((state) => ({
+      ...state,
+      selectedIndicators: resetSelectedIndicator(state.selectedIndicators),
+    }));
+  },
+  loadSelectedIndicator(selectedIndicators: number[]) {
+    set((state) => ({
+      ...state,
+      selectedIndicators,
+    }));
+  },
   indicators: [],
   addIndicator(id: number, title: string) {
     set((state) => ({

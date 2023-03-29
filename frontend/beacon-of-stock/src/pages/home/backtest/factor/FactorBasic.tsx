@@ -57,22 +57,20 @@ const BasicFactor = (props: Props) => {
           </p>
         </div>
       )}
-      {showIndicator && (
-        <ul>
-          {props.indicators.map((indicator) => {
-            return (
-              <li key={indicator.id}>
-                <FactorDetail
-                  id={indicator.id}
-                  title={indicator.title}
-                  count={indicator.count}
-                  description={indicator.description}
-                />
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <ul className={showIndicator ? '' : 'hidden'}>
+        {props.indicators.map((indicator) => {
+          return (
+            <li key={indicator.id}>
+              <FactorDetail
+                id={indicator.id}
+                title={indicator.title}
+                count={indicator.count}
+                description={indicator.description}
+              />
+            </li>
+          );
+        })}
+      </ul>
     </React.Fragment>
   );
 };
