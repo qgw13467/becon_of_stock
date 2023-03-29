@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TradeRepository extends JpaRepository<Trade, Long> {
@@ -17,7 +16,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     List<Trade> findByYearAndMonth(Integer year, Integer month);
 
-    @Query("SELECT tr FROM Trade tr WHERE tr.year = :year AND tr.month = :month AND tr.corname IN (:cornames)")
-    List<Trade> findByYearAndMonthAndCornameList(@Param("year") Integer year, @Param("month") Integer month,
-                                                 @Param("cornames")List<String> cornames);
+    @Query("SELECT tr FROM Trade tr WHERE tr.year = :year AND tr.month = :month AND tr.corcode IN (:corcodes)")
+    List<Trade> findByYearAndMonthAndCorcodeList(@Param("year") Integer year, @Param("month") Integer month,
+                                                 @Param("corcodes")List<String> corcodes);
 }
