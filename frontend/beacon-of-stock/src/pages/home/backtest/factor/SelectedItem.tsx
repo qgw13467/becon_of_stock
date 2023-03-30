@@ -17,13 +17,13 @@ const SelectedItem = (props: Props) => {
 
   return (
     <React.Fragment>
-      <div className='flex mt-[5%] mx-[10%] justify-between items-center'>
-        <div className='text-sm'>{props.title}</div>
+      <div className='flex mt-[4%] mx-[10%] justify-between items-center'>
+        <div>{props.title}</div>
         <img
           src={erase}
           alt='erase'
           onClick={eraseIndicatorHandler}
-          className='w-4 h-4'
+          className='w-5 h-5'
         />
       </div>
     </React.Fragment>
