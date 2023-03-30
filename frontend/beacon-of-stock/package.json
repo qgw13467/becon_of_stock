@@ -51,5 +51,9 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.2.7"
+  },
+  "volta": {
+    "node": "14.18.0",
+    "yarn": "1.22.4"
   }
 }
