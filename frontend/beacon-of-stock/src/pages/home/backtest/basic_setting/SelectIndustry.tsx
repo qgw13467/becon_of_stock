@@ -6,7 +6,7 @@ import checkboxBlank from '../../../../assets/img/checkbox-blank.png';
 interface Props {
   id: number;
   industryName: string;
-  onCheckSelected: () => void;
+  onCheckSelected: (checkSelected: boolean) => void;
 }
 
 const SelectIndustry = (props: Props) => {
@@ -34,7 +34,18 @@ const SelectIndustry = (props: Props) => {
     } else if (!backtestIndustry.selectedIndustries.includes(props.id)) {
       setIndustrySelected(false);
     }
-  }, [backtestIndustry.selectedIndustries]);
+    if (
+      backtestIndustry.selectedIndustries.length ===
+      backtestIndustry.allSelectedIndustry.length
+    ) {
+      props.onCheckSelected(true);
+    } else {
+      props.onCheckSelected(false);
+    }
+  }, [
+    backtestIndustry.selectedIndustries,
+    backtestIndustry.allSelectedIndustry,
+  ]);
 
   const industrySelectedHandler = () => {
     setIndustrySelected(!industrySelected);
@@ -43,7 +54,6 @@ const SelectIndustry = (props: Props) => {
     } else if (industrySelected) {
       backtestIndustry.removeSelectedIndustry(props.id);
     }
-    props.onCheckSelected();
   };
 
   return (

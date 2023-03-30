@@ -39,8 +39,7 @@ const SelectIndustries = (props: Props) => {
   }, [token]);
 
   // 산업 선택 여부
-  const [selectIndustries, setSelectIndustries] = useState<boolean>(true);
-  const [checkSelected, setCheckSelected] = useState<boolean>(true);
+  const [selectIndustries, setSelectIndustries] = useState<boolean>(false);
   const backtestIndustry = useBacktestIndustryStore();
 
   const selectIndustriesHandler = () => {
@@ -52,40 +51,18 @@ const SelectIndustries = (props: Props) => {
     }
   };
 
-  // 선택 항목에 따라 전부 선택한 경우에는 체크되도록
-  // useEffect(() => {
-  // console.log(checkSelected);
-  // if (
-  //   backtestIndustry.selectedIndustries.sort() ===
-  //   backtestIndustry.allSelectedIndustry.sort()
-  // ) {
-  //   console.log(1);
-  //   setSelectIndustries(true);
-  // } else {
-  //   console.log(2);
-  //   setSelectIndustries(false);
-  // }
-  // console.log(checkSelected);
-  // }, [checkSelected]);
-  const checkSelectedHandler = () => {
-    console.log(backtestIndustry.selectedIndustries.sort());
-    console.log(backtestIndustry.allSelectedIndustry.sort());
-    if (
-      backtestIndustry.selectedIndustries.sort() ==
-      backtestIndustry.allSelectedIndustry.sort()
-    ) {
-      console.log(1);
-      setSelectIndustries(true);
-    } else {
-      console.log(2);
-      setSelectIndustries(false);
-    }
+  const checkSelectedHandler = (checkSelected: boolean) => {
+    // console.log(checkSelected);
+    setSelectIndustries(checkSelected);
   };
 
   // X버튼 누르면 모달 사라지게
   const closeSelectIndustry = () => {
     props.setShowIndustry(false);
   };
+
+  // console.log(backtestIndustry.selectedIndustries);
+  // console.log(backtestIndustry.allSelectedIndustry);
 
   return (
     <div className='fixed top-[20%] left-[40%] w-[20%] p-[1%] overflow-hidden bg-[#FEFEFE] rounded-lg z-10'>
@@ -115,7 +92,7 @@ const SelectIndustries = (props: Props) => {
               onClick={selectIndustriesHandler}
             />
           )}
-          <span className='text-sm ml-2 mr-[10%]'>모두 선택</span>
+          <span className='text-sm ml-2 mr-[10%]'>전체 선택</span>
         </div>
       </div>
       <ul>
