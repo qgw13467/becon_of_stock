@@ -5,49 +5,41 @@ type pagebationProps = {
 };
 
 export const Pagenation = ({ totalPage }: pagebationProps) => {
+  console.log(totalPage);
   const [first, setFirst] = useState<number>(0);
-  const [end, setEnd] = useState<number>(10);
+  let endNum;
+  if (totalPage > 10) {
+    endNum = 10;
+  } else {
+    endNum = totalPage;
+  }
+  const [end, setEnd] = useState<number>(endNum);
+  console.log(endNum);
   const [page, setPage] = useState<number>(1);
-  // let first = 0;
-  // let end = 10;
-  // let this_page = 1;
-  // console.log('시작점', first, end, page);
-  // const pageItems: number[] = Array(pageEA).fill(0);
-  const [pageItems, setPageItems] = useState<number[]>([
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-  ]);
+  const [pageItems, setPageItems] = useState<number[]>([]);
   const prevClick = () => {
     console.log('prev 실행 됨');
     if (first === 0) {
       return; // first가 0일 때는 작동하지 않음
     }
+    // 0보다 작아지지 않게.
     setPage(page - 1);
-    // this_page--;
     setFirst(Math.max(0, first - 10));
     setEnd(Math.max(0, first - 10) + 10);
-    // first = Math.max(0, first - 10); // first에 -10을 주되, 0보다 작아지지 않도록 조정
-    // end -= 10; // end에 -10을 주기
-    // prenex();
-    // console.log('prev', first, end, page);
   };
   const nextClick = () => {
-    // console.log('next 실행 됨');
     if (page >= totalPage) {
       return; // 마지막 페이지인 경우, 넘어가지 않음
     }
     setPage(page + 1);
-    // this_page++;
     setFirst(Math.min(totalPage, end + 10) - 10);
     setEnd(Math.min(totalPage, end + 10));
-    // first += 10; // first에 +10을 주기
-    // end = Math.min(pageEA, end + 10); // end에 +10을 주되, 게시물 수를 넘어가지 않도록 조정
-    // prenex();
-    // console.log('next', first, end, page);
+    // 마지막 페이지에는 작동 x
   };
   // 버튼 누르고 first와 end가 모두 바뀐 이후에 prenex가 발동해서 pageItems가 바뀌게 된다.
   useEffect(() => {
     prenex();
-  }, [first && end]);
+  }, [first, end]);
   const prenex = () => {
     const arr: number[] = [];
     for (let i = first; i < end; i++) {

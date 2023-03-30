@@ -29,8 +29,9 @@ export const ForumComponent = () => {
         },
       })
       .then(({ data }) => {
+        console.log(data);
         setContent(data.content);
-        setTotalPage(data.totalPage);
+        setTotalPage(data.totalPages);
         setTotalElement(data.totalElements);
         setPageNumber(data.pageNumber);
       })
