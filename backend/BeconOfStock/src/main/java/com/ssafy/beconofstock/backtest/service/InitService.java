@@ -232,7 +232,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     //각 지표별 값 계산
     private Trade calcTradeIndicator(Trade trade, Indicator indicator) {
         Long marcap = trade.getMarcap();
-        Integer marcapWon = 1000000;
+        Integer marcapWon = 1;
         Integer won = trade.getFinance().getWon();
         Long netProfit = trade.getFinance().getNetProfit();
 
