@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import CountdownTimer from '../CountdownTimer';
+// import CountdownTimer from '../CountdownTimer';
 import { useLoginStore } from '../../store/store';
 import { ProfileBox } from './ProfileBox';
 
@@ -46,7 +46,7 @@ const Nav: FC = () => {
       <div className='flex sm:space-x-20 space-x-8'>
         {isLogin ? (
           <>
-            <CountdownTimer initialTimeLeft={initialTimeLeft} />
+            {/* <CountdownTimer initialTimeLeft={initialTimeLeft} /> */}
             <div className='m-auto'>
               <Link to='/'>
                 <p className={navStyle}>튜토리얼</p>

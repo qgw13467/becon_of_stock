@@ -6,16 +6,15 @@ import { Link } from 'react-router-dom';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
 
-// const ForumBoard = memo(({ item }) => {
-//   // ... ForumBoard 컴포넌트 내용
-// });
-
 export const ForumComponent = () => {
-  const PageSize = 30;
+  const PageSize = 30; // 한 페이지에 보여줄 최대 개수
+  // 총 게시글 수
   const [totalElement, setTotalElement] = useState(100);
+  // 총 페이지 수
   const [totalPage, setTotalPage] = useState(0);
+  // 게시글 목록
   const [content, setContent] = useState([]);
-  const [page, setPage] = useState(0);
+  // 현재 페이지
   const [pageNumber, setPageNumber] = useState(0);
   const token = getCookie('accessToken');
 
@@ -26,21 +25,19 @@ export const ForumComponent = () => {
           authentication: token,
         },
         params: {
-          page,
+          pageNumber,
         },
       })
       .then(({ data }) => {
         setContent(data.content);
         setTotalPage(data.totalPage);
         setTotalElement(data.totalElements);
-        if (totalPage - 1 >= data.pageNumber) {
-          setPageNumber(data.pageNumber);
-        }
+        setPageNumber(data.pageNumber);
       })
       .catch(({ error }) => {
         console.log(error);
       });
-  }, [page, token, totalPage]);
+  }, [pageNumber, token, totalPage]);
 
   useEffect(() => {
     fetchData();

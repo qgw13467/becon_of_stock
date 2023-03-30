@@ -2,16 +2,34 @@ import { TileBoard } from '../../../component/TileBoard';
 import { Pagenation } from '../../../component/Pagenation';
 import { SearchbarNone } from '../../../component/search/SearchbarNone';
 import StrategySelect from '../../../component/select_box/StrategySelect';
+import { useEffect } from 'react';
+import axios_api from '../../../assets/config/Axios';
+import { getCookie } from '../../../assets/config/Cookie';
 
 export const Strategy = () => {
-  const PAGE_SIZE = 20; // 한 페이지에 보여질 게시글 수
+  const pageSize = 20; // 한 페이지에 보여질 게시글 수
   const 게시물수 = 10000; // back에서 총 게시물을 받아오게 할 것인가? x
   // 총 페이지 수
-  const pageEA = Math.floor(게시물수 / PAGE_SIZE);
+  const pageEA = Math.floor(게시물수 / pageSize);
   // 더미
-  const items: number[] = Array(PAGE_SIZE).fill(0);
+  const items: number[] = Array(pageSize).fill(0);
   // console.log(pageEA);
+  const token = getCookie('accessToken');
 
+  useEffect(() => {
+    axios_api
+      .get('/strategies', {
+        headers: {
+          authentication: token,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <section>
       <p className='font-KJCbold text-4xl m-9'>내 전략조회</p>

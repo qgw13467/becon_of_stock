@@ -70,7 +70,10 @@ export const Pagenation = ({ totalPage }: pagebationProps) => {
         {pageItems.map((item, index) => (
           // <div className='text-center m-auto px-1 text-lg'>{item}</div>
           // <input type='submit' value={item} />
-          <button className='my-4 mx-1 px-1 text-lg h-12 w-12 border-2 rounded-sm border-[#6773BB] text-[#6773BB]'>
+          <button
+            key={index}
+            className='my-4 mx-1 px-1 text-lg h-12 w-12 border-2 rounded-sm border-[#6773BB] text-[#6773BB]'
+          >
             {item}
           </button>
         ))}
