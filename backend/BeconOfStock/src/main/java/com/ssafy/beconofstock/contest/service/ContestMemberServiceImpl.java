@@ -67,7 +67,7 @@ public class ContestMemberServiceImpl implements ContestMemberService{
         List<ContestMember> contestMembers = contestMemberRepository.findContestMemberByRanking(contestId);
         for (int i = 1; i < contestMembers.size(); i++) {
             ContestMember cm = contestMembers.get(i);
-            cm.setRanking((long) (i+1));
+            cm.setRanking((long) (i));
         }
     }
 
