@@ -27,11 +27,11 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
 
-        for (Integer year = 2000; year <= 2021; year++) {
+        for (Integer year = 2000; year <= 2022; year++) {
 //            mappingTradeFinance(year);
         }
 
-        for (Integer year = 2000; year <= 2021; year++) {
+        for (Integer year = 2000; year <= 2022; year++) {
 //            preprocess(year);
         }
 
@@ -94,9 +94,6 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
             List<Trade> temp = tradeRepository.findByYearAndMonthFetch(year, month);
             month12trades.put(month, temp);
         }
-        //12월의 다음달
-        List<Trade> temp = tradeRepository.findByYearAndMonthFetch(year + 1, 1);
-        month12trades.put(13, temp);
 
         //6개월 전의 trade 가져오기
         for (Integer month = 7; month <= 12; month++) {
@@ -256,11 +253,11 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
                 return trade;
             case "qualityROE":
                 totalAssets = trade.getFinance().getTotalAssets();
-                trade.setQualityROE(getBiggerGoodIndicatorMultipleWon(netProfit, marcapWon, totalAssets, won));
+                trade.setQualityROE(getBiggerGoodIndicatorMultipleWon(netProfit, won, totalAssets, won));
                 return trade;
             case "qualityROA":
                 totalCapital = trade.getFinance().getTotalCapital();
-                trade.setQualityROA(getBiggerGoodIndicatorMultipleWon(netProfit, marcapWon, totalCapital, won));
+                trade.setQualityROA(getBiggerGoodIndicatorMultipleWon(netProfit, won, totalCapital, won));
                 return trade;
 
 
@@ -315,7 +312,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     //낮은게 좋은 지표에서 쓰이는 단위계산
-    private Double getLowerGoodIndicatorMultipleWon(long upper, int upperMuli, Long lower, int lowwerMulit) {
+    private Double getLowerGoodIndicatorMultipleWon(Long upper, Integer upperMuli, Long lower, Integer lowwerMulit) {
         if (lower == null || lower == 0 || upperMuli == 0 || lowwerMulit == 0) {
             return 99999D;
         } else {
@@ -324,7 +321,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     //높은게 좋은 지표에서 쓰이는 단위계산
-    private Double getBiggerGoodIndicatorMultipleWon(long upper, int upperMuli, Long lower, int lowwerMulit) {
+    private Double getBiggerGoodIndicatorMultipleWon(Long upper, Integer upperMuli, Long lower, Integer lowwerMulit) {
         if (lower == null || lower == 0 || upperMuli == 0 || lowwerMulit == 0) {
             return -99D;
         } else {
