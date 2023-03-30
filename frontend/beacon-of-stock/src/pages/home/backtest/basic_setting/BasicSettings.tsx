@@ -187,7 +187,7 @@ const BasicSettings = () => {
       <div className='flex flex-col justify-center mx-[5%]'>
         <div className='my-1'>
           <label htmlFor='industries'>산업</label>
-          <div className='border rounded-xl hover:border-[#A47ECF]'>
+          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
               type='button'
               id='industries'
@@ -207,7 +207,7 @@ const BasicSettings = () => {
 
         <div className='my-1'>
           <label htmlFor='fee'>거래비용</label>
-          <div className='flex items-center border flex-between rounded-xl hover:border-[#A47ECF]'>
+          <div className='flex items-center border-[2px] flex-between rounded-xl hover:border-[#A47ECF]'>
             <input
               type='text'
               id='fee'
@@ -221,7 +221,7 @@ const BasicSettings = () => {
 
         <div className='my-1'>
           <label htmlFor='maxStocks'>최대 종목 수 (max 30)</label>
-          <div className='border rounded-xl hover:border-[#A47ECF]'>
+          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
               type='text'
               id='maxStocks'
@@ -234,7 +234,7 @@ const BasicSettings = () => {
 
         <div className='my-1'>
           <label htmlFor='rebalance'>리밸런싱 주기</label>
-          <div className='border rounded-xl hover:border-[#A47ECF]'>
+          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <select
               name='rebalance'
               id='rebalance'
@@ -249,10 +249,10 @@ const BasicSettings = () => {
           </div>
         </div>
 
-        <div className='my-1'>
+        {/* <div className='my-1'>
           <label htmlFor='backtestSortType'>정렬 기준</label>
           <div className='flex justify-between'>
-            <div className='border rounded-xl w-[60%] hover:border-[#A47ECF]'>
+            <div className='border-[2px] rounded-xl w-[60%] hover:border-[#A47ECF]'>
               <select
                 name='backtestSortType'
                 id='backtestSortType'
@@ -267,7 +267,7 @@ const BasicSettings = () => {
                 <option value='F-score 높은 순'>F-score 높은 순</option>
               </select>
             </div>
-            <div className='flex items-center justify-center border rounded-xl w-[35%] hover:border-[#A47ECF]'>
+            <div className='flex items-center justify-center border-[2px] rounded-xl w-[35%] hover:border-[#A47ECF]'>
               <input
                 type='text'
                 id='sortRatio'
@@ -278,11 +278,11 @@ const BasicSettings = () => {
               <p className='mr-[5%] text-sm'>%</p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className='my-1'>
           <label htmlFor='start'>시작 시점</label>
-          <div className='border rounded-xl hover:border-[#A47ECF]'>
+          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
               type='month'
               id='start'
@@ -297,7 +297,7 @@ const BasicSettings = () => {
 
         <div className='my-1'>
           <label htmlFor='end'>종료 시점</label>
-          <div className='border rounded-xl hover:border-[#A47ECF]'>
+          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
               type='month'
               id='end'
