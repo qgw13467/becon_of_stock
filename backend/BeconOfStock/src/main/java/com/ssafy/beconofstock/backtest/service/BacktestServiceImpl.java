@@ -479,9 +479,9 @@ public class BacktestServiceImpl implements BacktestService {
 
             tradeList.add(new BuySellDto(trade, find));
 
-            double temp = (find.getMarcap().doubleValue()) / (trade.getMarcap().doubleValue());
+            double temp = (find.getCorclose().doubleValue()) / (trade.getCorclose().doubleValue());
             if(temp > 2){
-                double check = find.getCorclose().doubleValue()/trade.getCorclose().doubleValue();
+                double check = find.getMarcap().doubleValue()/trade.getMarcap().doubleValue();
                 if(Math.abs(temp/check -1) >0.3){
                      continue;
                 }

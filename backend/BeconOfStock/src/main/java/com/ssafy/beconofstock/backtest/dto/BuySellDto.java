@@ -14,8 +14,10 @@ public class BuySellDto {
     private Trade buy;
     private Trade sell;
 
-    public String toString(){
-        return "change: "+(sell.getMarcap().doubleValue()/buy.getMarcap().doubleValue())+", start: " + buy.getCorname() + ", " +(long)(buy.getMarcap().doubleValue() / 100D) + ", " + buy.getYear() + " " + buy.getMonth() + ", end : "
-                + sell.getCorname() + ", " + (long)(sell.getMarcap().doubleValue() / 100D) + ", " + sell.getYear() + " " + sell.getMonth();
+    public String toString() {
+        return "getCorclose: " + (sell.getCorclose().doubleValue() / buy.getCorclose().doubleValue()) +
+                ", getMarcap: " + (sell.getMarcap().doubleValue() / buy.getMarcap().doubleValue()) +
+                ", start: " + buy.getCorname() + ", " + buy.getCorclose() + ", " + buy.getYear() + " " + buy.getMonth() + ", end : "
+                + sell.getCorname() + ", " + sell.getCorclose() + ", " + sell.getYear() + " " + sell.getMonth();
     }
 }
