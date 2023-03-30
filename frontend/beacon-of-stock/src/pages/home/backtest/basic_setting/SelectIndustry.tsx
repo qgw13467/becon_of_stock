@@ -1,17 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useBacktestIndustryStore } from '../../../../store/store';
 import checkboxChecked from '../../../../assets/img/checkbox-checked.png';
 import checkboxBlank from '../../../../assets/img/checkbox-blank.png';
 
 interface Props {
   id: number;
   industryName: string;
+  onCheckSelected: () => void;
 }
 
 const SelectIndustry = (props: Props) => {
   // 산업 선택 여부
   const [industrySelected, setIndustrySelected] = useState<boolean>(true);
+
+  const backtestIndustry = useBacktestIndustryStore();
+  // console.log(backtestIndustry);
+  // console.log(backtestIndustry.selectedIndustries.sort());
+  // console.log(backtestIndustry.allSelectedIndustry.sort());
+
+  // 제일 처음 로드될 때만 모든 id값을 getAllIndustry 추가
+  useEffect(() => {
+    if (!backtestIndustry.allSelectedIndustry.includes(props.id)) {
+      backtestIndustry.getAllIndustry(props.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      backtestIndustry.selectedIndustries.includes(props.id) &&
+      industrySelected === false
+    ) {
+      setIndustrySelected(true);
+    } else if (!backtestIndustry.selectedIndustries.includes(props.id)) {
+      setIndustrySelected(false);
+    }
+  }, [backtestIndustry.selectedIndustries]);
+
   const industrySelectedHandler = () => {
     setIndustrySelected(!industrySelected);
+    if (!industrySelected) {
+      backtestIndustry.addSelectedIndustry(props.id);
+    } else if (industrySelected) {
+      backtestIndustry.removeSelectedIndustry(props.id);
+    }
+    props.onCheckSelected();
   };
 
   return (
