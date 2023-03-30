@@ -68,10 +68,6 @@ public class BacktestServiceImpl implements BacktestService {
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
-            for (Trade trade : buyList) {
-                System.out.println("trade start : " + trade.getCorname() + ", price : " + trade.getCorclose());
-            }
-
             //이번분기 전략
             Double revenue = getRevenue(yearMonth, buyList, backtestIndicatorsDto.getRebalance());
 
@@ -110,12 +106,15 @@ public class BacktestServiceImpl implements BacktestService {
 //        //시장 지표들 계산
         result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChageRate());
         result.setMarketCagr(getAvg(marketChangeRates));
-//        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
-//        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketRevenue(winCount(marketChangeRates));
+
         result.setMarketMDD(getMdd(marketCumulativeReturn));
 //
         result.setTotalMonth(rebalanceYearMonth.size());
+
+
 
         return result;
     }
@@ -125,7 +124,7 @@ public class BacktestServiceImpl implements BacktestService {
         List<ChangeRateDto> result = new ArrayList<>();
 
         List<Kospi> kospis = kospiRepository.findByStartYearAndEndYear(
-                backtestIndicatorsDto.getStartYear(), backtestIndicatorsDto.getEndYear());
+                backtestIndicatorsDto.getStartYear(), backtestIndicatorsDto.getEndYear() + 1);
         int startIdx = 0;
         for (; startIdx < kospis.size(); startIdx++) {
             if (kospis.get(startIdx).getYear().equals(backtestIndicatorsDto.getStartYear()) &&
@@ -170,7 +169,10 @@ public class BacktestServiceImpl implements BacktestService {
                 }
             }
         }
-        return mdd;
+        if (mdd == 100D) {
+            return 0D;
+        }
+        return Math.abs(mdd*10D);
     }
 
 
@@ -180,10 +182,10 @@ public class BacktestServiceImpl implements BacktestService {
         int result = 0;
         result = endMonth - startMonth + (endYear - startYear) * 12;
         result = result / rebalance;
-        int temp = result % rebalance;
-        if (temp != 0) {
-            result++;
-        }
+//        int temp = result % rebalance;
+//        if (temp != 0) {
+//            result++;
+//        }
         return result;
     }
 
@@ -195,7 +197,7 @@ public class BacktestServiceImpl implements BacktestService {
         System.out.println("diviation : " + deviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / deviation;
-        return result;
+        return Math.abs(result);
     }
 
     //소티노 계산
@@ -204,7 +206,7 @@ public class BacktestServiceImpl implements BacktestService {
         System.out.println("nagativeDeviation : " + nagativeDeviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
-        return result;
+        return Math.abs(result);
     }
 
     //샤프,소티노 공통부분 분리
@@ -224,7 +226,7 @@ public class BacktestServiceImpl implements BacktestService {
             interests.add(interestRate.getInterestRate());
         }
         Double avgInterest = getAvg(interests);
-
+        avgInterest = 1D + (avgInterest / 100D);
         System.out.println("avgRevenue: " + avgRevenue + ", avgInterest: " + avgInterest);
         return avgRevenue - avgInterest;
     }
@@ -278,7 +280,7 @@ public class BacktestServiceImpl implements BacktestService {
         for (Double rate : changeRate) {
             sum += rate;
         }
-        return 1.0 * sum / changeRate.size();
+        return sum / (double) changeRate.size();
     }
 
     //ChangDto리스트의 변화량을 Double리스트로 변환
@@ -303,10 +305,11 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     private Double getNagativeDeviation(List<Double> list) {
+        System.out.println("list: " + list.toString());
         Double avg = getAvg(list);
         Double sum = 0D;
         for (Double rate : list) {
-            if (rate >= 0) {
+            if (rate >= 1) {
                 continue;
             }
             Double temp = rate - avg;
@@ -459,9 +462,7 @@ public class BacktestServiceImpl implements BacktestService {
         List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
 
         List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
-        for (Trade trade : byYearAndMonthAndCorcodeList) {
-            System.out.println("trade end : " + trade.getCorname() + ", " + trade.getCorclose());
-        }
+
 
         for (Trade trade : list) {
             Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
@@ -470,8 +471,8 @@ public class BacktestServiceImpl implements BacktestService {
                 continue;
             }
 
-            System.out.println("find: " + find.getCorname() + ", " + find.getCorclose() + ", trade : "
-                    + trade.getCorname() + ", " + trade.getCorclose());
+            System.out.println("start: " + trade.getCorname() + ", " + trade.getCorclose() + ", end : "
+                    + find.getCorname() + ", " + find.getCorclose());
 
             double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
             dist.add(temp);
