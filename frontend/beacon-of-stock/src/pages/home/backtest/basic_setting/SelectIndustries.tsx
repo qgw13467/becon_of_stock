@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import SelectIndustry from './SelectIndustry';
 import axios_api from '../../../../assets/config/Axios';
 import { getCookie } from '../../../../assets/config/Cookie';
+import cancel from '../../../../assets/img/erase.png';
+import checkboxChecked from '../../../../assets/img/checkbox-checked.png';
+import checkboxBlank from '../../../../assets/img/checkbox-blank.png';
 
 interface Props {
   setShowIndustry: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SelectIndustries = (props: Props) => {
+  // 산업 받아오기
   type industryType = {
     industries: {
       id: number;
@@ -26,19 +30,55 @@ const SelectIndustries = (props: Props) => {
         },
       })
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
+        // console.log(response);
+        // console.log(response.data);
         setIndustries(response.data);
       })
       .catch((error) => console.log(error));
   }, [token]);
 
-  console.log(industries);
+  // 산업 선택 여부
+  const [selectIndustries, setSelectIndustries] = useState<boolean>(true);
+
+  const selectIndustriesHandler = () => {
+    setSelectIndustries(!selectIndustries);
+  };
+
+  // X버튼 누르면 모달 사라지게
+  const closeSelectIndustry = () => {
+    props.setShowIndustry(false);
+  };
 
   return (
-    <div className='fixed top-[20%] left-[35%] w-[30%] z-100 overflow-hidden bg-[#FEFEFE] rounded-lg z-10'>
-      <div className='flex justify-between'>
-        <span className='text-xl'>산업 선택</span>
+    <div className='fixed top-[20%] left-[40%] w-[20%] p-[1%] overflow-hidden bg-[#FEFEFE] rounded-lg z-10'>
+      <div>
+        <div className='flex items-center justify-between'>
+          <span className='text-xl'>산업 선택</span>
+          <img
+            src={cancel}
+            alt='cancel'
+            className='w-6 cursor-pointer'
+            onClick={closeSelectIndustry}
+          />
+        </div>
+        <div className='flex items-center justify-end my-[3%]'>
+          {selectIndustries ? (
+            <img
+              src={checkboxChecked}
+              alt='checkboxChecked'
+              className='w-4'
+              onClick={selectIndustriesHandler}
+            />
+          ) : (
+            <img
+              src={checkboxBlank}
+              alt='checkboxBlank'
+              className='w-4'
+              onClick={selectIndustriesHandler}
+            />
+          )}
+          <span className='text-sm ml-2 mr-[10%]'>모두 선택</span>
+        </div>
       </div>
       <ul>
         {industries?.industries.map((industry) => {
