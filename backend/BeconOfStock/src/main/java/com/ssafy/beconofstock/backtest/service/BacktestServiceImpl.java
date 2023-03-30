@@ -464,7 +464,7 @@ public class BacktestServiceImpl implements BacktestService {
         for (Trade trade : list) {
             Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
             if (find == null) {
-                dist.add(0D);
+                dist.add(1D);
                 continue;
             }
 
