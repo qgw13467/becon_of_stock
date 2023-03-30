@@ -15,4 +15,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     List<Trade> findByYearAndMonthFetch(@Param("year") Integer year, @Param("month") Integer month);
 
     List<Trade> findByYearAndMonth(Integer year, Integer month);
+
+    @Query("SELECT tr FROM Trade tr WHERE tr.year = :year AND tr.month = :month AND tr.corcode IN (:corcodes)")
+    List<Trade> findByYearAndMonthAndCorcodeList(@Param("year") Integer year, @Param("month") Integer month,
+                                                 @Param("corcodes")List<String> corcodes);
 }

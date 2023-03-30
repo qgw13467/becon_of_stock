@@ -27,12 +27,12 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
 
-        for (Integer year = 2000; year <= 2022; year++) {
-//            backtestService.mappingTradeFinance(year);
+        for (Integer year = 2000; year <= 2021; year++) {
+//            mappingTradeFinance(year);
         }
 
-        for (Integer year = 2000; year <= 2022; year++) {
-//            backtestService.preprocess(year);
+        for (Integer year = 2000; year <= 2021; year++) {
+//            preprocess(year);
         }
 
     }
@@ -51,12 +51,16 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
             List<Finance> finances = financeRepository.findByRptYearAndRptMonth(userYear, months);
 
             for (Trade trade : trades) {
-                Finance finance = findFinanaceByCorName(trade.getCorname(), finances);
-                if (finance != null) {
-                    financeRepository.save(finance);
-                    trade.setFinance(finance);
-                    tradeRepository.save(trade);
+                try{
+                    Finance finance = findFinanaceByCorName(trade.getCorname(), finances);
+                    if (finance != null) {
+                        trade.setFinance(finance);
+                        tradeRepository.save(trade);
+                    }
+                }catch(Exception e){
+                    continue;
                 }
+
             }
         }
     }
@@ -105,17 +109,14 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
 
             for (Trade trade : month12trades.get(month)) {
 
-                //다음달 거래를 가져와서
-                List<Trade> nextMonthTrades = month12trades.get(month + 1);
+
                 //각 거래에 대해
                 if (trade.getFinance() == null) {
                     continue;
                 }
-                //다음달 같은 회사의 거래를 찾아
-                Trade nextTrade = findByCorcode(trade.getCorcode(), nextMonthTrades);
 
                 List<Trade> befor3MonthTrades = month12trades.get(month - 3);
-                Trade next3MonthTrade = findByCorcode(trade.getCorcode(), befor3MonthTrades);
+                Trade befor3MonthTrade = findByCorcode(trade.getCorcode(), befor3MonthTrades);
 
                 List<Trade> befor6MonthTrades = month12trades.get(month - 6);
                 Trade before6MonthTrade = findByCorcode(trade.getCorcode(), befor6MonthTrades);
@@ -127,22 +128,22 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
                         //단위가 3개월이면,
                         if (indicatorType == 1) {
 
-                            if (next3MonthTrade == null) {
+                            if (befor3MonthTrade == null) {
                                 continue;
                             }
 
                             //각 거래에서 재무가 not null을 확인하고
-                            if (trade.getFinance() == null || next3MonthTrade.getFinance() == null) {
+                            if (trade.getFinance() == null || befor3MonthTrade.getFinance() == null) {
                                 continue;
                             }
-                            //3개월후와 비교후 저장
-                            trade = calcGrowth(trade, next3MonthTrade.getFinance(), indicator);
+                            //3개월전거과 비교후 저장
+                            trade = calcGrowth(trade, befor3MonthTrade.getFinance(), indicator);
 
 
                         } else {
                             //단위가 6개월이면
 
-                            //6개월 후의 거래가 널인지 확인하고
+                            //6개월 전의 거래가 널인지 확인하고
                             if (before6MonthTrade == null) {
                                 continue;
                             }
@@ -160,11 +161,15 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
                     }
 
 //                    지표를 계산해서 trade 변경
-                    trade = calcTradeIndicator(trade, nextTrade, indicator);
+                    trade = calcTradeIndicator(trade, indicator);
 
                 }
                 //trade의 변경이 끝나뭔 쿼리 보냄
-                tradeRepository.save(trade);
+                try{
+                    tradeRepository.save(trade);
+                }catch (Exception e){
+                    continue;
+                }
 
             }
         }
@@ -225,38 +230,37 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
 //    }
 
     //각 지표별 값 계산
-    private Trade calcTradeIndicator(Trade trade, Trade next, Indicator indicator) {
+    private Trade calcTradeIndicator(Trade trade, Indicator indicator) {
         Long marcap = trade.getMarcap();
+        Integer marcapWon = 1;
         Integer won = trade.getFinance().getWon();
         Long netProfit = trade.getFinance().getNetProfit();
 
         Long totalAssets, operatingRevenue, operatingProfit, totalCapital;
-        Long nextNetProfit, nextOperatingRevenue, nextOperatingProfit;
-        Integer nextWon;
 
         switch (indicator.getTitle()) {
             case "pricePER":
-                trade.setPricePER(getLowerGoodIndicatorMultipleWon(marcap, 1, netProfit, won));
+                trade.setPricePER(getLowerGoodIndicatorMultipleWon(marcap, marcapWon, netProfit, won));
                 return trade;
             case "pricePBR":
                 totalAssets = trade.getFinance().getTotalAssets();
-                trade.setPricePBR(getLowerGoodIndicatorMultipleWon(marcap, 1, totalAssets, won));
+                trade.setPricePBR(getLowerGoodIndicatorMultipleWon(marcap, marcapWon, totalAssets, won));
                 return trade;
             case "pricePSR":
                 operatingRevenue = trade.getFinance().getOperatingRevenue();
-                trade.setPricePSR(getLowerGoodIndicatorMultipleWon(marcap, 1, operatingRevenue, won));
+                trade.setPricePSR(getLowerGoodIndicatorMultipleWon(marcap, marcapWon, operatingRevenue, won));
                 return trade;
             case "pricePOR":
                 operatingProfit = trade.getFinance().getOperatingProfit();
-                trade.setPricePOR(getLowerGoodIndicatorMultipleWon(marcap, 1, operatingProfit, won));
+                trade.setPricePOR(getLowerGoodIndicatorMultipleWon(marcap, marcapWon, operatingProfit, won));
                 return trade;
             case "qualityROE":
                 totalAssets = trade.getFinance().getTotalAssets();
-                trade.setQualityROE(getBiggerGoodIndicatorMultipleWon(netProfit, won, totalAssets, won));
+                trade.setQualityROE(getBiggerGoodIndicatorMultipleWon(netProfit, marcapWon, totalAssets, won));
                 return trade;
             case "qualityROA":
                 totalCapital = trade.getFinance().getTotalCapital();
-                trade.setQualityROA(getBiggerGoodIndicatorMultipleWon(netProfit, won, totalCapital, won));
+                trade.setQualityROA(getBiggerGoodIndicatorMultipleWon(netProfit, marcapWon, totalCapital, won));
                 return trade;
 
 
@@ -311,7 +315,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     //낮은게 좋은 지표에서 쓰이는 단위계산
-    private Double getLowerGoodIndicatorMultipleWon(Long upper, Integer upperMuli, Long lower, Integer lowwerMulit) {
+    private Double getLowerGoodIndicatorMultipleWon(long upper, int upperMuli, Long lower, int lowwerMulit) {
         if (lower == null || lower == 0 || upperMuli == 0 || lowwerMulit == 0) {
             return 99999D;
         } else {
@@ -320,7 +324,7 @@ public class InitService implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     //높은게 좋은 지표에서 쓰이는 단위계산
-    private Double getBiggerGoodIndicatorMultipleWon(Long upper, Integer upperMuli, Long lower, Integer lowwerMulit) {
+    private Double getBiggerGoodIndicatorMultipleWon(long upper, int upperMuli, Long lower, int lowwerMulit) {
         if (lower == null || lower == 0 || upperMuli == 0 || lowwerMulit == 0) {
             return -99D;
         } else {
