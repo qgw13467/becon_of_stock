@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import CountdownTimer from '../CountdownTimer';
 import { useLoginStore } from '../../store/store';
-import { MyProfile } from '../../pages/profile/MyProfile';
 import { ProfileBox } from './ProfileBox';
 
 const Nav: FC = () => {
-  // const navigate = useNavigate()
+  const [initialTimeLeft, setInitialTimeLeft] = useState<number>(30 * 60);
   const logo = require('../../assets/img/bos-logo.png');
   const emptyImg = require('../../assets/img/empty-img.jpg');
   // 이 부분 주스탠드로 관리.
@@ -46,6 +46,7 @@ const Nav: FC = () => {
       <div className='flex sm:space-x-20 space-x-8'>
         {isLogin ? (
           <>
+            <CountdownTimer initialTimeLeft={initialTimeLeft} />
             <div className='m-auto'>
               <Link to='/'>
                 <p className={navStyle}>튜토리얼</p>

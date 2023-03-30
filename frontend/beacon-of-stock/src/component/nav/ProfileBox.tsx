@@ -8,6 +8,7 @@ export const ProfileBox = () => {
   const handleLogout = () => {
     setIsLogout(false);
     removeCookie('accessToken');
+    localStorage.removeItem('timeLeft');
     navigate('/');
   };
 

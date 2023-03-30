@@ -8,7 +8,7 @@ export const LoginIndex = () => {
   const navigate = useNavigate();
   const token = new URLSearchParams(window.location.search).get('token');
   const { setIsLogin } = useLoginStore();
-  console.log(token);
+  // console.log(token);
   useEffect(() => {
     if (token) {
       setCookie('accessToken', token, {
