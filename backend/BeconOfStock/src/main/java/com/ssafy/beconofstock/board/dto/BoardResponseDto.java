@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 public class BoardResponseDto {
     @ApiModelProperty(example = "게시글 번호")
     Long boardId;
+    @ApiModelProperty(example = "작성자 id")
+    Long memberId;
     @ApiModelProperty(example = "작성자 닉네임")
     String nickname;
     @ApiModelProperty(example = "조회수")
@@ -39,6 +41,7 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board, List<Indicator> indicators, Boolean likeStatus, Boolean dibStatus) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
+        this.memberId = board.getMember().getId();
         this.nickname = board.getMember().getNickname();
         this.hit = board.getHit();
         this.title = board.getTitle();
@@ -55,6 +58,7 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board, Boolean likeStatus, Boolean dibStatus) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
+        this.memberId = board.getMember().getId();
         this.nickname = board.getMember().getNickname();
         this.hit = board.getHit();
         this.title = board.getTitle();

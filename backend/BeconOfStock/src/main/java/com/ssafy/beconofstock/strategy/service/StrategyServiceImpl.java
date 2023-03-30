@@ -1,11 +1,16 @@
 package com.ssafy.beconofstock.strategy.service;
 
+import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.backtest.entity.Industry;
+import com.ssafy.beconofstock.strategy.repository.IndustryRepository;
 import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.exception.NotYourAuthorizationException;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.IndicatorsDto;
+import com.ssafy.beconofstock.strategy.dto.IndustriesDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
+import com.ssafy.beconofstock.strategy.dto.StrategyListDto;
 import com.ssafy.beconofstock.strategy.entity.AccessType;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
@@ -13,7 +18,11 @@ import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
 import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -31,7 +40,7 @@ public class StrategyServiceImpl implements StrategyService {
     private final StrategyRepository strategyRepository;
     private final StrategyIndicatorRepository strategyIndicatorRepository;
     private final IndicatorRepository indicatorRepository;
-
+    private final IndustryRepository industryRepository;
     private final EntityManager em;
 
     @Override
@@ -69,7 +78,7 @@ public class StrategyServiceImpl implements StrategyService {
     @Override
     public IndicatorsDto getIndicators() {
         IndicatorsDto result = new IndicatorsDto();
-        List<Map<String, Object>> fators = new ArrayList<>();
+        List<Map<String, Object>> factors = new ArrayList<>();
 
         List<Indicator> indicatorList = indicatorRepository.findAll();
         List<Indicator> price = new ArrayList<>();
@@ -93,13 +102,21 @@ public class StrategyServiceImpl implements StrategyService {
 
 
 
-        fators.add(getMapByStringString(1L, List.of("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표"),price));
-        fators.add(getMapByStringString(2L, List.of("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표"),quality));
-        fators.add(getMapByStringString(3L, List.of("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표"),growth));
+        factors.add(getMapByStringString(1L, List.of("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표"),price));
+        factors.add(getMapByStringString(2L, List.of("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표"),quality));
+        factors.add(getMapByStringString(3L, List.of("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표"),growth));
 
-        result.setFactors(fators);
+        result.setFactors(factors);
+
 
         return result;
+    }
+
+    @Override
+    public IndustriesDto getIndustries() {
+        List<Industry> industries = industryRepository.findAll();
+
+        return new IndustriesDto(industries);
     }
 
     private String getIndicatorName(String factor, String indicatorName) {
@@ -204,6 +221,17 @@ public class StrategyServiceImpl implements StrategyService {
 
         strategyRepository.delete(strategy);
 
+    }
+
+    @Override
+    public Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
+        Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
+
+        PageImpl<StrategyListDto> result = new PageImpl<>(
+                strategies.stream().map(StrategyListDto::new).collect(Collectors.toList()),
+                pageable,
+                strategies.getTotalPages());
+        return result;
     }
 
 

@@ -1,7 +1,6 @@
 package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Board;
-import com.ssafy.beconofstock.strategy.entity.Strategy;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +40,8 @@ public class BoardListResponseDto {
         String title;
         @ApiModelProperty(example = "작성일")
         LocalDateTime createDate;
+        @ApiModelProperty(example = "작성자 아이디")
+        Long memberId;
         @ApiModelProperty(example = "작성자 닉네임")
         String nickname;
         @ApiModelProperty(example = "조회수")
@@ -54,6 +55,7 @@ public class BoardListResponseDto {
             this.boardId = board.getId();
             this.title = board.getTitle();
             this.createDate = board.getCreatedDateTime();
+            this.memberId = board.getMember().getId();
             this.nickname = board.getMember().getNickname();
             this.hit = board.getHit();
             this.commentNum = board.getCommentNum();

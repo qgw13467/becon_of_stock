@@ -13,6 +13,8 @@ public class CommentResponseDto {
 
     @ApiModelProperty(example = "댓글 아이디")
     private Long commentId;
+    @ApiModelProperty(example = "작성자 아이디")
+    private Long memberId;
     @ApiModelProperty(example = "작성자 닉네임")
     private String userNickname;
     @ApiModelProperty(example = "내용")
@@ -30,6 +32,7 @@ public class CommentResponseDto {
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
+        this.memberId = comment.getMember().getId();
         this.userNickname = comment.getMember().getNickname();
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
@@ -39,6 +42,7 @@ public class CommentResponseDto {
     }
     public CommentResponseDto(Comment comment, List<CommentResponseDto> children) {
         this.commentId = comment.getId();
+        this.memberId = comment.getMember().getId();
         this.userNickname = comment.getMember().getNickname();
         this.content = comment.getContent();
         this.likeNum = comment.getLikeNum();
