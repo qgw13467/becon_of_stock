@@ -57,7 +57,7 @@ public class BacktestServiceImpl implements BacktestService {
             //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
             //이번 분기 매수가 가능한 회사목록
             List<Trade> trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
-
+            // 산업의 배열의 길이가 DB의 산업 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
