@@ -115,7 +115,6 @@ public class BacktestServiceImpl implements BacktestService {
         result.setTotalMonth(rebalanceYearMonth.size());
 
 
-
         return result;
     }
 
@@ -172,7 +171,7 @@ public class BacktestServiceImpl implements BacktestService {
         if (mdd == 100D) {
             return 0D;
         }
-        return Math.abs(mdd*10D);
+        return Math.abs(mdd * 10D);
     }
 
 
@@ -471,10 +470,11 @@ public class BacktestServiceImpl implements BacktestService {
                 continue;
             }
 
-            System.out.println("start: " + trade.getCorname() + ", " + trade.getCorclose() + ", end : "
-                    + find.getCorname() + ", " + find.getCorclose());
+            System.out.println("start: " + trade.getCorname() + ", " + (find.getMarcap().doubleValue()/100D) + ", " + trade.getYear() + " " + trade.getMonth() + ", end : "
+                    + find.getCorname() + ", " + (trade.getMarcap().doubleValue()/100D) + ", " + find.getYear() + " " + find.getMonth());
 
-            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
+            double temp = (find.getMarcap().doubleValue()/100D)/(trade.getMarcap().doubleValue()/100D);
+//            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
             dist.add(temp);
         }
 
