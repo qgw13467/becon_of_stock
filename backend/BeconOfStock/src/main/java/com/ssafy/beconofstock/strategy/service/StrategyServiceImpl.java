@@ -1,24 +1,17 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
+import com.ssafy.beconofstock.backtest.entity.CummulateReturn;
 import com.ssafy.beconofstock.backtest.entity.Industry;
-import com.ssafy.beconofstock.strategy.repository.IndustryRepository;
 import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.exception.NotYourAuthorizationException;
 import com.ssafy.beconofstock.member.entity.Member;
-import com.ssafy.beconofstock.strategy.dto.IndicatorsDto;
-import com.ssafy.beconofstock.strategy.dto.IndustriesDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyAddDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
-import com.ssafy.beconofstock.strategy.dto.StrategyListDto;
-import com.ssafy.beconofstock.strategy.entity.AccessType;
+import com.ssafy.beconofstock.strategy.dto.*;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
-import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
-import com.ssafy.beconofstock.strategy.repository.StrategyIndicatorRepository;
-import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
-import io.swagger.models.auth.In;
+import com.ssafy.beconofstock.strategy.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,16 +35,17 @@ public class StrategyServiceImpl implements StrategyService {
     private final IndicatorRepository indicatorRepository;
     private final IndustryRepository industryRepository;
     private final EntityManager em;
+    private final CummulationReturnRepository cummulationReturnRepository;
 
     @Override
     public StrategyDetailDto getStrategyDetail(Member member, Long strategyId) {
 
         Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
 
-        if (strategy.getAccessType() == AccessType.PRIVATE
-                && strategy.getMember().getId() != member.getId()) {
-            throw new NotYourAuthorizationException();
-        }
+//        if (strategy.getAccessType() == AccessType.PRIVATE
+//                && strategy.getMember().getId() != member.getId()) {
+//            throw new NotYourAuthorizationException();
+//        }
 
         List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
 
@@ -63,13 +57,12 @@ public class StrategyServiceImpl implements StrategyService {
                 StrategyDetailDto.builder()
                         .id(strategy.getId())
                         .title(strategy.getTitle())
-                        .sharpe(strategy.getSharpe())
-                        .cagr(strategy.getCagr())
-                        .cumulativeReturn(strategy.getCumulativeReturn())
                         .memberNickname(strategy.getMember().getNickname())
                         .memberId((strategy.getMember().getId()))
                         .indicators(indicators)
-                        .access(strategy.getAccessType())
+                        .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
+                        .marketValues(toMarketValues(strategy.getCummulateReturnList()))
+//                        .access(strategy.getAccessType())
                         .build();
 
         return strategyDetailDto;
@@ -100,14 +93,11 @@ public class StrategyServiceImpl implements StrategyService {
             }
         }
 
-
-
-        factors.add(getMapByStringString(1L, List.of("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표"),price));
-        factors.add(getMapByStringString(2L, List.of("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표"),quality));
-        factors.add(getMapByStringString(3L, List.of("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표"),growth));
+        factors.add(getMapByStringString(1L, List.of("가치 (가격/매출)", "주식가격과 회사의 매출을 통해 얼마나 저평가 되었는지 확인한 지표"), price));
+        factors.add(getMapByStringString(2L, List.of("퀄리티 (매출/자산)", "회사의 매출과 회사의 자산을통해 얼마나 효율적으로 수익을 내는지 확인하는 지표"), quality));
+        factors.add(getMapByStringString(3L, List.of("성장성 (이익 성장률)", "회사의 매출이 얼마나 빠르게 성장하는지 확인하는 지표"), growth));
 
         result.setFactors(factors);
-
 
         return result;
     }
@@ -123,16 +113,15 @@ public class StrategyServiceImpl implements StrategyService {
         return new StringBuffer(indicatorName).delete(0, factor.length()).toString();
     }
 
-    private Map<String, Object> getMapByStringString(Long id, List<String> list,List<Indicator> indicators) {
+    private Map<String, Object> getMapByStringString(Long id, List<String> list, List<Indicator> indicators) {
+
         Map<String, Object> result = new HashMap<>();
         result.put("id", id);
         result.put("title", list.get(0));
         result.put("description", list.get(1));
-        result.put("indicators",indicators);
+        result.put("indicators", indicators);
         return result;
-
     }
-
 
     @Override
     public List<StrategyIndicator> getStrategy(Long id) {
@@ -148,10 +137,27 @@ public class StrategyServiceImpl implements StrategyService {
     @Transactional
     public void addStrategy(Member member, StrategyAddDto strategyAddDto) {
 
-        Strategy strategy = new Strategy(member, strategyAddDto);
-        strategyRepository.save(strategy);
+        // 전략 저장 - id get
+        Strategy strategy = new Strategy(member, strategyAddDto.getTitle());
+        strategy = strategyRepository.save(strategy);
 
+        // 누적 수익률 저장
+        List<CummulateReturn> cummulateReturnList = new ArrayList<>();
+        List<Double> marketValues = strategyAddDto.getMarketValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
+        List<Double> strategyValues = strategyAddDto.getStrategyValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
+        int year = strategyAddDto.getStrategyValues().get(0).getYear();
+        int month = strategyAddDto.getStrategyValues().get(0).getMonth();
 
+        for (int i = 0; i < marketValues.size(); i++) {
+            cummulateReturnList.add(CummulateReturn.builder().strategyValue(strategyValues.get(i)).
+                    marketValue(marketValues.get(i)).year(year).month(month).strategy(strategy).build());
+        }
+        cummulationReturnRepository.saveAll(cummulateReturnList);
+
+        // 전략 저장
+        strategy.setCummulateReturnList(cummulateReturnList);
+
+        // 지표 저장
         List<Indicator> indicators = indicatorRepository.findByIdIn(strategyAddDto.getIndicators());
         List<StrategyIndicator> changeList = new ArrayList<>();
         for (Indicator indicator : indicators) {
@@ -188,22 +194,12 @@ public class StrategyServiceImpl implements StrategyService {
             strategyIndicatorRepository.saveAll(changed);
         }
 
-        if (strategyAddDto.getStrategyName() != null) {
-            strategy.setTitle(strategyAddDto.getStrategyName());
+        if (strategyAddDto.getTitle() != null) {
+            strategy.setTitle(strategyAddDto.getTitle());
         }
-        if (strategyAddDto.getAccess() != null) {
-            strategy.setAccessType(strategyAddDto.getAccess());
-        }
-        if (strategyAddDto.getCumulativeReturn() != null) {
-            strategy.setCumulativeReturn(strategyAddDto.getCumulativeReturn());
-        }
-        if (strategyAddDto.getCagr() != null) {
-            strategy.setCagr(strategyAddDto.getCagr());
-        }
-        if (strategyAddDto.getSharpe() != null) {
-            strategy.setSharpe(strategyAddDto.getSharpe());
-        }
-
+//        if (strategyAddDto.getAccess() != null) {
+//            strategy.setAccessType(strategyAddDto.getAccess());
+//        }
 
     }
 
@@ -220,19 +216,38 @@ public class StrategyServiceImpl implements StrategyService {
         strategyIndicatorRepository.deleteAllInBatch(strategyIndicatorList);
 
         strategyRepository.delete(strategy);
-
     }
 
     @Override
+    @Transactional
     public Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
         Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
 
         PageImpl<StrategyListDto> result = new PageImpl<>(
-                strategies.stream().map(StrategyListDto::new).collect(Collectors.toList()),
+                strategies.stream().map(strategy -> new StrategyListDto(
+                        strategy, toStrategyValues(strategy.getCummulateReturnList()), toMarketValues(strategy.getCummulateReturnList()))
+                ).collect(Collectors.toList()),
                 pageable,
                 strategies.getTotalPages());
+
         return result;
     }
 
+    public List<ChangeRateDto> toMarketValues(List<CummulateReturn> cummulateReturnList) {
+        List<ChangeRateDto> marketValues = new ArrayList<>();
 
+        for (CummulateReturn cummulateReturn : cummulateReturnList) {
+            marketValues.add(new ChangeRateDto(cummulateReturn.getMarketValue(), cummulateReturn.getYear(), cummulateReturn.getMonth()));
+        }
+        return marketValues;
+    }
+
+    public List<ChangeRateDto> toStrategyValues(List<CummulateReturn> cummulateReturnList) {
+        List<ChangeRateDto> strategyValues = new ArrayList<>();
+
+        for (CummulateReturn cummulateReturn : cummulateReturnList) {
+            strategyValues.add(new ChangeRateDto(cummulateReturn.getStrategyValue(), cummulateReturn.getYear(), cummulateReturn.getMonth()));
+        }
+        return strategyValues;
+    }
 }

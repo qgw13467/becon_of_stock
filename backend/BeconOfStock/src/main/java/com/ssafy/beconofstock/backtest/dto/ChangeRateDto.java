@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangeRateDto {
-    private Double chageRate;
+    private Double changeRate;
     private Integer year;
     private Integer month;
 

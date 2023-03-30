@@ -1,10 +1,8 @@
 package com.ssafy.beconofstock.strategy.dto;
 
-import com.ssafy.beconofstock.strategy.entity.Indicator;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +12,5 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IndicatorsDto {
-    List<Map<String,Object>> factors = new ArrayList<>();
-
+    List<Map<String, Object>> factors = new ArrayList<>();
 }
