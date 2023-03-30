@@ -258,7 +258,11 @@ public class BacktestServiceImpl implements BacktestService {
         List<ChangeRateDto> result = new ArrayList<>();
         double now = 100D;
         for (ChangeRateDto chageRateDto : changeRateDtos) {
-            now = now * chageRateDto.getChageRate() * ((100.0 - fee) / 100);
+            if (chageRateDto.getChageRate().equals(0D)) {
+                now = now * ((100.0 - fee) / 100);
+            } else {
+                now = now * chageRateDto.getChageRate() * ((100.0 - fee) / 100);
+            }
             result.add(new ChangeRateDto(now, chageRateDto.getYear(), chageRateDto.getMonth()));
         }
         return result;
