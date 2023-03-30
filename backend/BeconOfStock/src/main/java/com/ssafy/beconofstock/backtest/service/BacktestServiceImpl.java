@@ -49,7 +49,7 @@ public class BacktestServiceImpl implements BacktestService {
         //시장 리벨런싱별 수익률
         List<ChangeRateDto> marketChangeRateDtos = getKospiList(backtestIndicatorsDto, rebalanceYearMonth);
         for (int i = 0; i < marketChangeRateDtos.size(); i++) {
-            System.out.println("market: " + marketChangeRateDtos.get(i).getChageRate());
+            System.out.println("market: " + marketChangeRateDtos.get(i).getChangeRate());
         }
         List<Double> marketChangeRates = changDtoToDoubleList(marketChangeRateDtos);
 
@@ -76,7 +76,7 @@ public class BacktestServiceImpl implements BacktestService {
         }
 
         for (ChangeRateDto changeRateDto : changeRateDtos) {
-            System.out.println("change rate : " + changeRateDto.getChageRate());
+            System.out.println("change rate : " + changeRateDto.getChangeRate());
         }
 
         //누적수익률 (단위 : % )
@@ -84,34 +84,33 @@ public class BacktestServiceImpl implements BacktestService {
         result.setStrategyValues(cumulativeReturn);
 
         for (ChangeRateDto changeRateDto : cumulativeReturn) {
-            System.out.println("cumulativeReturn : " + changeRateDto.getChageRate());
+            System.out.println("cumulativeReturn : " + changeRateDto.getChangeRate());
         }
 
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
         result.setMarketValues(marketCumulativeReturn);
         for (ChangeRateDto changeRateDto : marketCumulativeReturn) {
-            System.out.println("marketCumulativeReturn : " + changeRateDto.getChageRate());
+            System.out.println("marketCumulativeReturn : " + changeRateDto.getChangeRate());
         }
 
         //전략 지표들 계산
 
         result.setChangeRate(changeRateDtos);
-        result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
+        result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate());
         result.setStrategyCagr(getAvg(changeRates));
         result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
         result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
         result.setStrategyRevenue(winCount(changeRates));
         result.setStrategyMDD(getMdd(cumulativeReturn));
-//
-//        //시장 지표들 계산
-        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChageRate());
+
+        //시장 지표들 계산
+        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size()-1).getChangeRate());
         result.setMarketCagr(getAvg(marketChangeRates));
         result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketRevenue(winCount(marketChangeRates));
 
         result.setMarketMDD(getMdd(marketCumulativeReturn));
-//
         result.setTotalMonth(rebalanceYearMonth.size());
 
 
@@ -141,7 +140,7 @@ public class BacktestServiceImpl implements BacktestService {
                 val = val * ((100 + kospis.get(startIdx).getVolatility()) / 100.0);
                 startIdx++;
             }
-            changeRateDto.setChageRate(val);
+            changeRateDto.setChangeRate(val);
             result.add(changeRateDto);
         }
         return result;
@@ -154,14 +153,14 @@ public class BacktestServiceImpl implements BacktestService {
         double max = 0D;
         double min = 99999999D;
         for (ChangeRateDto changeRateDto : cumulativeReturn) {
-            if (max < changeRateDto.getChageRate()) {
-                max = changeRateDto.getChageRate();
+            if (max < changeRateDto.getChangeRate()) {
+                max = changeRateDto.getChangeRate();
                 min = 99999999D;
                 continue;
             }
 
-            if (min > changeRateDto.getChageRate()) {
-                min = changeRateDto.getChageRate();
+            if (min > changeRateDto.getChangeRate()) {
+                min = changeRateDto.getChangeRate();
                 double temp = (min - max) / max;
                 if (mdd > temp) {
                     mdd = temp;
@@ -263,10 +262,10 @@ public class BacktestServiceImpl implements BacktestService {
         List<ChangeRateDto> result = new ArrayList<>();
         double now = 100D;
         for (ChangeRateDto chageRateDto : changeRateDtos) {
-            if (chageRateDto.getChageRate().equals(0D)) {
+            if (chageRateDto.getChangeRate().equals(0D)) {
                 now = now * ((100.0 - fee) / 100);
             } else {
-                now = now * chageRateDto.getChageRate() * ((100.0 - fee) / 100);
+                now = now * chageRateDto.getChangeRate() * ((100.0 - fee) / 100);
             }
             result.add(new ChangeRateDto(now, chageRateDto.getYear(), chageRateDto.getMonth()));
         }
@@ -284,7 +283,7 @@ public class BacktestServiceImpl implements BacktestService {
 
     //ChangDto리스트의 변화량을 Double리스트로 변환
     private List<Double> changDtoToDoubleList(List<ChangeRateDto> changeRateDtos) {
-        return changeRateDtos.stream().map(changeRateDto -> changeRateDto.getChageRate()).collect(Collectors.toList());
+        return changeRateDtos.stream().map(changeRateDto -> changeRateDto.getChangeRate()).collect(Collectors.toList());
 
     }
 
@@ -461,7 +460,6 @@ public class BacktestServiceImpl implements BacktestService {
         List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
 
         List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
-
 
         for (Trade trade : list) {
             Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
