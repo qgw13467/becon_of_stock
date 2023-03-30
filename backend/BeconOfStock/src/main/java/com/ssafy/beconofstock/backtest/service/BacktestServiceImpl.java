@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,8 +102,8 @@ public class BacktestServiceImpl implements BacktestService {
         result.setChangeRate(changeRateDtos);
         result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
         result.setStrategyCagr(getAvg(changeRates));
-//        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
-//        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
+        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
+        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
         result.setStrategyRevenue(winCount(changeRates));
         result.setStrategyMDD(getMdd(cumulativeReturn));
 //
@@ -191,6 +192,7 @@ public class BacktestServiceImpl implements BacktestService {
     private Double getSharpe(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         Double deviation = getDeviation(changeRate);
+        System.out.println("diviation : " + deviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / deviation;
         return result;
@@ -199,6 +201,7 @@ public class BacktestServiceImpl implements BacktestService {
     //소티노 계산
     private Double getSortino(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         Double nagativeDeviation = getNagativeDeviation(changeRate);
+        System.out.println("nagativeDeviation : " + nagativeDeviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
         return result;
@@ -222,6 +225,7 @@ public class BacktestServiceImpl implements BacktestService {
         }
         Double avgInterest = getAvg(interests);
 
+        System.out.println("avgRevenue: " + avgRevenue + ", avgInterest: " + avgInterest);
         return avgRevenue - avgInterest;
     }
 
@@ -292,7 +296,9 @@ public class BacktestServiceImpl implements BacktestService {
             Double temp = rate - avg;
             sum += temp * temp;
         }
-        sum = 1.0 * sum / list.size();
+        sum = 1.0 * sum / (double) list.size();
+        System.out.println("sum: " + sum + ", devi: " + Math.sqrt(sum));
+
         return Math.sqrt(sum);
     }
 
@@ -306,7 +312,8 @@ public class BacktestServiceImpl implements BacktestService {
             Double temp = rate - avg;
             sum += temp * temp;
         }
-        sum = 1.0 * sum / list.size();
+        sum = 1.0 * sum / (double) list.size();
+        System.out.println("sum: " + sum + ", devi: " + Math.sqrt(sum));
         return Math.sqrt(sum);
     }
 
@@ -315,7 +322,7 @@ public class BacktestServiceImpl implements BacktestService {
     private Integer winCount(List<Double> chageRate) {
         int sum = 0;
         for (Double rate : chageRate) {
-            if (rate >= 0) {
+            if (rate >= 1) {
                 sum++;
             }
         }
