@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class BacktestIndicatorsDto {
     List<Long> indicators;
-    List<String> industries;
+    List<Long> industries;
     Integer startYear;
     Integer startMonth;
     Integer endYear;
