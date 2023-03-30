@@ -15,7 +15,7 @@ const BacktestMain = () => {
         <div className='flex justify-between items-center my-[1%] mx-[7%]'>
           <p className='text-2xl font-KJCbold'>백테스트</p>
           <input
-            className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] px-[1%] py-[0.5%] hover:bg-[#A47ECF] hover:text-[#FEFEFE]'
+            className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] px-[1%] py-[0.5%] hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
             type='submit'
             value='백테스트'
           />

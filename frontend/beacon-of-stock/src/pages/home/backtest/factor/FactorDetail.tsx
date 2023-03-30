@@ -56,7 +56,7 @@ const FactorDetail = (props: Props) => {
 
   return (
     <div className='flex justify-center'>
-      <div className='flex my-[1%] w-[70%] justify-between items-center'>
+      <div className='flex ml-4 my-[1%] w-[70%] justify-between items-center'>
         <div className='flex items-center'>
           {factorSelected ? (
             <img
