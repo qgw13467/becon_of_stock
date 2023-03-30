@@ -5,19 +5,16 @@ import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
 import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
 import com.ssafy.beconofstock.backtest.dto.YearMonth;
+import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
 import com.ssafy.beconofstock.backtest.entity.Kospi;
 import com.ssafy.beconofstock.backtest.entity.Trade;
-import com.ssafy.beconofstock.backtest.repository.FinanceRepository;
-import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
-import com.ssafy.beconofstock.backtest.repository.KospiRepository;
-import com.ssafy.beconofstock.backtest.repository.TradeRepository;
+import com.ssafy.beconofstock.backtest.repository.*;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +26,7 @@ public class BacktestServiceImpl implements BacktestService {
     private final TradeRepository tradeRepository;
     private final FinanceRepository financeRepository;
     private final IndicatorRepository indicatorRepository;
+    private final BackIndustryRepository backIndustryRepository;
     private final InterestRateRepository interestRateRepository;
     private final KospiRepository kospiRepository;
 
@@ -52,13 +50,21 @@ public class BacktestServiceImpl implements BacktestService {
 
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
+        List<Industry> industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        List<Industry> industryAllList = backIndustryRepository.findAll();
 
         for (YearMonth yearMonth : rebalanceYearMonth) {
+            // 산업의 배열의 길이가 DB의 산업군 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
+            List<Trade> trades;
+            if (industries.size() != industryAllList.size()) {
+                // 산업군 체크 한 회사 목록
+                trades = tradeRepository.findByYearAndMonthAndIndustryList(yearMonth.getYear(), yearMonth.getMonth(), industries);
+            }else{
+                //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
+                //이번 분기 매수가 가능한 회사목록
+                trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
+            }
 
-            //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
-            //이번 분기 매수가 가능한 회사목록
-            List<Trade> trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
-            // 산업의 배열의 길이가 DB의 산업 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
@@ -222,7 +228,7 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     //기간동안 매수가 생기는 연도,월 반환
-    private List<YearMonth> getRebalanceYearMonth(BacktestIndicatorsDto backtestIndicatorsDto) {
+    public List<YearMonth> getRebalanceYearMonth(BacktestIndicatorsDto backtestIndicatorsDto) {
         Integer startYear = backtestIndicatorsDto.getStartYear();
         Integer startMonth = backtestIndicatorsDto.getStartMonth();
         Integer endYear = backtestIndicatorsDto.getEndYear();
