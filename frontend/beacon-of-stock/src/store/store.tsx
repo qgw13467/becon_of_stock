@@ -18,6 +18,88 @@ export const useLoginStore = create<loginState>((set) => ({
 }));
 
 // Backtest
+
+// industries
+// standard interface and functions
+const addSelectedIndustry = (
+  selectedIndustries: number[],
+  id: number
+): number[] => [...selectedIndustries, id];
+
+const removeSelectedIndustry = (
+  selectedIndustries: number[],
+  id: number
+): number[] =>
+  selectedIndustries.filter((selectedIndustry) => selectedIndustry !== id);
+
+const resetSelectedIndustry = (selectedIndicators: number[]): number[] =>
+  selectedIndicators.filter((selectedIndicator) => selectedIndicator === 0);
+
+const getAllIndustry = (
+  allSelectedIndustry: number[],
+  id: number
+): number[] => [...allSelectedIndustry, id];
+
+const selectAllIndustry = (
+  selectedIndicators: number[],
+  allSelectedIndustry: number[]
+): number[] => (selectedIndicators = allSelectedIndustry);
+
+// zustand implementation
+type backtestIndustryStore = {
+  selectedIndustries: number[];
+  addSelectedIndustry: (id: number) => void;
+  removeSelectedIndustry: (id: number) => void;
+  resetSelectedIndustry: () => void;
+  allSelectedIndustry: number[];
+  getAllIndustry: (id: number) => void;
+  selectAllIndustry: () => void;
+};
+
+// set: mutate the state
+export const useBacktestIndustryStore = create<backtestIndustryStore>(
+  (set) => ({
+    selectedIndustries: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    addSelectedIndustry(id: number) {
+      set((state) => ({
+        ...state,
+        selectedIndustries: addSelectedIndustry(state.selectedIndustries, id),
+      }));
+    },
+    removeSelectedIndustry(id: number) {
+      set((state) => ({
+        ...state,
+        selectedIndustries: removeSelectedIndustry(
+          state.selectedIndustries,
+          id
+        ),
+      }));
+    },
+    resetSelectedIndustry() {
+      set((state) => ({
+        ...state,
+        selectedIndustries: resetSelectedIndustry(state.selectedIndustries),
+      }));
+    },
+    allSelectedIndustry: [],
+    getAllIndustry(id: number) {
+      set((state) => ({
+        ...state,
+        allSelectedIndustry: getAllIndustry(state.allSelectedIndustry, id),
+      }));
+    },
+    selectAllIndustry() {
+      set((state) => ({
+        selectedIndustries: selectAllIndustry(
+          state.selectedIndustries,
+          state.allSelectedIndustry
+        ),
+      }));
+    },
+  })
+);
+
+// indicator
 // standard interface and functions
 const addSelectedIndicator = (
   selectedIndicators: number[],

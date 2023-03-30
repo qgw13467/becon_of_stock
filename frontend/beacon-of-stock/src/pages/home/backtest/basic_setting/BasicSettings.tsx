@@ -5,7 +5,7 @@ import SelectIndustriesBackground from './SelectIndustriesBackground';
 const BasicSettings = () => {
   const [basicSettings, setBasicSettings] = useState({
     // 산업
-    industries: '선택',
+    industries: '산업 보기',
     // 거래비용
     fee: '0',
     // 최대 종목 수

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SelectIndustry from './SelectIndustry';
+import { useBacktestIndustryStore } from '../../../../store/store';
 import axios_api from '../../../../assets/config/Axios';
 import { getCookie } from '../../../../assets/config/Cookie';
 import cancel from '../../../../assets/img/erase.png';
@@ -39,9 +40,46 @@ const SelectIndustries = (props: Props) => {
 
   // 산업 선택 여부
   const [selectIndustries, setSelectIndustries] = useState<boolean>(true);
+  const [checkSelected, setCheckSelected] = useState<boolean>(true);
+  const backtestIndustry = useBacktestIndustryStore();
 
   const selectIndustriesHandler = () => {
     setSelectIndustries(!selectIndustries);
+    if (!selectIndustries) {
+      backtestIndustry.selectAllIndustry();
+    } else if (selectIndustries) {
+      backtestIndustry.resetSelectedIndustry();
+    }
+  };
+
+  // 선택 항목에 따라 전부 선택한 경우에는 체크되도록
+  // useEffect(() => {
+  // console.log(checkSelected);
+  // if (
+  //   backtestIndustry.selectedIndustries.sort() ===
+  //   backtestIndustry.allSelectedIndustry.sort()
+  // ) {
+  //   console.log(1);
+  //   setSelectIndustries(true);
+  // } else {
+  //   console.log(2);
+  //   setSelectIndustries(false);
+  // }
+  // console.log(checkSelected);
+  // }, [checkSelected]);
+  const checkSelectedHandler = () => {
+    console.log(backtestIndustry.selectedIndustries.sort());
+    console.log(backtestIndustry.allSelectedIndustry.sort());
+    if (
+      backtestIndustry.selectedIndustries.sort() ==
+      backtestIndustry.allSelectedIndustry.sort()
+    ) {
+      console.log(1);
+      setSelectIndustries(true);
+    } else {
+      console.log(2);
+      setSelectIndustries(false);
+    }
   };
 
   // X버튼 누르면 모달 사라지게
@@ -87,6 +125,7 @@ const SelectIndustries = (props: Props) => {
               <SelectIndustry
                 id={industry.id}
                 industryName={industry.industryName}
+                onCheckSelected={checkSelectedHandler}
               />
             </li>
           );
