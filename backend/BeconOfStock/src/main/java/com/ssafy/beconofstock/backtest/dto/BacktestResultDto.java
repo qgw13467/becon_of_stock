@@ -25,7 +25,7 @@ public class BacktestResultDto {
     private Double marketSortino;
 
     //상관계수
-    private Double correlation;
+//    private Double correlation;
 
     //최대 하락폭
     private Double strategyMDD;
@@ -40,8 +40,8 @@ public class BacktestResultDto {
     private Integer totalMonth;
 
     //주기별 수익률 평균
-    private Double strategyRevenueAvg;
-    private Double marketRevenueAvg;
+//    private Double strategyRevenueAvg;
+//    private Double marketRevenueAvg;
 
 
 }
