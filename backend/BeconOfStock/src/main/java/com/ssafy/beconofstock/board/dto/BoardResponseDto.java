@@ -5,10 +5,11 @@ import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -71,16 +72,13 @@ public class BoardResponseDto {
 
     public StrategyDetailDto strategyDetailDto(Strategy strategy, List<Indicator> indicators) {
 
-        return  StrategyDetailDto.builder()
+        return StrategyDetailDto.builder()
                 .id(strategy.getId())
                 .title(strategy.getTitle())
-                .sharpe(strategy.getSharpe())
-                .cagr(strategy.getCagr())
-                .cumulativeReturn(strategy.getCumulativeReturn())
                 .memberNickname(strategy.getMember().getNickname())
                 .memberId((strategy.getMember().getId()))
                 .indicators(indicators)
-                .access(strategy.getAccessType())
+//                .access(strategy.getAccessType())
                 .build();
     }
 }
