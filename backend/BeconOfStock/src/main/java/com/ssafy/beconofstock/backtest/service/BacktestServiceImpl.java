@@ -15,15 +15,16 @@ import com.ssafy.beconofstock.backtest.repository.TradeRepository;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BacktestServiceImpl implements BacktestService {
 
     private final TradeRepository tradeRepository;
@@ -42,16 +43,20 @@ public class BacktestServiceImpl implements BacktestService {
         List<Double> changeRates = new ArrayList<>();
 
 
-
         //기간동안 매수가 생기는 연도,월
         List<YearMonth> rebalanceYearMonth = getRebalanceYearMonth(backtestIndicatorsDto);
-
         //시장 리벨런싱별 수익률
         List<ChangeRateDto> marketChangeRateDtos = getKospiList(backtestIndicatorsDto, rebalanceYearMonth);
+        for (int i = 0; i < marketChangeRateDtos.size(); i++) {
+            System.out.println("market: " + marketChangeRateDtos.get(i).getChageRate());
+        }
         List<Double> marketChangeRates = changDtoToDoubleList(marketChangeRateDtos);
 
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
+        for (Indicator indicator : indicators) {
+            System.out.println("indocators: " + indicator.getTitle());
+        }
 
         for (YearMonth yearMonth : rebalanceYearMonth) {
 
@@ -62,6 +67,10 @@ public class BacktestServiceImpl implements BacktestService {
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
+            for (Trade trade : buyList) {
+                System.out.println("trade start : " + trade.getCorname() + ", price : " + trade.getCorclose());
+            }
+
             //이번분기 전략
             Double revenue = getRevenue(yearMonth, buyList, backtestIndicatorsDto.getRebalance());
 
@@ -69,31 +78,42 @@ public class BacktestServiceImpl implements BacktestService {
             changeRates.add(revenue);
         }
 
+        for (ChangeRateDto changeRateDto : changeRateDtos) {
+            System.out.println("change rate : " + changeRateDto.getChageRate());
+        }
+
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         result.setStrategyValues(cumulativeReturn);
 
+        for (ChangeRateDto changeRateDto : cumulativeReturn) {
+            System.out.println("cumulativeReturn : " + changeRateDto.getChageRate());
+        }
+
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
         result.setMarketValues(marketCumulativeReturn);
+        for (ChangeRateDto changeRateDto : marketCumulativeReturn) {
+            System.out.println("marketCumulativeReturn : " + changeRateDto.getChageRate());
+        }
 
         //전략 지표들 계산
 
         result.setChangeRate(changeRateDtos);
         result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChageRate());
         result.setStrategyCagr(getAvg(changeRates));
-        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
-        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
+//        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
+//        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
         result.setStrategyRevenue(winCount(changeRates));
         result.setStrategyMDD(getMdd(cumulativeReturn));
-
-        //시장 지표들 계산
-        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size()-1).getChageRate());
+//
+//        //시장 지표들 계산
+        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChageRate());
         result.setMarketCagr(getAvg(marketChangeRates));
-        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
-        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+//        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
+//        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketRevenue(winCount(marketChangeRates));
         result.setMarketMDD(getMdd(marketCumulativeReturn));
-
+//
         result.setTotalMonth(rebalanceYearMonth.size());
 
         return result;
@@ -129,6 +149,7 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
 
+    //todo fix logic
     private Double getMdd(List<ChangeRateDto> cumulativeReturn) {
         double mdd = 100D;
         double max = 0D;
@@ -210,6 +231,7 @@ public class BacktestServiceImpl implements BacktestService {
         List<YearMonth> result = new ArrayList<>();
         int thisYear = startYear;
         int thisMonth = startMonth;
+        result.add(new YearMonth(thisYear, thisMonth));
         for (int start = 0; start < getRebalanceCount(startYear, startMonth, endYear, endMonth, rebalance); start++) {
             thisMonth += rebalance;
             if (thisMonth > 12) {
@@ -426,15 +448,25 @@ public class BacktestServiceImpl implements BacktestService {
         List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
 
         List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
+        for (Trade trade : byYearAndMonthAndCorcodeList) {
+            System.out.println("trade end : " + trade.getCorname() + ", " + trade.getCorclose());
+        }
 
         for (Trade trade : list) {
-            Trade find = findByCorcode(trade.getCorname(), byYearAndMonthAndCorcodeList);
+            Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
             if (find == null) {
                 dist.add(0D);
                 continue;
             }
-            dist.add((1.0 * find.getCorclose() / trade.getCorclose()));
+
+            System.out.println("find: " + find.getCorname() + ", " + find.getCorclose() + ", trade : "
+                    + trade.getCorname() + ", " + trade.getCorclose());
+
+            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
+            dist.add(temp);
         }
+
+        System.out.println("dist: " + dist);
         result = getAvg(dist);
         return result;
     }
