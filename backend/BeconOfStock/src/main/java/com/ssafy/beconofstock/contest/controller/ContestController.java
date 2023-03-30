@@ -1,8 +1,7 @@
 package com.ssafy.beconofstock.contest.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
-import com.ssafy.beconofstock.contest.dto.ContestRequestDto;
-import com.ssafy.beconofstock.contest.dto.ContestResponseDto;
+import com.ssafy.beconofstock.contest.dto.*;
 import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.contest.repository.ContestRepository;
@@ -114,20 +113,20 @@ public class ContestController {
         return new ResponseEntity<>(contest, HttpStatus.OK);
     }
 
-//    @GetMapping("/{contestId}")
-//    @ApiOperation(value = "대회 현황 조회")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "성공"),
-//            @ApiResponse(code = 401, message = "인증 실패"),
-//            @ApiResponse(code = 404, message = "사용자 없음"),
-//            @ApiResponse(code = 500, message = "서버 오류")
-//    })
-//    public ResponseEntity<Page<ContestMember>> getContestStatus(@PathVariable Long contestId, Pageable pageable) {
-//
-//        return new ResponseEntity<>(contestMemberService.getContestStatus(contestId, pageable), HttpStatus.OK);
-//    }
+    @GetMapping("/status/{contestId}")
+    @ApiOperation(value = "대회 현황 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<Page<ContestMemberDto>> getContestStatus(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestId, Pageable pageable) {
 
-    @PostMapping("/{contestId}/{strategyId}")   // contest에 query문 작성하기
+        return new ResponseEntity<>(contestMemberService.getContestStatus(user, contestId, pageable), HttpStatus.OK);
+    }
+
+    @PostMapping("/join")
     @ApiOperation(value = "대회 참가")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -135,8 +134,8 @@ public class ContestController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> joinContestMember(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestId, @PathVariable Long strategyId){
-        ContestMember contestMembers = contestMemberService.joinContestMember(user, contestId, strategyId);
+    public ResponseEntity<?> joinContestMember(@AuthenticationPrincipal OAuth2UserImpl user, @RequestBody ContestMemberJoinReqDto contestMemberJoinReqDto){
+        ContestMemberJoinResDto contestMembers = contestMemberService.joinContestMember(user, contestMemberJoinReqDto);
         return new ResponseEntity<>(contestMembers, HttpStatus.OK);
     }
 
@@ -150,6 +149,20 @@ public class ContestController {
     })
     public ResponseEntity<?> deleteContest(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestMemberId) {
         contestMemberService.deleteContestMember(user, contestMemberId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/rank/{contestId}")
+    @ApiOperation(value = "랭킹 업데이트", notes = "대회 get 전에 요청 하면 랭킹이 업데이트 됨")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> updateRank(@PathVariable Long contestId) {
+        contestMemberService.findContestMembersByRanking(contestId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

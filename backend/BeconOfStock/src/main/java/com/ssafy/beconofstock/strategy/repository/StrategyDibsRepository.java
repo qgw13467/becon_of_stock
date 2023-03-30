@@ -15,7 +15,5 @@ import java.util.List;
 @Repository
 public interface StrategyDibsRepository extends JpaRepository<StrategyDibs, Long> {
 
-//    @Query("select sd from StrategyDibs sd left join fetch sd.member left join fetch sd.strategy where sd.member=:member")
-//    Page<StrategyDibs> findStrategyDibsByMember(Member member, Pageable pageable);
     Page<StrategyDibs> findByMember(Member member, Pageable pageable);
 }

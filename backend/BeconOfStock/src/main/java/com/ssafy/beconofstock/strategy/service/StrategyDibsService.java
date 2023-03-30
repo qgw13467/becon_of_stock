@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.strategy.dto.StrategyDibsDto;
 import com.ssafy.beconofstock.strategy.entity.StrategyDibs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +27,8 @@ public interface StrategyDibsService {
     /**
      * 나의 찜 전략 리스트
      * @param user
-     * @param page
-     * @param isze
+     * @param pageable
      * @return
      */
-    Page<StrategyDibs> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable);
+    Page<StrategyDibsDto> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable);
 }

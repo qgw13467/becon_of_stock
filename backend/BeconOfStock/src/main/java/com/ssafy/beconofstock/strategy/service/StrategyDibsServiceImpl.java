@@ -2,6 +2,7 @@ package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.strategy.dto.StrategyDibsDto;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyDibs;
 import com.ssafy.beconofstock.strategy.repository.StrategyDibsRepository;
@@ -46,8 +47,13 @@ public class StrategyDibsServiceImpl implements StrategyDibsService{
     }
 
     @Override
-    public Page<StrategyDibs> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable) {
-        Page<StrategyDibs> result = strategyDibsRepository.findByMember(user.getMember(), pageable);
+    public Page<StrategyDibsDto> getStrategyDibsMyList(OAuth2UserImpl user, Pageable pageable) {
+        Page<StrategyDibs> dibs = strategyDibsRepository.findByMember(user.getMember(), pageable);
+
+        PageImpl<StrategyDibsDto> result = new PageImpl<>(
+                dibs.stream().map(StrategyDibsDto::new).collect(Collectors.toList()),
+                pageable,
+                dibs.getTotalPages());
         return result;
     }
 }
