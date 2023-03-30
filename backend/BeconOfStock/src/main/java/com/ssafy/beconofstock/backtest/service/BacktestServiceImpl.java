@@ -482,7 +482,7 @@ public class BacktestServiceImpl implements BacktestService {
             double temp = (find.getMarcap().doubleValue()) / (trade.getMarcap().doubleValue());
             if(temp > 2){
                 double check = find.getCorclose().doubleValue()/trade.getCorclose().doubleValue();
-                if(Math.abs(temp/check) >0.2){
+                if(Math.abs(temp/check -1) >0.3){
                      continue;
                 }
             }
