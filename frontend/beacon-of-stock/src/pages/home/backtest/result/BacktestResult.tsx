@@ -1,5 +1,57 @@
 // import React from 'react';
 
+// type resultValues = {
+//   changeRate: number;
+//   year: number;
+//   month: number;
+// }[];
+
+// const marketValues: resultValues = [
+//   {
+//     changeRate: 1.1,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 1.3,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 1.3,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 2,
+//     year: 2021,
+//     month: 2,
+//   },
+// ];
+
+// const strategyValues: resultValues = [
+//   {
+//     changeRate: 1.4,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 1.3,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 1.8,
+//     year: 2021,
+//     month: 2,
+//   },
+//   {
+//     changeRate: 10,
+//     year: 2021,
+//     month: 2,
+//   },
+// ];
+
 // const BacktestResult = () => {
 //   return (
 //     <React.Fragment>
@@ -10,85 +62,88 @@
 
 // export default BacktestResult;
 
-import * as React from 'react';
+// import "./styles.css";
+// import React from "react";
 import {
-  XYPlot,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
-  LineSeries,
-  Crosshair,
-} from 'react-vis';
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
-interface DataPoint {
-  x: number;
-  y: number;
-}
+const data = [
+  {
+    name: 'Page A',
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: 'Page B',
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: 'Page C',
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: 'Page D',
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: 'Page E',
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: 'Page F',
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: 'Page G',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
 
-type Data = [DataPoint[], DataPoint[]];
-
-interface Props {}
-
-interface State {
-  crosshairValues: DataPoint[];
-}
-
-export default class DynamicCrosshair extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      crosshairValues: [],
-    };
-  }
-
-  /**
-   * Event handler for onMouseLeave.
-   * @private
-   */
-  private _onMouseLeave = () => {
-    this.setState({ crosshairValues: [] });
-  };
-
-  /**
-   * Event handler for onNearestX.
-   * @param {Object} value Selected value.
-   * @param {index} index Index of the value in the data array.
-   * @private
-   */
-  private _onNearestX = (value: DataPoint, { index }: { index: number }) => {
-    const { crosshairValues } = this.state;
-    this.setState({
-      crosshairValues: [...crosshairValues, ...this.DATA.map((d) => d[index])],
-    });
-  };
-
-  private readonly DATA: Data = [
-    [
-      { x: 1, y: 10 },
-      { x: 2, y: 7 },
-      { x: 3, y: 15 },
-    ],
-    [
-      { x: 1, y: 20 },
-      { x: 2, y: 5 },
-      { x: 3, y: 15 },
-    ],
-  ];
-
-  public render() {
-    const { crosshairValues } = this.state;
-
-    return (
-      <XYPlot onMouseLeave={this._onMouseLeave} width={300} height={300}>
-        <VerticalGridLines />
-        <HorizontalGridLines />
-        <XAxis />
-        <YAxis />
-        <LineSeries onNearestX={this._onNearestX} data={this.DATA[0]} />
-        <LineSeries data={this.DATA[1]} />
-        <Crosshair values={crosshairValues} className={'test-class-name'} />
-      </XYPlot>
-    );
-  }
+export default function BacktestResult() {
+  return (
+    <LineChart
+      width={500}
+      height={300}
+      data={data}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 5,
+      }}
+    >
+      <CartesianGrid strokeDasharray='3 3' />
+      <XAxis dataKey='name' />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Line
+        type='monotone'
+        dataKey='pv'
+        stroke='#8884d8'
+        activeDot={{ r: 8 }}
+      />
+      <Line type='monotone' dataKey='uv' stroke='#82ca9d' />
+    </LineChart>
+  );
 }
