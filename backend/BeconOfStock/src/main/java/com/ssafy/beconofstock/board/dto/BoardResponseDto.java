@@ -5,16 +5,19 @@ import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class BoardResponseDto {
     @ApiModelProperty(example = "게시글 번호")
     Long boardId;
+    @ApiModelProperty(example = "작성자 id")
+    Long memberId;
     @ApiModelProperty(example = "작성자 닉네임")
     String nickname;
     @ApiModelProperty(example = "조회수")
@@ -39,6 +42,7 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board, List<Indicator> indicators, Boolean likeStatus, Boolean dibStatus) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
+        this.memberId = board.getMember().getId();
         this.nickname = board.getMember().getNickname();
         this.hit = board.getHit();
         this.title = board.getTitle();
@@ -55,6 +59,7 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board, Boolean likeStatus, Boolean dibStatus) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
+        this.memberId = board.getMember().getId();
         this.nickname = board.getMember().getNickname();
         this.hit = board.getHit();
         this.title = board.getTitle();
@@ -67,16 +72,13 @@ public class BoardResponseDto {
 
     public StrategyDetailDto strategyDetailDto(Strategy strategy, List<Indicator> indicators) {
 
-        return  StrategyDetailDto.builder()
+        return StrategyDetailDto.builder()
                 .id(strategy.getId())
                 .title(strategy.getTitle())
-                .sharpe(strategy.getSharpe())
-                .cagr(strategy.getCagr())
-                .cumulativeReturn(strategy.getCumulativeReturn())
                 .memberNickname(strategy.getMember().getNickname())
                 .memberId((strategy.getMember().getId()))
                 .indicators(indicators)
-                .access(strategy.getAccessType())
+//                .access(strategy.getAccessType())
                 .build();
     }
 }

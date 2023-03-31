@@ -39,14 +39,14 @@ public class TestUtil {
     static public Strategy getStrategy(Member member, AccessType accessType){
         return Strategy.builder()
                 .id(1L)
-                .accessType(accessType)
+//                .accessType(accessType)
                 .member(member)
                 .build();
     }
     static public Strategy getStrategy(Long id, Member member){
         return Strategy.builder()
                 .id(id)
-                .accessType(AccessType.PUBLIC)
+//                .accessType(AccessType.PUBLIC)
                 .member(member)
                 .build();
     }

@@ -21,7 +21,7 @@ public class JwtTokenProvider {
     //    @Value("${JWT.SECRET}")
     private String securityKey ="as09df8h0e8fhs0d8fhs08fh0sd8fhse08fhs0ef8hse08fhse08fhse0f8hq08f";
 
-    private final Long shortTokeneExpiredTime = 1000 * 60 * 30L;
+    private final Long shortTokeneExpiredTime = 1000 * 60 * 60 * 24L;
     private final Long longTokenExpiredTime = 1000 * 60 * 60 * 24 * 7L;
 
     public String generateJwtToken(Member member) {
