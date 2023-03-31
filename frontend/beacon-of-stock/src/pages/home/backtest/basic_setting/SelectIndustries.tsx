@@ -65,7 +65,7 @@ const SelectIndustries = (props: Props) => {
   // console.log(backtestIndustry.allSelectedIndustry);
 
   return (
-    <div className='fixed top-[20%] left-[40%] w-[20%] p-[1%] overflow-hidden bg-[#FEFEFE] rounded-lg z-10'>
+    <div className='fixed top-[10%] left-[36%] w-[28%] h-[80%] p-[1%] overflow-auto bg-[#FEFEFE] z-10'>
       <div>
         <div className='flex items-center justify-between'>
           <span className='text-xl'>산업 선택</span>
