@@ -13,9 +13,9 @@ const BasicSettings = () => {
     // 리밸런싱 주기
     rebalance: '3개월',
     // 정렬 기준
-    backtestSortType: '시가총액 높은 순',
+    // backtestSortType: '시가총액 높은 순',
     // 정렬 기준 값
-    sortRatio: '20',
+    // sortRatio: '20',
     // 시작 시점
     start: '2000-01',
     // 종료 시점
@@ -27,8 +27,8 @@ const BasicSettings = () => {
     fee,
     maxStocks,
     rebalance,
-    backtestSortType,
-    sortRatio,
+    // backtestSortType,
+    // sortRatio,
     start,
     end,
   } = basicSettings;
@@ -67,6 +67,7 @@ const BasicSettings = () => {
       }
     }
     if (newVal === '') {
+      console.log(0);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -79,6 +80,7 @@ const BasicSettings = () => {
         newVal[newVal.indexOf('.') + 1] === '0')
       // 소수점 표시가 있는 경우 혹은 소수점 아래 첫번째 자리가 0인 경우 그대로
     ) {
+      console.log(newVal);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -87,6 +89,7 @@ const BasicSettings = () => {
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
       newVal = String(parseFloat(newVal));
+      console.log(newVal);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -104,6 +107,7 @@ const BasicSettings = () => {
     // console.log(event.target.value.replace(/[^0-9]/g, ''));
     const newVal = event.target.value.replace(/[^0-9]/g, '');
     if (newVal === '') {
+      console.log(0);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -111,6 +115,7 @@ const BasicSettings = () => {
         };
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 30) {
+      console.log(String(parseFloat(newVal)));
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -127,47 +132,49 @@ const BasicSettings = () => {
     // console.log(event.target.options[event.target.selectedIndex].text);
     // value 값
     // console.log(event.target.value);
+    console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, rebalance: event.target.value };
     });
   };
   // 정렬 기준
-  const backtestSortTypeChangeHandler = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    // value 값
-    // console.log(event.target.value);
-    setBasicSettings((prevState) => {
-      return { ...prevState, backtestSortType: event.target.value };
-    });
-  };
-  // 정렬 기준 값
-  const sortRatioChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    // console.log(event.target.value);
-    // 숫자만 보이도록 정규식 작성
-    // console.log(event.target.value.replace(/[^0-9]/g, ''));
-    const newVal = event.target.value.replace(/[^0-9]/g, '');
-    if (newVal === '') {
-      setBasicSettings((prevState) => {
-        return {
-          ...prevState,
-          sortRatio: '0',
-        };
-      });
-    } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
-      setBasicSettings((prevState) => {
-        return {
-          ...prevState,
-          sortRatio: String(parseFloat(newVal)),
-        };
-      });
-    }
-  };
+  // const backtestSortTypeChangeHandler = (
+  //   event: React.ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   // value 값
+  //   // console.log(event.target.value);
+  //   setBasicSettings((prevState) => {
+  //     return { ...prevState, backtestSortType: event.target.value };
+  //   });
+  // };
+  // // 정렬 기준 값
+  // const sortRatioChangeHandler = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   // console.log(event.target.value);
+  //   // 숫자만 보이도록 정규식 작성
+  //   // console.log(event.target.value.replace(/[^0-9]/g, ''));
+  //   const newVal = event.target.value.replace(/[^0-9]/g, '');
+  //   if (newVal === '') {
+  //     setBasicSettings((prevState) => {
+  //       return {
+  //         ...prevState,
+  //         sortRatio: '0',
+  //       };
+  //     });
+  //   } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
+  //     setBasicSettings((prevState) => {
+  //       return {
+  //         ...prevState,
+  //         sortRatio: String(parseFloat(newVal)),
+  //       };
+  //     });
+  //   }
+  // };
   // 시작 시점
   const startChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value);
+    console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, start: event.target.value };
     });
@@ -175,6 +182,7 @@ const BasicSettings = () => {
   // 종료 시점
   const endChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value);
+    console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, end: event.target.value };
     });
