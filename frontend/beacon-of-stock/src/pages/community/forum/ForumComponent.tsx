@@ -13,7 +13,7 @@ interface ForumComponentProps {
 
 export const ForumComponent = ({ location }: ForumComponentProps) => {
   const { page } = usePageStore();
-  console.log(page);
+  // console.log(page);
   const pageNumber = page - 1;
   const pathState = location.state;
   // console.log(location);
@@ -41,7 +41,7 @@ export const ForumComponent = ({ location }: ForumComponentProps) => {
             authentication: token,
           },
           params: {
-            page: 0,
+            page: page - 1,
           },
         })
         .then(({ data }) => {
@@ -68,6 +68,20 @@ export const ForumComponent = ({ location }: ForumComponentProps) => {
           // setPageNumber(data.data.pageNumber);
         })
         .catch((res) => console.log(res));
+      axios_api
+        .get(`/contests/status/${pName}`, {
+          headers: {
+            authentication: token,
+          },
+        })
+        .then((data) => {
+          console.log(data);
+          // setContent(data.data.content);
+          // setTotalPage(data.data.totalPages);
+          // setTotalElement(data.data.totalElements);
+          // setPageNumber(data.data.pageNumber);
+        })
+        .catch((res) => console.log(res));
     }
   }, [page, token, totalPage, pName]);
 
@@ -81,7 +95,7 @@ export const ForumComponent = ({ location }: ForumComponentProps) => {
         <p>게시판 리스트 입니다.</p>
         <Link to='/community/write'>글 쓰기</Link>
       </article>
-      <article className='grid justify-between grid-cols-11 my-4 '>
+      <article className='grid justify-between grid-cols-11 my-4'>
         <p className='text-center'>번호</p>
         <p className='text-center col-span-4'>제목</p>
         <p className='text-center col-span-2'>글쓴이</p>
@@ -89,7 +103,7 @@ export const ForumComponent = ({ location }: ForumComponentProps) => {
         <p className='text-center'>조회</p>
         <p className='text-center'>추천</p>
       </article>
-      <article>
+      <article className='text-sm'>
         {content.map((item, index) => (
           <ForumBoard key={index} item={item} />
         ))}

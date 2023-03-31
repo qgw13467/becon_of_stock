@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePageStore } from '../store/store';
 
 type pagebationProps = {
@@ -48,6 +48,10 @@ export const Pagenation = ({ totalPage }: pagebationProps) => {
     setFirst(0);
     setEnd(Math.min(allPage, 10));
   }, [allPage]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   return (
     <article className='flex justify-center m-auto p-auto'>
       <button
@@ -62,7 +66,10 @@ export const Pagenation = ({ totalPage }: pagebationProps) => {
         {generatePageNumbers().map((pageNumber) => (
           <button
             key={pageNumber}
-            onClick={() => setPage(pageNumber)}
+            onClick={() => {
+              setPage(pageNumber);
+              scrollToTop();
+            }}
             className={`my-4 mx-1 px-1 text-lg h-12 w-12 border-2 rounded-sm ${
               page === pageNumber
                 ? 'border-[#6773BB] text-[#6773BB]'
