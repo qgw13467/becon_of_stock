@@ -44,7 +44,7 @@ public class ContestMemberServiceImpl implements ContestMemberService{
     @Override
     public Boolean deleteContestMember(OAuth2UserImpl user, Long contestMemberId) {
         ContestMember contestMember = contestMemberRepository.findById(contestMemberId).orElse(null);
-        if (!contestMember.getMember().getId().equals(user.getMember().getId())) {
+        if (contestMember == null || !contestMember.getMember().getId().equals(user.getMember().getId())) {
             return false;
         }
         contestMemberRepository.delete(contestMember);
