@@ -24,7 +24,7 @@ public interface ContestMemberRepository extends JpaRepository<ContestMember, Lo
     @Query("SELECT cm FROM ContestMember cm WHERE cm.member=:member AND cm.contest.id=:contestId")
     Page<ContestMember> findByContestId(Member member, Long contestId, Pageable pageable);
 
-    @Query("SELECT cm FROM ContestMember cm WHERE cm.contest.id=:contestId ORDER BY cm.strategy.cumulativeReturn DESC")
-    List<ContestMember> findContestMemberByRanking(@Param("contestId") Long contestId);
+//    @Query("SELECT cm FROM ContestMember cm WHERE cm.contest.id=:contestId ORDER BY cm.strategy.cumulativeReturn DESC")
+//    List<ContestMember> findContestMemberByRanking(@Param("contestId") Long contestId);
 
 }
