@@ -100,6 +100,7 @@ public class BacktestServiceImpl implements BacktestService {
         result.setMarketMDD(getMdd(marketCumulativeReturn));
 
         result.setTotalMonth(rebalanceYearMonth.size());
+        result.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         System.out.println(history.size());
