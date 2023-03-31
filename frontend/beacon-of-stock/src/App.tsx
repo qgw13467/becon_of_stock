@@ -41,6 +41,7 @@ const App = () => {
               <Route path='/myProfile' element={<MyProfile />} />
               <Route path='/strategy' element={<Strategy />} />
               <Route path='/bookmark' element={<Bookmark />} />
+              <Route path='/index' element={<LoginIndex />} />
             </>
           ) : (
             <>

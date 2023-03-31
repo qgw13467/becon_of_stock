@@ -19,7 +19,7 @@ export const CommunityNav = () => {
         },
       })
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         setContent(res.data.content);
         // console.log(content);
       })
