@@ -62,14 +62,14 @@ public class ContestMemberServiceImpl implements ContestMemberService{
         return result;
     }
 
-    @Override
-    public void findContestMembersByRanking(Long contestId) {
-        List<ContestMember> contestMembers = contestMemberRepository.findContestMemberByRanking(contestId);
-        for (int i = 1; i < contestMembers.size(); i++) {
-            ContestMember cm = contestMembers.get(i);
-            cm.setRanking((long) (i));
-        }
-    }
+//    @Override
+//    public void findContestMembersByRanking(Long contestId) {
+//        List<ContestMember> contestMembers = contestMemberRepository.findContestMemberByRanking(contestId);
+//        for (int i = 1; i < contestMembers.size(); i++) {
+//            ContestMember cm = contestMembers.get(i);
+//            cm.setRanking((long) (i));
+//        }
+//    }
 
 
 }

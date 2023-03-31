@@ -37,5 +37,5 @@ public interface ContestMemberService {
      */
     Page<ContestMemberDto> getContestStatus(OAuth2UserImpl user, Long contestId, Pageable pageable);
 
-    void findContestMembersByRanking(Long contestId);
+//    void findContestMembersByRanking(Long contestId);
 }
