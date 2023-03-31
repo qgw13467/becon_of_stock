@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
 
     }
 
-    public BoardListResponseDto getBoardList(int page, boolean direction, String property) {
+    public Page<BoardListResponseDto> getBoardList(int page, boolean direction, String property) {
         List<Sort.Order> sorts = new ArrayList<>();
         if (direction) {
             sorts.add(Sort.Order.asc(property));
@@ -80,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
         }
         Pageable pageable = PageRequest.of(page, 30, Sort.by(sorts));
         Page<Board> boardList = boardRepository.findAll(pageable);
-        return new BoardListResponseDto(boardList);
+        return boardList.map(BoardListResponseDto::new);
     }
 
     public BoardResponseDto getBoardDetail(Long boardId, OAuth2UserImpl user) {
@@ -295,27 +295,27 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 찜 목록 조회
-    public BoardListResponseDto getBoardDibsList(int page, OAuth2UserImpl user) {
+    public Page<BoardListResponseDto> getBoardDibsList(int page, OAuth2UserImpl user) {
 
         Sort.Order dibsOrder = Sort.Order.desc("dibs.id");
         Pageable pageable = PageRequest.of(page, 20, Sort.by(dibsOrder));
         Page<Board> dibsList = boardRepository.findBoardsByDibs(user.getMember(), pageable);
-        return new BoardListResponseDto(dibsList);
+        return dibsList.map(BoardListResponseDto::new);
     }
 
     // 게시판 검색
-    public BoardListResponseDto searchBoard(int page, String title, String content, String nickname) {
+    public Page<BoardListResponseDto> searchBoard(int page, String title, String content, String nickname) {
         Sort.Order searchOrder = Sort.Order.desc("id");
         Pageable pageable = PageRequest.of(page, 20, Sort.by(searchOrder));
         if (title != null) {
             Page<Board> searchList = boardRepository.findBoardByTitleContaining(title, pageable);
-            return new BoardListResponseDto(searchList);
+            return searchList.map(BoardListResponseDto::new);
         } else if (content != null) {
             Page<Board> searchList = boardRepository.findBoardByContentContaining(content, pageable);
-            return new BoardListResponseDto(searchList);
+            return searchList.map(BoardListResponseDto::new);
         }
         Page<Board> searchList = boardRepository.findBoardByNickname(nickname, pageable);
-        return new BoardListResponseDto(searchList);
+        return searchList.map(BoardListResponseDto::new);
 
     }
 
