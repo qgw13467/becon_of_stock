@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SelectIndustries from './SelectIndustries';
 import SelectIndustriesBackground from './SelectIndustriesBackground';
 
-const BasicSettings = () => {
+interface Props {
+  onUpdateSettings: (updatedSettings: {
+    industries: string;
+    fee: string;
+    maxStocks: string;
+    rebalance: string;
+    start: string;
+    end: string;
+  }) => void;
+}
+
+const BasicSettings = (props: Props) => {
   const [basicSettings, setBasicSettings] = useState({
     // 산업
     industries: '산업 보기',
@@ -19,7 +30,7 @@ const BasicSettings = () => {
     // 시작 시점
     start: '2000-01',
     // 종료 시점
-    end: '2022-12',
+    end: '2021-12',
   });
 
   const {
@@ -67,7 +78,7 @@ const BasicSettings = () => {
       }
     }
     if (newVal === '') {
-      console.log(0);
+      // console.log(0);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -80,7 +91,7 @@ const BasicSettings = () => {
         newVal[newVal.indexOf('.') + 1] === '0')
       // 소수점 표시가 있는 경우 혹은 소수점 아래 첫번째 자리가 0인 경우 그대로
     ) {
-      console.log(newVal);
+      // console.log(newVal);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -89,7 +100,7 @@ const BasicSettings = () => {
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 100) {
       newVal = String(parseFloat(newVal));
-      console.log(newVal);
+      // console.log(newVal);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -107,7 +118,7 @@ const BasicSettings = () => {
     // console.log(event.target.value.replace(/[^0-9]/g, ''));
     const newVal = event.target.value.replace(/[^0-9]/g, '');
     if (newVal === '') {
-      console.log(0);
+      // console.log(0);
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -115,7 +126,7 @@ const BasicSettings = () => {
         };
       });
     } else if (0 <= Number(newVal) && Number(newVal) <= 30) {
-      console.log(String(parseFloat(newVal)));
+      // console.log(String(parseFloat(newVal)));
       setBasicSettings((prevState) => {
         return {
           ...prevState,
@@ -132,7 +143,7 @@ const BasicSettings = () => {
     // console.log(event.target.options[event.target.selectedIndex].text);
     // value 값
     // console.log(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, rebalance: event.target.value };
     });
@@ -174,7 +185,7 @@ const BasicSettings = () => {
   // 시작 시점
   const startChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, start: event.target.value };
     });
@@ -182,11 +193,15 @@ const BasicSettings = () => {
   // 종료 시점
   const endChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setBasicSettings((prevState) => {
       return { ...prevState, end: event.target.value };
     });
   };
+
+  useEffect(() => {
+    props.onUpdateSettings(basicSettings);
+  }, [basicSettings]);
 
   return (
     <React.Fragment>
