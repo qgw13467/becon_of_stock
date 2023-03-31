@@ -7,13 +7,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Setter
-public class ContestMember extends BaseEntity {
+@Entity
+public class ContestRank extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,5 +28,9 @@ public class ContestMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Strategy strategy;
 
-//    private Long ranking;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ContestMember contestMember;
+
+    private Long ranking;
+
 }

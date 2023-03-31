@@ -36,7 +36,7 @@ public class ContestMemberServiceImpl implements ContestMemberService{
                 .member(user.getMember())
                 .contest(contestRepository.findById(contestMemberJoinReqDto.getContestId()).orElseThrow(() -> new NotFoundException()))
                 .strategy(strategyRepository.findById(contestMemberJoinReqDto.getStrategyId()).orElseThrow(() -> new NotFoundException()))
-                .ranking(999999999999999999L)
+//                .ranking(999999999999999999L)
                 .build();
         return new ContestMemberJoinResDto(contestMemberRepository.save(contestMember));
     }
