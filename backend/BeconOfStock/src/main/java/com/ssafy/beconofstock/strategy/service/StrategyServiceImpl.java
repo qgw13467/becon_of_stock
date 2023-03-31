@@ -138,7 +138,7 @@ public class StrategyServiceImpl implements StrategyService {
     public void addStrategy(Member member, StrategyAddDto strategyAddDto) {
 
         // 전략 저장 - id get
-        Strategy strategy = new Strategy(member, strategyAddDto.getTitle());
+        Strategy strategy = new Strategy(member, strategyAddDto);
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
@@ -194,9 +194,10 @@ public class StrategyServiceImpl implements StrategyService {
             strategyIndicatorRepository.saveAll(changed);
         }
 
-        if (strategyAddDto.getTitle() != null) {
-            strategy.setTitle(strategyAddDto.getTitle());
-        }
+        strategy.setByStrategyAddDto(strategyAddDto);
+
+
+
 //        if (strategyAddDto.getAccess() != null) {
 //            strategy.setAccessType(strategyAddDto.getAccess());
 //        }
