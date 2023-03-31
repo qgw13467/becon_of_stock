@@ -2,13 +2,11 @@ package com.ssafy.beconofstock.backtest.service;
 
 
 import com.ssafy.beconofstock.backtest.dto.*;
+import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
 import com.ssafy.beconofstock.backtest.entity.Kospi;
 import com.ssafy.beconofstock.backtest.entity.Trade;
-import com.ssafy.beconofstock.backtest.repository.FinanceRepository;
-import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
-import com.ssafy.beconofstock.backtest.repository.KospiRepository;
-import com.ssafy.beconofstock.backtest.repository.TradeRepository;
+import com.ssafy.beconofstock.backtest.repository.*;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,7 @@ public class BacktestServiceImpl implements BacktestService {
     private final TradeRepository tradeRepository;
     private final FinanceRepository financeRepository;
     private final IndicatorRepository indicatorRepository;
+    private final BackIndustryRepository backIndustryRepository;
     private final InterestRateRepository interestRateRepository;
     private final KospiRepository kospiRepository;
 
@@ -52,16 +51,21 @@ public class BacktestServiceImpl implements BacktestService {
 
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
-//        for (Indicator indicator : indicators) {
-//            System.out.println("indocators: " + indicator.getTitle());
-//        }
+        List<Industry> industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        List<Industry> industryAllList = backIndustryRepository.findAll();
 
         for (YearMonth yearMonth : rebalanceYearMonth) {
+            // 산업의 배열의 길이가 DB의 산업군 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
+            List<Trade> trades;
+            if (industries.size() != industryAllList.size()) {
+                // 산업군 체크 한 회사 목록
+                trades = tradeRepository.findByYearAndMonthAndIndustryList(yearMonth.getYear(), yearMonth.getMonth(), industries);
+            }else{
+                //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
+                //이번 분기 매수가 가능한 회사목록
+                trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
+            }
 
-            //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
-            //이번 분기 매수가 가능한 회사목록
-            List<Trade> trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
-            // 산업의 배열의 길이가 DB의 산업 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
@@ -72,23 +76,12 @@ public class BacktestServiceImpl implements BacktestService {
             changeRates.add(revenue);
         }
 
-//        for (ChangeRateDto changeRateDto : changeRateDtos) {
-//            System.out.println("change rate : " + changeRateDto.getChangeRate());
-//        }
-
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         result.setStrategyValues(cumulativeReturn);
 
-//        for (ChangeRateDto changeRateDto : cumulativeReturn) {
-//            System.out.println("cumulativeReturn : " + changeRateDto.getChangeRate());
-//        }
-
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
         result.setMarketValues(marketCumulativeReturn);
-//        for (ChangeRateDto changeRateDto : marketCumulativeReturn) {
-//            System.out.println("marketCumulativeReturn : " + changeRateDto.getChangeRate());
-//        }
 
         //전략 지표들 계산
 
@@ -106,8 +99,8 @@ public class BacktestServiceImpl implements BacktestService {
         result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
         result.setMarketRevenue(winCount(marketChangeRates));
-
         result.setMarketMDD(getMdd(marketCumulativeReturn));
+
         result.setTotalMonth(rebalanceYearMonth.size());
 
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -198,7 +191,6 @@ public class BacktestServiceImpl implements BacktestService {
     private Double getSharpe(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         Double deviation = getDeviation(changeRate);
-//        System.out.println("diviation : " + deviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / deviation;
         return Math.abs(result);
@@ -207,7 +199,6 @@ public class BacktestServiceImpl implements BacktestService {
     //소티노 계산
     private Double getSortino(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
         Double nagativeDeviation = getNagativeDeviation(changeRate);
-//        System.out.println("nagativeDeviation : " + nagativeDeviation);
         Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
         return Math.abs(result);
@@ -309,7 +300,6 @@ public class BacktestServiceImpl implements BacktestService {
     }
 
     private Double getNagativeDeviation(List<Double> list) {
-//        System.out.println("list: " + list.toString());
         Double avg = getAvg(list);
         Double sum = 0D;
         for (Double rate : list) {

@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.backtest.repository;
 
+import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.backtest.entity.Trade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     @Query("SELECT tr FROM Trade tr WHERE tr.year = :year AND tr.month = :month AND tr.corcode IN (:corcodes)")
     List<Trade> findByYearAndMonthAndCorcodeList(@Param("year") Integer year, @Param("month") Integer month,
                                                  @Param("corcodes")List<String> corcodes);
+
+    @Query("SELECT tr FROM Trade tr WHERE tr.year = :year AND tr.month = :month AND tr.industry IN (:industry)")
+    List<Trade> findByYearAndMonthAndIndustryList(@Param("year") Integer year, @Param("month") Integer month,
+                                                 @Param("industry")List<Industry> industries);
 }
