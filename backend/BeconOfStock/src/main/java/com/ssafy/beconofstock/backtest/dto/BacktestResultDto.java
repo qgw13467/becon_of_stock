@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.backtest.dto;
 
+import com.ssafy.beconofstock.strategy.entity.Indicator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +45,8 @@ public class BacktestResultDto {
     private Integer strategyRevenue;
     private Integer marketRevenue;
     private Integer totalMonth;
+
+    List<Long> indicators;
 
     //주기별 수익률 평균
 //    private Double strategyRevenueAvg;
