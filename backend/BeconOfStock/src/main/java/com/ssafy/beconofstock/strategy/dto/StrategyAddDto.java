@@ -20,6 +20,16 @@ public class StrategyAddDto {
     // 선택한 지표 저장
     List<Long> indicators;
 
+    private Double strategyCumulativeReturn;
+    private Double strategyCagr;
+    private Double strategySharpe;
+    private Double strategySortino;
+    private Double strategyMDD;
+    //
+
+    private Integer strategyRevenue;
+    private Integer totalMonth;
+
 //    private AccessType access;
 
 
