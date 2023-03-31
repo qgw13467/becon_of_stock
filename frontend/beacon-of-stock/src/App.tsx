@@ -9,7 +9,7 @@ import { WriteCommu } from './pages/community/WriteCommu';
 import Detail from './pages/community/Detail';
 import { LoginIndex } from './component/login/LoginIndex';
 import { Contests } from './pages/community/contests/Contests';
-import { CommunityDibs } from './pages/community/CommunityDibs';
+import { CommunityDibs } from './pages/community/Dibs/CommunityDibs';
 import Login from './component/login/Login';
 import { Bookmark } from './pages/profile/bookmark/Bookmark';
 import { MyProfile } from './pages/profile/MyProfile';

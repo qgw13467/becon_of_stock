@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom';
-import { ForumComponent } from '../forum/ForumComponent';
 
 export const Contests = () => {
   const location = useLocation();
@@ -11,7 +10,6 @@ export const Contests = () => {
         대회 게시판
       </p>
       <p>{location.state}</p>
-      <ForumComponent location={location} />
     </article>
   );
 };
