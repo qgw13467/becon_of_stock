@@ -17,6 +17,17 @@ export const useLoginStore = create<loginState>((set) => ({
   },
 }));
 
+interface pageState {
+  page: number;
+  setPage: (by: number) => void;
+}
+export const usePageStore = create<pageState>((set) => ({
+  page: 1,
+  setPage: (by) => {
+    set(() => ({ page: by }));
+  },
+}));
+
 // Backtest
 
 // industries

@@ -3,7 +3,7 @@ import { ForumComponent } from '../forum/ForumComponent';
 
 export const Contests = () => {
   const location = useLocation();
-  // console.log(location.state); << 이거 써서 Back에 데이터 요청하자!
+  // console.log(location.state); //<< 이거 써서 Back에 데이터 요청하자!
 
   return (
     <article>
@@ -11,7 +11,7 @@ export const Contests = () => {
         대회 게시판
       </p>
       <p>{location.state}</p>
-      <ForumComponent />
+      <ForumComponent location={location} />
     </article>
   );
 };
