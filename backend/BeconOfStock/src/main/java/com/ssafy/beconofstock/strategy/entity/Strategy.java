@@ -30,7 +30,7 @@ public class Strategy extends BaseEntity {
     private Member member;
 
 //    @Enumerated(EnumType.STRING)
-//    private AccessType accessType;
+//    private AccessType accessType
 
 
     public Strategy(Member member, String title) {
