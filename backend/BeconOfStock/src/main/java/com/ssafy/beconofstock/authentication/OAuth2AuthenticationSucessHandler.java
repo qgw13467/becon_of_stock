@@ -32,7 +32,7 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
 
         Cookie cookie1 = new Cookie("Authentication", shortToken);
         cookie1.setPath("/");
-        cookie1.setMaxAge(3600);
+        cookie1.setMaxAge(3600 * 24);
 
         response.addCookie(cookie1);
         response.setStatus(302);
