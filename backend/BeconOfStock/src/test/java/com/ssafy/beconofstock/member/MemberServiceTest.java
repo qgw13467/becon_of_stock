@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.member;
 
+import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.contest.repository.ContestMemberRepository;
 import com.ssafy.beconofstock.member.dto.FollowedDto;
@@ -35,6 +36,8 @@ public class MemberServiceTest {
     private ContestMemberRepository contestMemberRepository;
     @Mock
     private FollowRepository followRepository;
+    @Mock
+    private BoardRepository boardRepository;
     @InjectMocks
     private MemberServiceImpl memberService;
 
@@ -49,7 +52,7 @@ public class MemberServiceTest {
 
         Mockito.lenient().doReturn(contestMembers).when(contestMemberRepository).findByMemberFetch(member);
         Mockito.lenient().doReturn(Optional.of(member)).when(memberRepository).findById(Mockito.any());
-        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository);
+        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository,boardRepository);
 
         //when
         UserInfoDto userInfoDto = memberService.getUserInfoDto(1L);
@@ -69,7 +72,7 @@ public class MemberServiceTest {
         Follow follow = TestUtil.getFollow(1L,following, followed);
 
         Mockito.lenient().doReturn(List.of(follow)).when(followRepository).findByFollowing(following);
-        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository);
+        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository, boardRepository);
         //when
         List<FollowedDto> follows = memberService.getFollows(following);
 
