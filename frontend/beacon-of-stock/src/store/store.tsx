@@ -28,6 +28,17 @@ export const usePageStore = create<pageState>((set) => ({
   },
 }));
 
+interface profileState {
+  profile: any;
+  setProfile: (by: any) => void;
+}
+export const useProfileStore = create<profileState>((set) => ({
+  profile: {},
+  setProfile: (by) => {
+    set(() => ({ profile: by }));
+  },
+}));
+
 // Backtest
 
 // industries

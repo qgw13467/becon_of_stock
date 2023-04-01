@@ -3,17 +3,21 @@ import { Link } from 'react-router-dom';
 // import CountdownTimer from '../CountdownTimer';
 import { useLoginStore } from '../../store/store';
 import { ProfileBox } from './ProfileBox';
+import axios_api from '../../assets/config/Axios';
+import { getCookie } from '../../assets/config/Cookie';
+import { useProfileStore } from '../../store/store';
 
 const Nav: FC = () => {
-  const [initialTimeLeft, setInitialTimeLeft] = useState<number>(30 * 60);
   const logo = require('../../assets/img/bos-logo.png');
   const emptyImg = require('../../assets/img/empty-img.jpg');
-  // 이 부분 주스탠드로 관리.
+  // const [initialTimeLeft, setInitialTimeLeft] = useState<number>(30 * 60);
   const { isLogin } = useLoginStore();
-  const ref = useRef<HTMLDivElement>(null);
-  // 모달 열리고 닫히고 하는 부분
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { profile, setProfile } = useProfileStore();
+  // console.log(profileData.profileImg);
+  //==========모달 열리고 닫히고 하는 부분=====================
   // 모달 boolean 업데이트 시 실행
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => {
     const modalCloseHandler: EventListener = (event: Event) => {
       if (
@@ -33,6 +37,26 @@ const Nav: FC = () => {
       window.removeEventListener('click', modalCloseHandler);
     };
   }, [isOpen]);
+  //=========================================================
+  const token = getCookie('accessToken');
+  useEffect(() => {
+    axios_api
+      .get('user', {
+        headers: {
+          authentication: token,
+        },
+      })
+      .then((res) => {
+        // console.log(res);
+        if (res.status === 200) {
+          // console.log('yes');
+          setProfile(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token]);
 
   const navStyle =
     'text-lg font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';
@@ -69,7 +93,7 @@ const Nav: FC = () => {
               ref={ref}
             >
               <img
-                src={emptyImg}
+                src={profile.profileImg ? profile.profileImg : emptyImg}
                 alt='emptyImg'
                 className='w-[40px] h-[40px] rounded-full cursor-pointer'
               />
