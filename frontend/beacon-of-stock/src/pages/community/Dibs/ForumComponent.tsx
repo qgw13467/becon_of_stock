@@ -56,9 +56,12 @@ export const ForumComponent = () => {
         <div className='border border-[#3E7CBC] p-1 rounded-sm grid content-center'>
           <DibsSelect onSelect={handleSelect} />
         </div>
-        <div className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'>
-          <Link to='/community/write'>글쓰기</Link>
-        </div>
+        <Link
+          to='/community/write'
+          className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+        >
+          <p>글쓰기</p>
+        </Link>
       </article>
       <article className='grid justify-between grid-cols-11 my-4'>
         <p className='text-center'>번호</p>
@@ -75,12 +78,18 @@ export const ForumComponent = () => {
         ))}
       </article>
       <article className='flex justify-end mb-8 mx-10'>
-        <div className='border-2 border-[#3E7CBC] p-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'>
-          <button onClick={scrollToTop}>목록</button>
-        </div>
-        <div className='border-2 border-[#3E7CBC] p-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'>
-          <Link to='/community/write'>글쓰기</Link>
-        </div>
+        <button
+          onClick={scrollToTop}
+          className='border-2 border-[#3E7CBC] p-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
+        >
+          <p>목록</p>
+        </button>
+        <Link
+          to='/community/write'
+          className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+        >
+          <p>글쓰기</p>
+        </Link>
       </article>
       <article>
         <article className='my-8'>
