@@ -73,6 +73,7 @@ public class JwtTokenProvider {
         claims.put("providerId", member.getProviderId());
         claims.put("nickname", member.getNickname());
         claims.put("role", member.getRole());
+        claims.put("profileImg", member.getProfileImg());
 
         return claims;
     }
@@ -83,6 +84,7 @@ public class JwtTokenProvider {
         claims.put("providerId", getProviderId(token));
         claims.put("nickname", getNickname(token));
         claims.put("role", getRole(token));
+        claims.put("profileImg", getProfile(token));
         return claims;
 
     }
@@ -109,7 +111,7 @@ public class JwtTokenProvider {
         return (String) getClaims(token).get("username");
     }
     public Object getProfile(String token){
-        return getClaims(token).get("profile");
+        return getClaims(token).get("profileImg");
     }
 
     public Object getLocaltion(String token){
