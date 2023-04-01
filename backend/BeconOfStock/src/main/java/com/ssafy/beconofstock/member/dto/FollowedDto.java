@@ -12,13 +12,11 @@ public class FollowedDto {
     private String nickname;
     private String profileImg;
 
-
     public FollowedDto(Follow follow) {
 
-        this.userId = follow.getFollowed().getId();
-        this.nickname = follow.getFollowed().getNickname();
-        this.profileImg = follow.getFollowed().getProfileImg();
+        this.userId = follow.getFollowing().getId();
+        this.nickname = follow.getFollowing().getNickname();
+        this.profileImg = follow.getFollowing().getProfileImg();
     }
-
 
 }

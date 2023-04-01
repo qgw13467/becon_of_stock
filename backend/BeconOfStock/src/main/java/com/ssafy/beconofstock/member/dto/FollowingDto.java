@@ -10,9 +10,12 @@ public class FollowingDto {
 
     private Long userId;
     private String nickname;
+    private String profileImg;
 
-    public FollowingDto(Follow follow){
-        this.userId=follow.getFollowing().getId();
-        this.nickname=follow.getFollowing().getNickname();
+    public FollowingDto(Follow follow) {
+        this.userId = follow.getFollowed().getId();
+        this.nickname = follow.getFollowed().getNickname();
+        this.profileImg = follow.getFollowed().getProfileImg();
+
     }
 }

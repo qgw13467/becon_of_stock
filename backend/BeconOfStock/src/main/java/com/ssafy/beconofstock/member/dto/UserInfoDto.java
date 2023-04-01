@@ -18,12 +18,14 @@ public class UserInfoDto {
     private Long followNum;
     private Long followerNum;
     private Long postNum;
-
+    private String profileImg;
     List<ContestHistoryDto> contestHistory;
 
     public UserInfoDto(Member member) {
         this.nickname = member.getNickname();
         this.followNum = member.getFollowNum();
         this.followerNum = member.getFollowerNum();
+        this.profileImg = member.getProfileImg();
     }
+
 }
