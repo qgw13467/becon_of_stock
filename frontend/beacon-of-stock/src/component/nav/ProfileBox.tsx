@@ -3,6 +3,7 @@ import { useLoginStore } from '../../store/store';
 import { removeCookie } from '../../assets/config/Cookie';
 
 export const ProfileBox = () => {
+  // =============로그아웃=================
   const navigate = useNavigate();
   const { setIsLogout } = useLoginStore();
   const handleLogout = () => {
@@ -10,11 +11,14 @@ export const ProfileBox = () => {
     removeCookie('accessToken');
     localStorage.removeItem('timeLeft');
     navigate('/');
-  };
+  }; // 로그아웃 핸들러
+  // ======================================
 
+  // ======스타일========
   const profileStyle =
     'text-center inline cursor-pointer w-[106px] p-1 rounded-lg hover:bg-[#1B4978] hover:text-[#fefefe]';
   const plusColor = `text-center inline cursor-pointer w-[106px] p-1 rounded-lg hover:bg-[#BA4C85] hover:text-[#fefefe] text-[#DE2727]`;
+  // ===================
   return (
     <div
       className='absolute border-2 border-black w-[150px] h-[180px] right-6 top-16 grid justify-center content-around bg-[#fefefe] rounded-lg z-50'
