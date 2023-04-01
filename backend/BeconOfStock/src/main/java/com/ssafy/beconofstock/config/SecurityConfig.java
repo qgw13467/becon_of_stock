@@ -40,7 +40,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/api/oauth2/**").permitAll()
+                .antMatchers("/api/oauth2/authorization/kakao").permitAll()
                 .antMatchers("/login/oauth2/code/kakao").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers(
@@ -84,9 +84,11 @@ public class SecurityConfig {
 
         http.exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
+                    authException.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    accessDeniedException.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 });
         return http.build();
