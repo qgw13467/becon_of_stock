@@ -1,13 +1,8 @@
 package com.ssafy.beconofstock.member.entity;
 
 
-
 import com.ssafy.beconofstock.authentication.provider.OAuthUserInfo;
-import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.config.BaseEntity;
-import com.ssafy.beconofstock.contest.entity.Contest;
-import com.ssafy.beconofstock.contest.entity.ContestMember;
-import com.ssafy.beconofstock.strategy.entity.Strategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,13 +20,6 @@ import javax.persistence.*;
 @DynamicInsert
 public class Member extends BaseEntity {
 
-    public Member(OAuthUserInfo oAuthUserInfo){
-        this.providerId = oAuthUserInfo.getProvider() + "_" + oAuthUserInfo.getProviderId();
-        this.nickname = oAuthUserInfo.getName();
-        this.role = Role.USER;
-    }
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -43,8 +31,14 @@ public class Member extends BaseEntity {
     private Long followerNum;
     @Enumerated(EnumType.STRING)
     private Role role;
-
+    private String profileImg;
     private boolean expired;
+
+    public Member(OAuthUserInfo oAuthUserInfo) {
+        this.providerId = oAuthUserInfo.getProvider() + "_" + oAuthUserInfo.getProviderId();
+        this.nickname = oAuthUserInfo.getName();
+        this.role = Role.USER;
+    }
 
 //    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
 //    private List<Board> boards = new ArrayList<>();
