@@ -53,14 +53,11 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService impleme
 
         if (findUser.isEmpty()) {
             member = new Member(oAuthUserInfo);
-            log.info("============= oAythUserInfo: {}", oAuthUserInfo.getProfileImg());
             memberRepository.save(member);
         } else {
             member = findUser.get();
-            if(oAuthUserInfo.getProfileImg()!=null){
-                member.setProfileImg(oAuthUserInfo.getProfileImg());
-            }
         }
+
         return new OAuth2UserImpl(member, oAuthUserInfo);
     }
     public OAuth2User getOAuth2User(OAuth2UserRequest userRequest) {

@@ -14,7 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 
@@ -29,7 +28,6 @@ public class Member extends BaseEntity {
     public Member(OAuthUserInfo oAuthUserInfo){
         this.providerId = oAuthUserInfo.getProvider() + "_" + oAuthUserInfo.getProviderId();
         this.nickname = oAuthUserInfo.getName();
-        this.profileImg = oAuthUserInfo.getProfileImg();
         this.role = Role.USER;
     }
 
@@ -45,9 +43,6 @@ public class Member extends BaseEntity {
     private Long followerNum;
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @ColumnDefault("")
-    private String profileImg;
 
     private boolean expired;
 
