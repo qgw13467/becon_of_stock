@@ -1,7 +1,6 @@
 package com.ssafy.beconofstock.member.entity;
 
 
-
 import com.ssafy.beconofstock.authentication.provider.OAuthUserInfo;
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.config.BaseEntity;
@@ -25,9 +24,10 @@ import javax.persistence.*;
 @DynamicInsert
 public class Member extends BaseEntity {
 
-    public Member(OAuthUserInfo oAuthUserInfo){
+    public Member(OAuthUserInfo oAuthUserInfo) {
         this.providerId = oAuthUserInfo.getProvider() + "_" + oAuthUserInfo.getProviderId();
         this.nickname = oAuthUserInfo.getName();
+        this.profileImg = (oAuthUserInfo.getProfileImg() != null) ? oAuthUserInfo.getProfileImg().toString() : "";
         this.role = Role.USER;
     }
 
@@ -43,6 +43,9 @@ public class Member extends BaseEntity {
     private Long followerNum;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ColumnDefault("")
+    private String profileImg;
 
     private boolean expired;
 
