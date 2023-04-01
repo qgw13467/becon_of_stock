@@ -1,6 +1,5 @@
 package com.ssafy.beconofstock.testutil;
 
-import ch.qos.logback.classic.util.LoggerNameUtil;
 import com.ssafy.beconofstock.contest.entity.Contest;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.member.entity.Follow;
