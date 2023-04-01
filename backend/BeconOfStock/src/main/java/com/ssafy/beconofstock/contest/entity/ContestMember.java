@@ -28,5 +28,5 @@ public class ContestMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Strategy strategy;
 
-//    private Long ranking;
+    private Long ranking;
 }
