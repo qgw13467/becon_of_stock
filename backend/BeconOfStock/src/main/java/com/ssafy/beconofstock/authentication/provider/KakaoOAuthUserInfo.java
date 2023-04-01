@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class KakaoOAuthUserInfo implements OAuthUserInfo{
+public class KakaoOAuthUserInfo implements OAuthUserInfo {
     private Map<String, Object> attributes;
     private Map<String, Object> attributesAccount;
     private Map<String, Object> attributesProfile;
 
-    public KakaoOAuthUserInfo(Map<String ,Object> attributes){
+    public KakaoOAuthUserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
         this.attributesAccount = (Map<String, Object>) attributes.get("kakao_account");
         this.attributesProfile = (Map<String, Object>) attributesAccount.get("profile");
@@ -28,11 +28,19 @@ public class KakaoOAuthUserInfo implements OAuthUserInfo{
 
     @Override
     public String getName() {
-        return attributesProfile.get("nickname").toString() ;
+        return attributesProfile.get("nickname").toString();
     }
 
     @Override
     public Map<String, Object> getAttributes() {
         return this.attributes;
+    }
+
+    @Override
+    public String getProfileImg() {
+        if (attributesProfile.get("image") == null) {
+            return "";
+        }
+        return attributesProfile.get("image").toString();
     }
 }
