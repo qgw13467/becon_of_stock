@@ -9,6 +9,6 @@ public interface OAuthUserInfo {
     String getProvider();
 
     String getName();
-
+    String getProfileImg();
     Map<String, Object> getAttributes();
 }
