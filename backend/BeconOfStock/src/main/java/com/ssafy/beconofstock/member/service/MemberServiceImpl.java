@@ -7,6 +7,7 @@ import com.ssafy.beconofstock.contest.repository.ContestMemberRepository;
 import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.exception.UserNotFoundException;
 import com.ssafy.beconofstock.member.dto.FollowedDto;
+import com.ssafy.beconofstock.member.dto.FollowingDto;
 import com.ssafy.beconofstock.member.dto.UserInfoDto;
 import com.ssafy.beconofstock.member.entity.Follow;
 import com.ssafy.beconofstock.member.entity.Member;
@@ -37,13 +38,9 @@ public class MemberServiceImpl implements MemberService {
 
         List<ContestMember> contestHistoryDtoList = contestMemberRepository.findByMemberFetch(member);
 
-        List<ContestHistoryDto> contestHistoryDtos = contestHistoryDtoList.stream()
-                .map(ContestHistoryDto::new).collect(Collectors.toList());
+        List<ContestHistoryDto> contestHistoryDtos = contestHistoryDtoList.stream().map(ContestHistoryDto::new).collect(Collectors.toList());
 
-        UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setNickname(member.getNickname());
-        userInfoDto.setFollowNum(member.getFollowNum());
-        userInfoDto.setFollowerNum(member.getFollowerNum());
+        UserInfoDto userInfoDto = new UserInfoDto(member);
         userInfoDto.setContestHistory(contestHistoryDtos);
         userInfoDto.setPostNum(boardRepository.countByMember(member));
         return userInfoDto;
@@ -64,13 +61,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<FollowedDto> getFollows(Member member) {
+    public List<FollowingDto> getFollows(Long userId) {
 
+        Member member = memberRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<Follow> follows = followRepository.findByFollowing(member);
 
-        List<FollowedDto> result = follows.stream()
-                .map(FollowedDto::new)
-                .collect(Collectors.toList());
+        List<FollowingDto> result = follows.stream().map(FollowingDto::new).collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public List<FollowedDto> getFollowers(Long userId) {
+
+        Member member = memberRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        List<Follow> follows = followRepository.findByFollowed(member);
+
+        List<FollowedDto> result = follows.stream().map(FollowedDto::new).collect(Collectors.toList());
         return result;
     }
 
@@ -89,8 +95,6 @@ public class MemberServiceImpl implements MemberService {
         if (followRepository.findByFollowingAndFollowed(member, followedMember) == null) {
             followRepository.save(follow);
         }
-
-
     }
 
     @Override
@@ -109,6 +113,5 @@ public class MemberServiceImpl implements MemberService {
             followRepository.delete(follow);
         }
     }
-
 
 }
