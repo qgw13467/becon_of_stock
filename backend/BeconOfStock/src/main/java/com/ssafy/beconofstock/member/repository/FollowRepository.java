@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FollowRepository extends JpaRepository<Follow,Long> {
+public interface FollowRepository extends JpaRepository<Follow, Long> {
     List<Follow> findByFollowed(Member member);
+
     List<Follow> findByFollowing(Member member);
+
     Follow findByFollowingAndFollowed(Member member, Member followedMember);
 }

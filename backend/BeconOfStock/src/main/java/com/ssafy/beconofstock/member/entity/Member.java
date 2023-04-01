@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.member.entity;
 
 
+
 import com.ssafy.beconofstock.authentication.provider.OAuthUserInfo;
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.config.BaseEntity;
