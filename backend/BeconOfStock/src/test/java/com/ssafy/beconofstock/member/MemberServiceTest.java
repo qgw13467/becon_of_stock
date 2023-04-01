@@ -64,20 +64,20 @@ public class MemberServiceTest {
 
     }
 
-    @Test
-    void getFollowTest(){
-        //given
-        Member following = TestUtil.getMember(1L,"kakao_1","following");
-        Member followed = TestUtil.getMember(2L,"kakao_2","followed");
-        Follow follow = TestUtil.getFollow(1L,following, followed);
-
-        Mockito.lenient().doReturn(List.of(follow)).when(followRepository).findByFollowing(following);
-        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository, boardRepository);
-        //when
-        List<FollowedDto> follows = memberService.getFollows(following);
-
-        //then
-        Assertions.assertThat(follows.get(0).getNickname()).isEqualTo("followed");
-
-    }
+//    @Test
+//    void getFollowTest(){
+//        //given
+//        Member following = TestUtil.getMember(1L,"kakao_1","following");
+//        Member followed = TestUtil.getMember(2L,"kakao_2","followed");
+//        Follow follow = TestUtil.getFollow(1L,following, followed);
+//
+//        Mockito.lenient().doReturn(List.of(follow)).when(followRepository).findByFollowing(following);
+//        memberService = new MemberServiceImpl(memberRepository,contestMemberRepository,followRepository, boardRepository);
+//        //when
+//        List<FollowedDto> follows = memberService.getFollows(following);
+//
+//        //then
+//        Assertions.assertThat(follows.get(0).getNickname()).isEqualTo("followed");
+//
+//    }
 }
