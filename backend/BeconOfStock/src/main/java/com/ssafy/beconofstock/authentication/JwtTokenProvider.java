@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class JwtTokenProvider {
+    private final MemberRepository memberRepository;
+
+    public JwtTokenProvider(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     //    @Value("${JWT.SECRET}")
     private String securityKey ="as09df8h0e8fhs0d8fhs08fh0sd8fhse08fhs0ef8hse08fhse08fhse0f8hq08f";
@@ -73,6 +79,7 @@ public class JwtTokenProvider {
         claims.put("providerId", member.getProviderId());
         claims.put("nickname", member.getNickname());
         claims.put("role", member.getRole());
+        claims.put("profileImg", member.getProfileImg());
 
         return claims;
     }
@@ -83,6 +90,7 @@ public class JwtTokenProvider {
         claims.put("providerId", getProviderId(token));
         claims.put("nickname", getNickname(token));
         claims.put("role", getRole(token));
+        claims.put("profileImg",getProfile(token));
         return claims;
 
     }
@@ -109,12 +117,9 @@ public class JwtTokenProvider {
         return (String) getClaims(token).get("username");
     }
     public Object getProfile(String token){
-        return getClaims(token).get("profile");
+        return getClaims(token).get("profileImg");
     }
 
-    public Object getLocaltion(String token){
-        return getClaims(token).get("localtion");
-    }
 
     public String getRole(String token){
         return (String)getClaims(token).get("role");
