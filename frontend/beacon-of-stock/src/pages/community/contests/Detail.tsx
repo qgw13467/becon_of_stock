@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import axios_api from '../../assets/config/Axios';
-import { getCookie } from '../../assets/config/Cookie';
+import axios_api from '../../../assets/config/Axios';
+import { getCookie } from '../../../assets/config/Cookie';
 
 const Detail = () => {
   const location = useLocation();

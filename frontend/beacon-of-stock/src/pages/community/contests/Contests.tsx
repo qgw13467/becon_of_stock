@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 
 export const Contests = () => {
   const location = useLocation();
-  // console.log(location.state); //<< 이거 써서 Back에 데이터 요청하자!
+  console.log(location.state); //<< 이거 써서 Back에 데이터 요청하자!
 
   return (
     <article>
