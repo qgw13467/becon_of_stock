@@ -26,7 +26,7 @@ public class MemberController {
 
     @ApiOperation(value = "회원 정보 조회", notes =
             "회원 정보를 조회합니다.")
-    @GetMapping(value = {"/user/{userId}", "/user/"})
+    @GetMapping(value = {"/user/{userId}", "/user"})
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공입니다."),
     })

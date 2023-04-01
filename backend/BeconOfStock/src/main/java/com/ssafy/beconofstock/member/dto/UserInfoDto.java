@@ -16,11 +16,14 @@ import java.util.List;
 public class UserInfoDto {
     private String nickname;
     private Long followNum;
+    private Long followerNum;
+    private Long postNum;
 
     List<ContestHistoryDto> contestHistory;
 
     public UserInfoDto(Member member) {
         this.nickname = member.getNickname();
         this.followNum = member.getFollowNum();
+        this.followerNum = member.getFollowerNum();
     }
 }
