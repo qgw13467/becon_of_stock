@@ -26,20 +26,25 @@ public class MemberController {
 
     @ApiOperation(value = "회원 정보 조회", notes =
             "회원 정보를 조회합니다.")
-    @GetMapping("user/{userId}")
+    @GetMapping(value = {"/user/{userId}", "/user/"})
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공입니다."),
     })
-    public ResponseEntity<UserInfoDto> getUserHistoryInfo(@PathVariable("userId") @ApiParam(value = "조회할 회원의 아이디") Long userId) {
+    public ResponseEntity<UserInfoDto> getUserHistoryInfo(@PathVariable(required = false) @ApiParam(value = "조회할 회원의 아이디") Long userId, @AuthenticationPrincipal OAuth2UserImpl oAuth2User) {
 
-        UserInfoDto userInfoDto = memberService.getUserInfoDto(userId);
+        UserInfoDto userInfoDto;
 
+        if (userId == null) {
+            userInfoDto = memberService.getUserInfoDto(oAuth2User.getMember().getId());
+        } else {
+            userInfoDto = memberService.getUserInfoDto(userId);
+        }
         return new ResponseEntity<>(userInfoDto, HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 정보 수정", notes =
             "회원 정보를 수정합니다.")
-    @PutMapping("user")
+    @PutMapping("/user")
     @ApiResponses({
             @ApiResponse(code = 201, message = "성공입니다."),
     })
@@ -52,7 +57,7 @@ public class MemberController {
 
     @ApiOperation(value = "회원 탈퇴", notes =
             "회원을 탈퇴합니다.")
-    @DeleteMapping("user")
+    @DeleteMapping("/user")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공입니다."),
     })
@@ -83,7 +88,7 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공입니다."),
     })
-    public ResponseEntity<?> saveFollow(@PathVariable("userId")  @ApiParam(value = "팔로우할 회원의 아이디") long userId, @AuthenticationPrincipal OAuth2UserImpl oAuth2User) {
+    public ResponseEntity<?> saveFollow(@PathVariable("userId") @ApiParam(value = "팔로우할 회원의 아이디") long userId, @AuthenticationPrincipal OAuth2UserImpl oAuth2User) {
 
         memberService.saveFollow(oAuth2User.getMember(), userId);
 
@@ -97,7 +102,7 @@ public class MemberController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공입니다."),
     })
-    public ResponseEntity<?> deleteFollow(@PathVariable("userId")  @ApiParam(value = "팔로우를 취소할 회원의 아이디") long userId, @AuthenticationPrincipal OAuth2UserImpl oAuth2User) {
+    public ResponseEntity<?> deleteFollow(@PathVariable("userId") @ApiParam(value = "팔로우를 취소할 회원의 아이디") long userId, @AuthenticationPrincipal OAuth2UserImpl oAuth2User) {
 
         memberService.deleteFollow(oAuth2User.getMember(), userId);
 
