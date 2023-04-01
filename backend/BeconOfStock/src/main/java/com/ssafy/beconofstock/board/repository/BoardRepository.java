@@ -30,4 +30,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         + "WHERE m.nickname LIKE %:paramNickname%")
     Page<Board> findBoardByNickname(@Param(value = "paramNickname") String nickname, Pageable pageable);
 
+    Long countByMember(Member member);
 }

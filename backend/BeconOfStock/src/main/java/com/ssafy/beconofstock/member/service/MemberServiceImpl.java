@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.member.service;
 
+import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.contest.dto.ContestHistoryDto;
 import com.ssafy.beconofstock.contest.entity.ContestMember;
 import com.ssafy.beconofstock.contest.repository.ContestMemberRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final ContestMemberRepository contestMemberRepository;
     private final FollowRepository followRepository;
+    private final BoardRepository boardRepository;
 
     @Override
     public UserInfoDto getUserInfoDto(Long memberId) {
@@ -40,7 +43,9 @@ public class MemberServiceImpl implements MemberService {
         UserInfoDto userInfoDto = new UserInfoDto();
         userInfoDto.setNickname(member.getNickname());
         userInfoDto.setFollowNum(member.getFollowNum());
+        userInfoDto.setFollowerNum(member.getFollowerNum());
         userInfoDto.setContestHistory(contestHistoryDtos);
+        userInfoDto.setPostNum(boardRepository.countByMember(member));
         return userInfoDto;
     }
 
@@ -70,21 +75,35 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void saveFollow(Member member, long userId) {
 
-        Member followedMember = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException());
+        member.setFollowNum(member.getFollowNum() + 1);
+        memberRepository.save(member);
+
+        Member followedMember = memberRepository.findById(userId).orElseThrow(NotFoundException::new);
+        followedMember.setFollowerNum(followedMember.getFollowNum() + 1);
+
         Follow follow = Follow.builder().following(member).followed(followedMember).build();
 
         if (followRepository.findByFollowingAndFollowed(member, followedMember) == null) {
             followRepository.save(follow);
         }
+
+
     }
 
     @Override
+    @Transactional
     public void deleteFollow(Member member, long followedId) {
-        Member followedMember = memberRepository.findById(followedId).orElseThrow(() -> new NotFoundException());
+
+        member.setFollowNum(member.getFollowNum() - 1);
+        memberRepository.save(member);
+
+        Member followedMember = memberRepository.findById(followedId).orElseThrow(NotFoundException::new);
 
         Follow follow = followRepository.findByFollowingAndFollowed(member, followedMember);
+        followedMember.setFollowerNum(followedMember.getFollowerNum() - 1);
 
         if (follow.getId() != null) {
             followRepository.delete(follow);

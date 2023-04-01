@@ -17,8 +17,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -41,9 +39,10 @@ public class Member extends BaseEntity {
     private Long id;
     private String providerId;
     private String nickname;
-
     @ColumnDefault("0")
     private Long followNum;
+    @ColumnDefault("0")
+    private Long followerNum;
     @Enumerated(EnumType.STRING)
     private Role role;
 
