@@ -11,7 +11,7 @@ public interface MemberService {
 
     UserInfoDto updateUserInfo(Member member, UserInfoDto userInfoDto);
 
-    List<FollowedDto> getFollows(Member member);
+    List<FollowedDto> getFollows(Long memberId);
 
     void saveFollow(Member member, long userId);
 
