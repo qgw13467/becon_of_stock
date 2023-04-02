@@ -6,7 +6,7 @@ import BacktestResult from './pages/home/backtest/result/BacktestResult';
 import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
 import { WriteCommu } from './pages/community/Dibs/WriteCommu';
-import Detail from './pages/community/contests/Detail';
+import Detail from './pages/community/Dibs/Detail';
 import { LoginIndex } from './component/login/LoginIndex';
 import { Contests } from './pages/community/contests/Contests';
 import { CommunityDibs } from './pages/community/Dibs/CommunityDibs';
