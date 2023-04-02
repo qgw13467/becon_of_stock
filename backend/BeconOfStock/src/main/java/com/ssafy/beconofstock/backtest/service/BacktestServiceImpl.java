@@ -51,16 +51,21 @@ public class BacktestServiceImpl implements BacktestService {
 
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
-        List<Industry> industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        List<Industry> industries = new ArrayList<>();
+        if(backtestIndicatorsDto.getIndustries() !=null){
+            industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        }
+
         List<Industry> industryAllList = backIndustryRepository.findAll();
 
         for (YearMonth yearMonth : rebalanceYearMonth) {
             // 산업의 배열의 길이가 DB의 산업군 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
             List<Trade> trades;
-            if (industries.size() != industryAllList.size()) {
+            if (industries.size() != industryAllList.size() && industries.size() != 0) {
                 // 산업군 체크 한 회사 목록
                 trades = tradeRepository.findByYearAndMonthAndIndustryList(yearMonth.getYear(), yearMonth.getMonth(), industries);
-            }else{
+
+            } else {
                 //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
                 //이번 분기 매수가 가능한 회사목록
                 trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
