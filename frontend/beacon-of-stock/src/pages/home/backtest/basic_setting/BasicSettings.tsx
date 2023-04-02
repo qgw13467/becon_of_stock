@@ -28,7 +28,7 @@ const BasicSettings = (props: Props) => {
     // 정렬 기준 값
     // sortRatio: '20',
     // 시작 시점
-    start: '2000-01',
+    start: '2001-01',
     // 종료 시점
     end: '2021-12',
   });
@@ -199,9 +199,9 @@ const BasicSettings = (props: Props) => {
     });
   };
 
-  useEffect(() => {
-    props.onUpdateSettings(basicSettings);
-  }, [basicSettings]);
+  // useEffect(() => {
+  //   props.onUpdateSettings(basicSettings);
+  // }, [basicSettings]);
 
   return (
     <React.Fragment>
@@ -310,8 +310,9 @@ const BasicSettings = (props: Props) => {
               type='month'
               id='start'
               value={start}
-              min='2000-01'
+              min='2001-01'
               max='2022-12'
+              onKeyDown={(event) => event.preventDefault()}
               onChange={startChangeHandler}
               className='flex m-1 w-[95%] text-sm'
             />
@@ -325,8 +326,9 @@ const BasicSettings = (props: Props) => {
               type='month'
               id='end'
               value={end}
-              min='2000-01'
+              min='2001-01'
               max='2022-12'
+              onKeyDown={(event) => event.preventDefault()}
               onChange={endChangeHandler}
               className='flex m-1 w-[95%] text-sm'
             />
