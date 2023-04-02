@@ -71,6 +71,8 @@ public class BacktestServiceImpl implements BacktestService {
                 trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
             }
 
+//            trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
+
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
 
@@ -84,7 +86,7 @@ public class BacktestServiceImpl implements BacktestService {
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
-        result.setCumulativeReturnDtos(CumulativeReturnDto.CumulativeReturnDtos(cumulativeReturn,marketCumulativeReturn));
+        result.setCumulativeReturnDtos(CumulativeReturnDto.CumulativeReturnDtos(cumulativeReturn, marketCumulativeReturn));
 
 
         //전략 지표들 계산
@@ -117,6 +119,10 @@ public class BacktestServiceImpl implements BacktestService {
             System.out.println("===================");
         }
 
+        for (Industry industry : industries) {
+            System.out.println(industry.getIndustryName());
+        }
+
         return result;
     }
 
@@ -146,6 +152,8 @@ public class BacktestServiceImpl implements BacktestService {
             changeRateDto.setChangeRate(val);
             result.add(changeRateDto);
         }
+
+
         return result;
     }
 
@@ -474,10 +482,10 @@ public class BacktestServiceImpl implements BacktestService {
             tradeList.add(new BuySellDto(trade, find));
 
             double temp = (find.getCorclose().doubleValue()) / (trade.getCorclose().doubleValue());
-            if(temp > 2){
-                double check = find.getMarcap().doubleValue()/trade.getMarcap().doubleValue();
-                if(Math.abs(temp/check -1) >0.3){
-                     continue;
+            if (temp > 2) {
+                double check = find.getMarcap().doubleValue() / trade.getMarcap().doubleValue();
+                if (Math.abs(temp / check - 1) > 0.3) {
+                    continue;
                 }
             }
 //            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
