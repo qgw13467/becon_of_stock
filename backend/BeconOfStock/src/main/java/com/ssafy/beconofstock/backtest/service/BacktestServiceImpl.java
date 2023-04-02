@@ -52,7 +52,7 @@ public class BacktestServiceImpl implements BacktestService {
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
         List<Industry> industries = new ArrayList<>();
-        if(backtestIndicatorsDto.getIndustries() !=null){
+        if (backtestIndicatorsDto.getIndustries() != null) {
             industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
         }
 
@@ -454,6 +454,7 @@ public class BacktestServiceImpl implements BacktestService {
 
     //구매한 종목이 한주기 다음 수익이 얼마인지 계산
     private Double getRevenue(YearMonth yearMonth, List<Trade> list, int rebalance, List<List<BuySellDto>> history, List<List<Double>> distHistory) {
+
         Double result = 0D;
         List<Double> dist = new ArrayList<>();
         List<BuySellDto> tradeList = new ArrayList<>();
@@ -497,6 +498,9 @@ public class BacktestServiceImpl implements BacktestService {
 //        System.out.println("dist: " + dist);
 
         result = getAvg(dist);
+        if (result == 0 || result.equals(Double.NaN)) {
+            return 1D;
+        }
         return result;
     }
 
