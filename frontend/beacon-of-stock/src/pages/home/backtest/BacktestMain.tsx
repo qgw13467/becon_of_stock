@@ -28,7 +28,7 @@ const BacktestMain = () => {
 
   // 기본 설정 Lift
   const [updatedSettings, setUpdatedSettings] = useState({
-    startYear: 2000,
+    startYear: 2001,
     startMonth: 1,
     endYear: 2021,
     endMonth: 12,
@@ -111,11 +111,12 @@ const BacktestMain = () => {
       })
       .then((response) => {
         // console.log(response);
-        console.log(response.data);
+        console.log(response.data.asd);
+        const data = response.data;
         useBacktestIndustry.selectAllIndustry();
         backtestFactor.resetSelectedIndicator();
         backtestFactor.resetIndicator();
-        navigate('/result');
+        navigate('/result', { state: { data } });
       })
       .catch((error) => console.log(error));
   };
