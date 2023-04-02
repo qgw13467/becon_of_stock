@@ -1,0 +1,170 @@
+import React, { useState, useEffect } from 'react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ReferenceLine,
+} from 'recharts';
+
+interface Props {
+  changeRate: {
+    changeRate: number;
+    year: number;
+    month: number;
+  }[];
+}
+
+const ResultChangeRate = (props: Props) => {
+  // console.log(props.changeRate);
+  // 전월대비 증감률 가공
+  const [actualChangeRate, setActualChangeRate] = useState([
+    {
+      name: '',
+      changeRate: 0,
+    },
+  ]);
+
+  useEffect(() => {
+    // const dataTemp = props.changeRate.map((data) => {
+    const dataTemp = data.map((data) => {
+      return {
+        name: `${data.year}-${data.month}`,
+        changeRate: data.changeRate,
+      };
+    });
+    setActualChangeRate([...actualChangeRate, ...dataTemp]);
+  }, []);
+  const data = [
+    {
+      changeRate: 1.3263406866729999,
+      year: 2011,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2011,
+      month: 7,
+    },
+    {
+      changeRate: -1.63406866729999,
+      year: 2012,
+      month: 1,
+    },
+    {
+      changeRate: -0.3718405630280321,
+      year: 2012,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2013,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2013,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2014,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2014,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2015,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2015,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2016,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2016,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2017,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2017,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2018,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2018,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2019,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2019,
+      month: 7,
+    },
+    {
+      changeRate: 1.3263406866729999,
+      year: 2020,
+      month: 1,
+    },
+    {
+      changeRate: 0.8718405630280321,
+      year: 2020,
+      month: 7,
+    },
+  ];
+  return (
+    <React.Fragment>
+      <p className='text-xl font-KJCbold'>전월대비 증감률</p>
+      <BarChart
+        width={500}
+        height={300}
+        data={actualChangeRate}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+        barCategoryGap={0}
+      >
+        <CartesianGrid strokeDasharray='3 3' />
+        <XAxis dataKey='name' />
+        <YAxis />
+        <Tooltip cursor={{ fill: '#FFF2F8' }} />
+        <Legend />
+        <ReferenceLine y={0} stroke='#000' />
+        <Bar dataKey='changeRate' fill='#802A57' />
+      </BarChart>
+    </React.Fragment>
+  );
+};
+
+export default ResultChangeRate;

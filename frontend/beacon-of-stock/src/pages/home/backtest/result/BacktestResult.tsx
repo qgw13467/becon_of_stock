@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import ResultCumulativeReturnDtos from './ResultCumulativeReturnDtos';
+import ResultChangeRate from './ResultChangeRate';
 
 type resultValues = {
   cumulativeReturnDtos: {
@@ -92,11 +93,12 @@ const BacktestResult = () => {
   // console.log(data.cumulativeReturnDtos);
 
   return (
-    <React.Fragment>
+    <div className='w-full h-full'>
       <ResultCumulativeReturnDtos
         cumulativeReturnDtos={data.cumulativeReturnDtos}
       />
-    </React.Fragment>
+      <ResultChangeRate changeRate={data.changeRate} />
+    </div>
   );
 };
 
