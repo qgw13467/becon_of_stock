@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 import { useProfileStore } from '../../store/store';
 import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
+import FollowModal from './follow_modal/FollowModal';
+import FollowerModalComponent from './follow_modal/FollowerModalComponent';
 
 export const MyProfile: FC = () => {
   const emptyProfile = require('../../assets/img/empty-img.jpg');
@@ -34,7 +36,7 @@ export const MyProfile: FC = () => {
           },
         })
         .then((res) => {
-          console.log('res', '닉네임 변경 요청');
+          console.log(res, '닉네임 변경 요청');
         })
         .catch((err) => {
           console.log(err);
@@ -57,6 +59,46 @@ export const MyProfile: FC = () => {
   useEffect(() => {
     setIsNickname(profile.nickname);
   }, [profile]);
+
+  // ==============팔로우 팔로워 관련 모달 부분==================
+  const [items, setItems] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const followClick = () => {
+    setIsModalOpen(true);
+    axios_api
+      .get('/followers', { headers: { authentication: token } })
+      .then((res) => {
+        console.log(res);
+        setItems(res.data);
+      })
+      .catch((error) => {
+        if (error.message !== 'Request failed with status code 404') {
+          console.log('404 말고 다른 에러다 비사아ㅏㅇ');
+        }
+      });
+  };
+  const followCloseModal = () => {
+    setIsModalOpen(false);
+    axios_api
+      .get('/follow', { headers: { authentication: token } })
+      .then((res) => {
+        console.log(res);
+        setItems(res.data);
+      })
+      .catch((error) => {
+        if (error.message !== 'Request failed with status code 404') {
+          console.log('404 말고 다른 에러다 비사아ㅏㅇ');
+        }
+      });
+  };
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const followClick2 = () => {
+    setIsModalOpen2(true);
+  };
+  const followCloseModal2 = () => {
+    setIsModalOpen2(false);
+  };
+  //===========================================================
 
   return (
     <div>
@@ -128,18 +170,57 @@ export const MyProfile: FC = () => {
           </div>
           <div className='flex justify-between'>
             <p>팔로우 : </p>
-            <button className='flex justify-end'>
+            <button
+              className='flex justify-end'
+              onClick={() => {
+                followClick();
+              }}
+            >
               <p>{profile.followNum}</p>
               <p className='ml-2'>명</p>
             </button>
           </div>
+          <FollowModal isOpen={isModalOpen} onClose={followCloseModal}>
+            <p className='font-bold'>팔로우 목록</p>
+            {items.map((item, index) => (
+              <div key={index} className='flex content-around my-2'>
+                <img
+                  src={item.profileImg}
+                  alt='followImg'
+                  className='h-8 w-8 mr-4'
+                />
+                <p className='text-center mx-8'>{item.nickname}</p>
+              </div>
+            ))}
+          </FollowModal>
           <div className='flex justify-between'>
             <p>팔로워 : </p>
-            <button className='flex justify-end'>
+            <button
+              className='flex justify-end'
+              onClick={() => {
+                followClick2();
+              }}
+            >
               <p>{profile.followerNum}</p>
               <p className='ml-2'>명</p>
             </button>
           </div>
+          <FollowerModalComponent
+            isOpen={isModalOpen2}
+            onClose={followCloseModal2}
+          >
+            <p className='font-bold'>팔로워 목록</p>
+            {items.map((item, index) => (
+              <div key={index} className='flex content-around my-2'>
+                <img
+                  src={item.profileImg}
+                  alt='followImg'
+                  className='h-8 w-8 mr-4'
+                />
+                <p className='text-center mx-8'>{item.nickname}</p>
+              </div>
+            ))}
+          </FollowerModalComponent>
         </div>
       </div>
       {/* 내 전략은 전략 컴포넌트 만들어서 해당 컴포넌트에서 앞에서 3개가 어차피 대표전략일거니까
