@@ -56,10 +56,14 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService impleme
             memberRepository.save(member);
         } else {
             member = findUser.get();
+            if (!oAuthUserInfo.getProfileImg().equals("")) {
+                member.setProfileImg(oAuthUserInfo.getProfileImg());
+            }
         }
 
         return new OAuth2UserImpl(member, oAuthUserInfo);
     }
+
     public OAuth2User getOAuth2User(OAuth2UserRequest userRequest) {
         return super.loadUser(userRequest);
     }
@@ -67,7 +71,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService impleme
     @Override
     public UserDetails loadUserByUsername(String providerId) throws UsernameNotFoundException {
         Optional<Member> member = memberRepository.findByProviderId(providerId);
-        if(member.isEmpty()){
+        if (member.isEmpty()) {
             throw new UsernameNotFoundException("user not found");
         }
         return new OAuth2UserImpl(member.get());
