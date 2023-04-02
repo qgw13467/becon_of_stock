@@ -1,7 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import ResultCumulativeReturnDtos from './ResultCumulativeReturnDtos';
+import ResultCumulativeReturnTable from './ResultCumulativeReturnTable';
 import ResultChangeRate from './ResultChangeRate';
+import ResultChangeRateTable from './ResultChangeRateTable';
 
 type resultValues = {
   cumulativeReturnDtos: {
@@ -94,10 +96,16 @@ const BacktestResult = () => {
 
   return (
     <div className='w-full h-full'>
-      <ResultCumulativeReturnDtos
-        cumulativeReturnDtos={data.cumulativeReturnDtos}
-      />
-      <ResultChangeRate changeRate={data.changeRate} />
+      <div className='flex justify-around'>
+        <ResultCumulativeReturnDtos
+          cumulativeReturnDtos={data.cumulativeReturnDtos}
+        />
+        <ResultCumulativeReturnTable />
+      </div>
+      <div className='flex justify-around'>
+        <ResultChangeRate changeRate={data.changeRate} />
+        <ResultChangeRateTable />
+      </div>
     </div>
   );
 };

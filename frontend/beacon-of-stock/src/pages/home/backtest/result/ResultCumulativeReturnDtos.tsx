@@ -38,7 +38,7 @@ const ResultCumulativeReturnDtos = (props: Props) => {
   console.log();
 
   return (
-    <React.Fragment>
+    <div className='flex flex-col'>
       <p className='text-xl font-KJCbold'>시계열 수익률</p>
       <LineChart
         width={800}
@@ -71,7 +71,7 @@ const ResultCumulativeReturnDtos = (props: Props) => {
           activeDot={{ r: 5 }}
         />
       </LineChart>
-    </React.Fragment>
+    </div>
   );
 };
 

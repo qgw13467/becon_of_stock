@@ -82,7 +82,7 @@ const BacktestMain = () => {
       };
     });
   };
-  // console.log(updatedSettings);
+  console.log(updatedSettings);
 
   // 백테스트 실행
   const industriesURL = qs.stringify(
