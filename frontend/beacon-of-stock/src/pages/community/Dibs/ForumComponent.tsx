@@ -73,9 +73,16 @@ export const ForumComponent = () => {
       </article>
       <hr className='border border-[#808080/75] mx-12' />
       <article className='text-sm'>
-        {content.map((item, index) => (
-          <ForumBoard key={index} item={item} />
-        ))}
+        {content.length > 0 ? (
+          content.map((item, index) => <ForumBoard key={index} item={item} />)
+        ) : (
+          // 로딩 중임을 나타내는 스켈레톤 코드
+          <div className='animate-pulse grid grid-cols-1 gap-2 my-2'>
+            {Array.from({ length: 30 }, (_, i) => (
+              <div key={i} className='h-6 bg-gray-300 rounded mx-12'></div>
+            ))}
+          </div>
+        )}
       </article>
       <article className='flex justify-end mb-8 mx-10'>
         <button
