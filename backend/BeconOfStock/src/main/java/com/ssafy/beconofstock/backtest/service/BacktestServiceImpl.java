@@ -51,20 +51,27 @@ public class BacktestServiceImpl implements BacktestService {
 
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
-        List<Industry> industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        List<Industry> industries = new ArrayList<>();
+        if(backtestIndicatorsDto.getIndustries() !=null){
+            industries = backIndustryRepository.findByIdIn(backtestIndicatorsDto.getIndustries());
+        }
+
         List<Industry> industryAllList = backIndustryRepository.findAll();
 
         for (YearMonth yearMonth : rebalanceYearMonth) {
             // 산업의 배열의 길이가 DB의 산업군 길이 와 같을 때는 위에 코드를 돌리고 아니라면 산업코드 리스트를 추가해서 query문에 쏴서 처리하는 코드 추가!
             List<Trade> trades;
-            if (industries.size() != industryAllList.size()) {
+            if (industries.size() != industryAllList.size() && industries.size() != 0) {
                 // 산업군 체크 한 회사 목록
                 trades = tradeRepository.findByYearAndMonthAndIndustryList(yearMonth.getYear(), yearMonth.getMonth(), industries);
-            }else{
+
+            } else {
                 //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
                 //이번 분기 매수가 가능한 회사목록
                 trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
             }
+
+//            trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
 
             //이번분기 전략에서 구매할 회사
             List<Trade> buyList = calcTradesIndicator(trades, indicators, backtestIndicatorsDto.getMaxStocks());
@@ -79,7 +86,7 @@ public class BacktestServiceImpl implements BacktestService {
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
-        result.setCumulativeReturnDtos(CumulativeReturnDto.CumulativeReturnDtos(cumulativeReturn,marketCumulativeReturn));
+        result.setCumulativeReturnDtos(CumulativeReturnDto.CumulativeReturnDtos(cumulativeReturn, marketCumulativeReturn));
 
 
         //전략 지표들 계산
@@ -112,6 +119,10 @@ public class BacktestServiceImpl implements BacktestService {
             System.out.println("===================");
         }
 
+        for (Industry industry : industries) {
+            System.out.println(industry.getIndustryName());
+        }
+
         return result;
     }
 
@@ -141,6 +152,8 @@ public class BacktestServiceImpl implements BacktestService {
             changeRateDto.setChangeRate(val);
             result.add(changeRateDto);
         }
+
+
         return result;
     }
 
@@ -469,10 +482,10 @@ public class BacktestServiceImpl implements BacktestService {
             tradeList.add(new BuySellDto(trade, find));
 
             double temp = (find.getCorclose().doubleValue()) / (trade.getCorclose().doubleValue());
-            if(temp > 2){
-                double check = find.getMarcap().doubleValue()/trade.getMarcap().doubleValue();
-                if(Math.abs(temp/check -1) >0.3){
-                     continue;
+            if (temp > 2) {
+                double check = find.getMarcap().doubleValue() / trade.getMarcap().doubleValue();
+                if (Math.abs(temp / check - 1) > 0.3) {
+                    continue;
                 }
             }
 //            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
