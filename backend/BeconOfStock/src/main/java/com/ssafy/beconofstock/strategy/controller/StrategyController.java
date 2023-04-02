@@ -145,4 +145,31 @@ public class StrategyController {
         strategyDibsService.deleteDibs(strategyDibsId, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/strategies/{strategyId}")
+    @ApiOperation(value = "대표 전략 업데이트")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> updateRepresentative(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long strategyId) {
+        strategyService.updateRepresentative(user, strategyId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/strategies/representative")
+    @ApiOperation(value = "대표 전략 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> getRepresentative(@AuthenticationPrincipal OAuth2UserImpl user) {
+        strategyService.getRepresentative(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

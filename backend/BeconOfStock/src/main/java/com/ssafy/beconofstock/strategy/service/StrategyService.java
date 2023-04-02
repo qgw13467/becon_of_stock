@@ -11,6 +11,7 @@ import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import springfox.documentation.service.OAuth;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface StrategyService {
     void patchStrategy(Member member, StrategyAddDto strategyAddDto, Long strategyId);
     void deleteStrategy(Member member, Long StrategyId);
     Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable);
+    Boolean updateRepresentative(OAuth2UserImpl user, Long strategyId);
+    List<Strategy> getRepresentative(OAuth2UserImpl user);
 }
