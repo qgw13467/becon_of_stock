@@ -197,11 +197,12 @@ const BasicSettings = (props: Props) => {
     setBasicSettings((prevState) => {
       return { ...prevState, end: event.target.value };
     });
+    console.log(event.target.value);
   };
 
-  // useEffect(() => {
-  //   props.onUpdateSettings(basicSettings);
-  // }, [basicSettings]);
+  useEffect(() => {
+    props.onUpdateSettings(basicSettings);
+  }, [basicSettings]);
 
   return (
     <React.Fragment>

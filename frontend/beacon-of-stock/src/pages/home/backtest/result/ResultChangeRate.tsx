@@ -140,7 +140,7 @@ const ResultChangeRate = (props: Props) => {
     },
   ];
   return (
-    <React.Fragment>
+    <div className='flex flex-col'>
       <p className='text-xl font-KJCbold'>전월대비 증감률</p>
       <BarChart
         width={800}
@@ -164,7 +164,7 @@ const ResultChangeRate = (props: Props) => {
         <ReferenceLine y={0} stroke='#000' />
         <Bar dataKey='changeRate' fill='#802A57' />
       </BarChart>
-    </React.Fragment>
+    </div>
   );
 };
 
