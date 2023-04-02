@@ -29,11 +29,10 @@ const ResultChangeRate = (props: Props) => {
   ]);
 
   useEffect(() => {
-    // const dataTemp = props.changeRate.map((data) => {
-    const dataTemp = data.map((data) => {
+    const dataTemp = props.changeRate.map((data) => {
       return {
         name: `${data.year}-${data.month}`,
-        changeRate: data.changeRate,
+        changeRate: (data.changeRate - 1) * 100,
       };
     });
     setActualChangeRate([...actualChangeRate, ...dataTemp]);
@@ -144,11 +143,13 @@ const ResultChangeRate = (props: Props) => {
     <React.Fragment>
       <p className='text-xl font-KJCbold'>전월대비 증감률</p>
       <BarChart
-        width={500}
+        width={800}
         height={300}
-        data={actualChangeRate}
+        // 임의로 집어넣은 0번째는 제거
+        data={actualChangeRate.slice(1)}
         margin={{
-          top: 5,
+          // top: 5,
+          top: 40,
           right: 30,
           left: 20,
           bottom: 5,
@@ -157,7 +158,7 @@ const ResultChangeRate = (props: Props) => {
       >
         <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey='name' />
-        <YAxis />
+        <YAxis label={{ value: '(%)', offset: 20, position: 'top' }} />
         <Tooltip cursor={{ fill: '#FFF2F8' }} />
         <Legend />
         <ReferenceLine y={0} stroke='#000' />
