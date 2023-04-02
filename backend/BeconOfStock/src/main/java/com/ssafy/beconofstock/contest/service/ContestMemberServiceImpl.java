@@ -103,22 +103,22 @@ public class ContestMemberServiceImpl implements ContestMemberService{
 //        }
         Collections.sort(contestMembers, (a, b) -> {
             int compare = 0;
-            if (a.getStrategy().getStrategyMDD() != null && b.getStrategy().getStrategyMDD() != null) {
+            if (a.getStrategy().getStrategyMDD() != null && b.getStrategy().getStrategyMDD() != null && des.equals("strategyMDD")) {
                 compare = a.getStrategy().getStrategyMDD().compareTo(b.getStrategy().getStrategyMDD());
             }
-            if (compare == 0) {
+            if (compare == 0 && des.equals("strategyCumulativeReturn")) {
                 compare = -a.getStrategy().getStrategyCumulativeReturn().compareTo(b.getStrategy().getStrategyCumulativeReturn());
             }
-            if (compare == 0) {
+            if (compare == 0 && des.equals("strategyCagr")) {
                 compare = -a.getStrategy().getStrategyCagr().compareTo(b.getStrategy().getStrategyCagr());
             }
-            if (compare == 0) {
+            if (compare == 0 && des.equals("strategySharpe")) {
                 compare = -a.getStrategy().getStrategySharpe().compareTo(b.getStrategy().getStrategySharpe());
             }
-            if (compare == 0) {
+            if (compare == 0 && des.equals("strategySortino")) {
                 compare = -a.getStrategy().getStrategySortino().compareTo(b.getStrategy().getStrategySortino());
             }
-            if (compare == 0) {
+            if (compare == 0 && des.equals("strategyRevenue")) {
                 compare = -a.getStrategy().getStrategyRevenue().compareTo(b.getStrategy().getStrategyRevenue());
             }
             return compare;
@@ -128,6 +128,7 @@ public class ContestMemberServiceImpl implements ContestMemberService{
         for (ContestMember cm : contestMembers) {
             cm.setRanking((long) rank);
             rank++;
+            contestMemberRepository.save(cm);
         }
         return true;
     }
