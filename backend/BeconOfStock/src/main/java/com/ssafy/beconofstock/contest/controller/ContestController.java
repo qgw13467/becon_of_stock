@@ -3,8 +3,6 @@ package com.ssafy.beconofstock.contest.controller;
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.contest.dto.*;
 import com.ssafy.beconofstock.contest.entity.Contest;
-import com.ssafy.beconofstock.contest.entity.ContestMember;
-import com.ssafy.beconofstock.contest.repository.ContestRepository;
 import com.ssafy.beconofstock.contest.service.ContestMemberService;
 import com.ssafy.beconofstock.contest.service.ContestService;
 import io.swagger.annotations.Api;
@@ -14,7 +12,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -153,17 +150,17 @@ public class ContestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PutMapping("/rank/{contestId}")
-//    @ApiOperation(value = "랭킹 업데이트", notes = "대회 get 전에 요청 하면 랭킹이 업데이트 됨")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "성공"),
-//            @ApiResponse(code = 401, message = "인증 실패"),
-//            @ApiResponse(code = 404, message = "사용자 없음"),
-//            @ApiResponse(code = 500, message = "서버 오류")
-//    })
-//    public ResponseEntity<?> updateRank(@PathVariable Long contestId) {
-//        contestMemberService.findContestMembersByRanking(contestId);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @PutMapping("/rank/{contestId}")
+    @ApiOperation(value = "rank 업데이트")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<?> updateRanking(@PathVariable Long contestId) {
+        contestMemberService.updateRankingByContest(contestId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

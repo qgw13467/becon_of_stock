@@ -17,6 +17,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,14 +64,73 @@ public class ContestMemberServiceImpl implements ContestMemberService{
         return result;
     }
 
-//    @Override
-//    public void findContestMembersByRanking(Long contestId) {
-//        List<ContestMember> contestMembers = contestMemberRepository.findContestMemberByRanking(contestId);
-//        for (int i = 1; i < contestMembers.size(); i++) {
-//            ContestMember cm = contestMembers.get(i);
-//            cm.setRanking((long) (i));
-//        }
-//    }
+    @Override
+    public Boolean updateRankingByContest(Long contestId) {
+        Contest contest = contestRepository.findByContestId(contestId);
+        List<ContestMember> contestMembers = contestMemberRepository.findByRank(contestId);
+        String des = contest.getDescription();
+        for (ContestMember contestMember:contestMembers) {
+            if (contestMember == null) {
+                return false;
+            }
+        }
 
+//        Comparator<ContestMember> comparator = null;
+//        if (des.equals("strategyMDD")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategyMDD);
+//        } else if (des.equals("strategyCumulativeReturn")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategyCumulativeReturn).reversed();
+//        } else if (des.equals("strategyCagr")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategyCagr).reversed();
+//        } else if (des.equals("strategySharpe")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategySharpe).reversed();
+//        } else if (des.equals("strategySortino")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategySortino).reversed();
+//        } else if (des.equals("strategyRevenue")) {
+//            comparator = Comparator.comparing(ContestMember::getStrategyRevenue).reversed();
+//        }
+//        if (comparator == null) {
+//            // Invalid description, do nothing
+//            return;
+//        }
+//
+//        Collections.sort(contestMembers, comparator);
+//
+//        int rank = 1;
+//        for (ContestMember cm : contestMembers) {
+//            cm.setRanking((long) rank);
+//            rank++;
+//        }
+        Collections.sort(contestMembers, (a, b) -> {
+            int compare = 0;
+            if (a.getStrategy().getStrategyMDD() != null && b.getStrategy().getStrategyMDD() != null && des.equals("strategyMDD")) {
+                compare = a.getStrategy().getStrategyMDD().compareTo(b.getStrategy().getStrategyMDD());
+            }
+            if (compare == 0 && des.equals("strategyCumulativeReturn")) {
+                compare = -a.getStrategy().getStrategyCumulativeReturn().compareTo(b.getStrategy().getStrategyCumulativeReturn());
+            }
+            if (compare == 0 && des.equals("strategyCagr")) {
+                compare = -a.getStrategy().getStrategyCagr().compareTo(b.getStrategy().getStrategyCagr());
+            }
+            if (compare == 0 && des.equals("strategySharpe")) {
+                compare = -a.getStrategy().getStrategySharpe().compareTo(b.getStrategy().getStrategySharpe());
+            }
+            if (compare == 0 && des.equals("strategySortino")) {
+                compare = -a.getStrategy().getStrategySortino().compareTo(b.getStrategy().getStrategySortino());
+            }
+            if (compare == 0 && des.equals("strategyRevenue")) {
+                compare = -a.getStrategy().getStrategyRevenue().compareTo(b.getStrategy().getStrategyRevenue());
+            }
+            return compare;
+        });
+
+        int rank = 1;
+        for (ContestMember cm : contestMembers) {
+            cm.setRanking((long) rank);
+            rank++;
+            contestMemberRepository.save(cm);
+        }
+        return true;
+    }
 
 }

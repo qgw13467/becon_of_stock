@@ -15,4 +15,7 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     @Query("SELECT c FROM Contest c WHERE c.id = :contestId")
     Contest findByContestId(Long contestId);
+
+    @Query("SELECT c.description FROM Contest c WHERE c.id = :contestId")
+    String findDesByContestId(Long contestId);
 }

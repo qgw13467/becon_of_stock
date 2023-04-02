@@ -30,14 +30,14 @@ public class Strategy extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    private Double strategyCumulativeReturn;
-    private Double strategyCagr;
-    private Double strategySharpe;
-    private Double strategySortino;
-    private Double strategyMDD;
+    private Double strategyCumulativeReturn;    // H(DESC)
+    private Double strategyCagr;        // H
+    private Double strategySharpe;      // H
+    private Double strategySortino;     // H
+    private Double strategyMDD;         // L(ASC)
     //
 
-    private Integer strategyRevenue;
+    private Integer strategyRevenue;    // H
     private Integer totalMonth;
 
 

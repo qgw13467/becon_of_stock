@@ -21,6 +21,10 @@ public class Contest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+
+    /**
+     * 랭킹을 매길 때 어떤걸 볼지
+     */
     private String description;
     private String content;
 

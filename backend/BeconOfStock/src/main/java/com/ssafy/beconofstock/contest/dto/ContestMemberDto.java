@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ContestMemberDto {
-    Long rank;
+//    Long rank;
     Long userId;
     String userNickname;
     Long strategyId;
 
     public ContestMemberDto(ContestMember contestMember) {
-        this.rank = contestMember.getRanking();
+//        this.rank = contestMember.getRanking();
         this.userId = contestMember.getMember().getId();
         this.userNickname = contestMember.getMember().getNickname();
         this.strategyId = contestMember.getStrategy().getId();
