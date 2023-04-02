@@ -1,34 +1,52 @@
-import { TileBoard } from '../../../component/TileBoard';
+import { TileBoard } from './TileBoard';
 import { Pagenation } from '../../../component/Pagenation';
 import { SearchbarNone } from '../../../component/search/SearchbarNone';
 import StrategySelect from '../../../component/select_box/StrategySelect';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
+import { usePageStore } from '../../../store/store';
 
 export const Strategy = () => {
-  const pageSize = 20; // 한 페이지에 보여질 게시글 수
-  const 게시물수 = 10000; // back에서 총 게시물을 받아오게 할 것인가? x
+  const { page, setPage } = usePageStore();
+  // console.log(page);
+  const pageSize = 20;
+  const 게시물수 = 100;
+  const [totalElements, setTotalElements] = useState(게시물수);
   // 총 페이지 수
-  const pageEA = Math.floor(게시물수 / pageSize);
-  // 더미
-  const items: number[] = Array(pageSize).fill(0);
-  // console.log(pageEA);
+  const [totalPages, setTotalPages] = useState(10);
+  const [items, setItems] = useState([]);
+  // console.log(items);
   const token = getCookie('accessToken');
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     axios_api
       .get('/strategies', {
         headers: {
           authentication: token,
         },
+        params: {
+          pageSize: pageSize,
+          pageNumber: page,
+        },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
+        setTotalElements(res.data.totalElements);
+        setTotalPages(res.data.totalPages);
+        setItems(res.data.content);
       })
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
+
+  useEffect(() => {
+    setPage(1);
   }, []);
   return (
     <section>
@@ -44,7 +62,7 @@ export const Strategy = () => {
         ))}
       </article>
       <article className='my-8'>
-        <Pagenation totalPage={pageEA} />
+        <Pagenation totalPage={totalPages} />
       </article>
       <article className='flex justify-center ml-32 my-8'>
         <SearchbarNone />
