@@ -8,15 +8,14 @@ import { getCookie } from '../../assets/config/Cookie';
 import { useProfileStore } from '../../store/store';
 
 const Nav: FC = () => {
+  // const [initialTimeLeft, setInitialTimeLeft] = useState<number>(30 * 60);
   const logo = require('../../assets/img/bos-logo.png');
   const emptyImg = require('../../assets/img/empty-img.jpg');
-  // const [initialTimeLeft, setInitialTimeLeft] = useState<number>(30 * 60);
+  // 이 부분 주스탠드로 관리.
   const { isLogin } = useLoginStore();
   const { profile, setProfile } = useProfileStore();
-  // console.log(profileData.profileImg);
-  //==========모달 열리고 닫히고 하는 부분=====================
-  // 모달 boolean 업데이트 시 실행
   const ref = useRef<HTMLDivElement>(null);
+  // =============모달 열리고 닫히고 하는 부분=====================
   const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => {
     const modalCloseHandler: EventListener = (event: Event) => {
@@ -37,7 +36,8 @@ const Nav: FC = () => {
       window.removeEventListener('click', modalCloseHandler);
     };
   }, [isOpen]);
-  //=========================================================
+  // ===========================================================
+
   const token = getCookie('accessToken');
   useEffect(() => {
     axios_api

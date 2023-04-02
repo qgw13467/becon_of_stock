@@ -11,7 +11,10 @@ interface Contest {
 export const CommunityNav = () => {
   const token = getCookie('accessToken');
   const [content, setContent] = useState<Contest[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
+    setIsLoading(true); // 로딩 중 상태로 설정
+
     axios_api
       .get('/contests', {
         headers: {
@@ -19,15 +22,16 @@ export const CommunityNav = () => {
         },
       })
       .then((res) => {
-        // console.log(res);
         setContent(res.data.content);
-        // console.log(content);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setIsLoading(false); // 로딩이 완료되면 상태 업데이트
+      });
   }, []);
 
   return (
-    <div className=' py-4 grid justify-center gap-y-4 border-2 border-[#D7609E] rounded-md w-40 h-[404px] m-9 sticky top-8'>
+    <div className=' py-4 grid justify-center gap-y-4 border-2 border-[#D7609E] rounded-md w-40 h-auto m-9 sticky top-8'>
       <Link
         to='/community/dibs'
         className='text-lg font-KJCbold text-[#D7609E]'
@@ -38,9 +42,14 @@ export const CommunityNav = () => {
       <h3 className='text-lg font-KJCbold text-[#D7609E]'>대회 게시판</h3>
       <h5 className='font-KJCbold'>진행 중인 대회</h5>
       {/* 대회 리스트 받아오면 map함수 써서 link 반복 시켜버릴 것 */}
-      <>
-        {content.map((item, index) => {
-          // console.log(index);
+      {isLoading ? ( // 로딩 중일 때 보여줄 스켈레톤 코드
+        <div className='animate-pulse'>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+        </div>
+      ) : (
+        content.map((item, index) => {
           if (item.type === 0) {
             return (
               <div key={index}>
@@ -54,12 +63,17 @@ export const CommunityNav = () => {
               </div>
             );
           }
-        })}
-      </>
+        })
+      )}
       <h5 className='font-KJCbold'>종료된 대회</h5>
-      <>
-        {content.map((item, index) => {
-          // console.log(index);
+      {isLoading ? ( // 로딩 중일 때 보여줄 스켈레톤 코드
+        <div className='animate-pulse'>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+          <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
+        </div>
+      ) : (
+        content.map((item, index) => {
           if (item.type === 1) {
             return (
               <div key={index}>
@@ -73,8 +87,8 @@ export const CommunityNav = () => {
               </div>
             );
           }
-        })}
-      </>
+        })
+      )}
     </div>
   );
 };

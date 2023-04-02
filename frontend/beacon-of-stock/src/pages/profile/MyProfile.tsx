@@ -1,14 +1,15 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useProfileStore } from '../../store/store';
+import axios_api from '../../assets/config/Axios';
+import { getCookie } from '../../assets/config/Cookie';
 
 export const MyProfile: FC = () => {
   const emptyProfile = require('../../assets/img/empty-img.jpg');
+  const token = getCookie('accessToken');
   const { profile } = useProfileStore();
-  console.log(profile);
-  const [originalNickname, setOriginalNickname] = useState<string>(
-    profile.nickname
-  ); // back에서 받아오는 닉네임 정보
-  const [isNickname, setIsNickname] = useState<string>(originalNickname);
+  // console.log(profile);
+  // back에서 받아오는 닉네임 정보
+  const [isNickname, setIsNickname] = useState<string>(profile.nickname);
   const [isInput, setIsInput] = useState<boolean>(true);
   const nicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsNickname(e.target.value);
@@ -17,26 +18,45 @@ export const MyProfile: FC = () => {
     // console.log('실행 중')
     // 닉네임에 변화가 있을 때, 공백이 없을 때, 길이가 1이상, 8이하 일 때
     if (
-      isNickname !== originalNickname &&
+      isNickname !== profile.nickname &&
       !isNickname.includes(' ') &&
       isNickname.length >= 1 &&
       8 >= isNickname.length
     ) {
       // 조건을 만족하는 닉네임을 백 서버로 보내는 코드 작성해야함.
+      const body = {
+        nickname: isNickname,
+      };
+      axios_api
+        .put('/user', body, {
+          headers: {
+            authentication: token,
+          },
+        })
+        .then((res) => {
+          console.log('res', '닉네임 변경 요청');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       // 백으로 보낸 후
       setIsInput(true);
-      setOriginalNickname(isNickname);
     } else {
       console.log('왜 안 되냐 이거?');
       alert('닉네임 양식이 맞지 않습니다.');
-      setIsNickname('');
+      setIsNickname(profile.nickname);
     }
   };
   // 닉네임 변경 취소 시 원래 닉네임 할당
   const cencelChange = () => {
-    setIsNickname(originalNickname);
+    setIsNickname(profile.nickname);
     setIsInput(true);
   };
+  // 혹시라도 로딩 시 profile 받아오는 부분이 한 박자 느리더라고
+  // nickName에 nickname 제대로 할당하기 위한 hook
+  useEffect(() => {
+    setIsNickname(profile.nickname);
+  }, [profile]);
 
   return (
     <div>
@@ -79,8 +99,7 @@ export const MyProfile: FC = () => {
                 className='bg-[#802A57] text-[#fefefe] rounded-md w-[100px] h-[40px]'
                 onClick={() => setIsInput(false)}
               >
-                {' '}
-                닉네임 변경{' '}
+                닉네임 변경
               </button>
             )}
             {!isInput && (
@@ -89,15 +108,13 @@ export const MyProfile: FC = () => {
                   className='bg-[#2a3580] text-[#fefefe] rounded-md w-[80px] h-[40px]'
                   onClick={nicknameValidation}
                 >
-                  {' '}
-                  변경{' '}
+                  변경
                 </button>
                 <button
                   className='bg-[#802A57] text-[#fefefe] rounded-md w-[80px] h-[40px] ml-4'
                   onClick={cencelChange}
                 >
-                  {' '}
-                  취소{' '}
+                  취소
                 </button>
               </div>
             )}
