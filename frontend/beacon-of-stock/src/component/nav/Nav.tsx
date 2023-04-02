@@ -54,7 +54,7 @@ const Nav: FC = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log('token 값이 아직 없을 때 나는 에러');
       });
   }, [token]);
 
