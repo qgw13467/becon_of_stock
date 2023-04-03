@@ -1,7 +1,7 @@
 package com.ssafy.beconofstock.strategy.dto;
 
 import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
-import com.ssafy.beconofstock.backtest.dto.CumulativeReturnDto;
+import com.ssafy.beconofstock.backtest.dto.ChangeRateValueDto;
 import com.ssafy.beconofstock.strategy.entity.AccessType;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class StrategyAddDto {
     private String title;
     //누적 수익률
 
-    List<CumulativeReturnDto> cumulativeReturnDtos;
+    List<ChangeRateValueDto> cumulativeReturnDtos;
 
     // 선택한 지표 저장
     List<Long> indicators;
