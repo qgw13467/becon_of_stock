@@ -9,7 +9,6 @@ import com.ssafy.beconofstock.backtest.repository.BackIndustryRepository;
 import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
 import com.ssafy.beconofstock.backtest.repository.KospiRepository;
 import com.ssafy.beconofstock.backtest.repository.TradeRepository;
-import com.ssafy.beconofstock.spark.dto.TestDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +43,9 @@ public class SparkServiceImpl implements SparkService {
     @Value("${spring.datasource.password}")
     private String password;
 
-    public TestDto getConnectionTest(BacktestIndicatorsDto backtestIndicatorsDto) {
+    public BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto) {
 
-        BacktestResultDto result = new BacktestResultDto();
+        BacktestResultDto backtestResult = new BacktestResultDto();
 
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
@@ -73,36 +72,35 @@ public class SparkServiceImpl implements SparkService {
 
         List<Industry> industryAllList = backIndustryRepository.findAll();
 
-        Dataset<Row> tradeDF;
+        Dataset<Row> tradeDataset;
         String query;
         if (industries.size() != industryAllList.size() && industries.size() != 0) {
             query = getQueryTradeView("trade_finance_industry", rebalanceYearMonth);
             query = getQueryAppendIndustryCondition(query, backtestIndicatorsDto.getIndustries());
-            tradeDF = getSparkSession(spark, query);
+            tradeDataset = getDataSet(spark, query);
         } else {
             query = getQueryTradeView("trade_view", rebalanceYearMonth);
-            tradeDF = getSparkSession(spark, query);
+            tradeDataset = getDataSet(spark, query);
         }
 
+        log.info("============= rebalanceYearMonth size : {}  ============", rebalanceYearMonth.size());
         for (YearMonth yearMonth : rebalanceYearMonth) {
 //            List<Trade> trades;
             if (industries.size() != industryAllList.size() && industries.size() != 0) {
-                Dataset<Row> trade = tradeDF.filter((tradeDF.col("year").$eq$eq$eq(yearMonth.getYear())
-                        .and(tradeDF.col("month").$eq$eq$eq(yearMonth.getMonth())))
-                        .and(tradeDF.col("industry_id").isInCollection(backtestIndicatorsDto.getIndustries())));
+                Dataset<Row> trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear())
+                        .and(tradeDataset.col("month").equalTo(yearMonth.getMonth())))
+                        .and(tradeDataset.col("industry_id").isInCollection(backtestIndicatorsDto.getIndustries())));
                 log.info("============= trade count : {}  ============", trade.count());
             } else {
-                Dataset<Row> trade = tradeDF.filter((tradeDF.col("year").$eq$eq$eq(yearMonth.getYear()).and(tradeDF.col("month").$eq$eq$eq(yearMonth.getMonth()))));
+                Dataset<Row> trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
                 log.info("============= trade count : {}  ============", trade.count());
-                break;
             }
-            return null;
         }
         spark.close();
-        return null;
+        return backtestResult;
     }
 
-    private Dataset<Row> getSparkSession(SparkSession spark, String query) {
+    private Dataset<Row> getDataSet(SparkSession spark, String query) {
 
         Dataset<Row> df = spark
                 .read()
