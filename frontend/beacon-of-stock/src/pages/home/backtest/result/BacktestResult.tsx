@@ -6,6 +6,7 @@ import ResultChangeRate from './ResultChangeRate';
 import ResultChangeRateTable from './ResultChangeRateTable';
 import axios_api from '../../../../assets/config/Axios';
 import { getCookie } from '../../../../assets/config/Cookie';
+import question from '../../../../assets/img/question.png';
 
 type resultValues = {
   indicators: number[];
@@ -32,7 +33,8 @@ type resultValues = {
   marketMDD: number;
   changeRateDesc: string;
   changeRate: {
-    changeRate: number;
+    strategyValue: number;
+    marketValue: number;
     year: number;
     month: number;
   }[];
@@ -80,12 +82,14 @@ const BacktestResult = () => {
   //   changeRateDesc: '구간별 변화량',
   //   changeRate: [
   //     {
-  //       changeRate: 1.3263406866729999,
+  //       strategyValue: 1.3263406866729999,
+  //       marketValue: 1.3263406866729999,
   //       year: 2021,
   //       month: 1,
   //     },
   //     {
-  //       changeRate: 0.8718405630280321,
+  //       strategyValue: 0.8718405630280321,
+  //       marketValue: 0.8718405630280321,
   //       year: 2021,
   //       month: 7,
   //     },
@@ -95,7 +99,7 @@ const BacktestResult = () => {
   //   marketRevenue: 1,
   //   totalMonth: 2,
   // };
-  // console.log(data);
+  console.log(data);
 
   // 전략 저장
   const token = getCookie('accessToken');
@@ -174,7 +178,73 @@ const BacktestResult = () => {
         <ResultCumulativeReturnDtos
           cumulativeReturnDtos={data.cumulativeReturnDtos}
         />
-        <ResultCumulativeReturnTable />
+        {/* 시계열 수익률 표 */}
+        <div className='flex flex-col justify-center'>
+          <p className='text-xl font-KJCbold'>ResultCumulativeReturnTable</p>
+          {/* 표를 나타내는 태그 */}
+          <table className='border'>
+            {/* 제목 행을 그룹화하는 태그 */}
+            <thead className='border'>
+              <tr className='border'>
+                <th></th>
+                <th>시장</th>
+                <th>내 전략</th>
+              </tr>
+            </thead>
+            {/* 본문 행을 그룹화하는 태그 */}
+            <tbody className='border'>
+              <tr>
+                <td className='flex items-center'>
+                  <p>총수익률</p>
+                  <img src={question} alt='question' className='w-4 h-4 ml-1' />
+                </td>
+                <td>$100</td>
+                <td>$100</td>
+              </tr>
+            </tbody>
+            <tbody className='border'>
+              <tr>
+                <td className='flex items-center'>
+                  <p>연평균수익률</p>
+                  <img src={question} alt='question' className='w-4 h-4 ml-1' />
+                </td>
+                <td>$100</td>
+                <td>$100</td>
+              </tr>
+            </tbody>
+            <tbody className='border'>
+              <tr>
+                <td className='flex items-center'>
+                  <p>sharpe</p>
+                  <img src={question} alt='question' className='w-4 h-4 ml-1' />
+                </td>
+                <td>$100</td>
+                <td>$100</td>
+              </tr>
+            </tbody>
+            <tbody className='border'>
+              <tr>
+                <td className='flex items-center'>
+                  <p>sortino</p>
+                  <img src={question} alt='question' className='w-4 h-4 ml-1' />
+                </td>
+                <td>$100</td>
+                <td>$100</td>
+              </tr>
+            </tbody>
+            {/* 바닥 행을 그룹화하는 태그 */}
+            <tfoot className='border'>
+              <tr>
+                <td className='flex items-center'>
+                  <p>MDD</p>
+                  <img src={question} alt='question' className='w-4 h-4 ml-1' />
+                </td>
+                <td>$180</td>
+                <td>$180</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
       <div className='flex justify-around'>
         <ResultChangeRate changeRate={data.changeRate} />
