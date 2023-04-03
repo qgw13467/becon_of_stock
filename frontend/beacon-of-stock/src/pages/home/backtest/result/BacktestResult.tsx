@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ResultCumulativeReturnDtos from './ResultCumulativeReturnDtos';
 import ResultCumulativeReturnTable from './ResultCumulativeReturnTable';
 import ResultChangeRate from './ResultChangeRate';
 import ResultChangeRateTable from './ResultChangeRateTable';
+import axios_api from '../../../../assets/config/Axios';
+import { getCookie } from '../../../../assets/config/Cookie';
 
 type resultValues = {
+  indicators: number[];
   cumulativeReturnDtos: {
     year: number;
     month: number;
@@ -44,6 +47,7 @@ const BacktestResult = () => {
   const data: resultValues = location.state.data;
 
   // const data: resultValues = {
+  //   indicators: [1, 2, 3]
   //   cumulativeReturnDtos: [
   //     {
   //       year: 2011,
@@ -91,11 +95,81 @@ const BacktestResult = () => {
   //   marketRevenue: 1,
   //   totalMonth: 2,
   // };
-  console.log(data);
-  // console.log(data.cumulativeReturnDtos);
+  // console.log(data);
+
+  // 전략 저장
+  const token = getCookie('accessToken');
+  // title창 show 여부
+  const [saveStrategy, setSaveStrategy] = useState(false);
+  const showStrategyTitleHandler = () => {
+    setSaveStrategy(true);
+  };
+  // title 값
+  const [strategyTitle, setStrategyTitle] = useState('');
+  const strategyTitleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.value);
+    setStrategyTitle(event.target.value);
+  };
+  // 전략 저장 axios 요청
+  const saveStrategyHandler = () => {
+    // title명이 빈 값이 아닌 경우 추가하기
+    if (strategyTitle.trim().length === 0) {
+      console.log('title입력해달라는 알림');
+    } else if (strategyTitle.trim().length > 100) {
+      console.log('title은 100자 이하여야 한다는 알람');
+    } else if (strategyTitle.trim().length !== 0) {
+      axios_api
+        .post(
+          'strategies',
+          {
+            indicators: data.indicators,
+            cumulativeReturnDtos: data.cumulativeReturnDtos,
+            strategyCagr: data.strategyCagr,
+            strategyCumulativeReturn: data.strategyCumulativeReturn,
+            strategyMDD: data.strategyMDD,
+            strategyRevenue: data.strategyRevenue,
+            strategySharpe: data.strategySharpe,
+            strategySortino: data.strategySortino,
+            title: strategyTitle,
+            totalMonth: data.totalMonth,
+          },
+          { headers: { authentication: token } }
+        )
+        .then((response) => {
+          console.log(response);
+        });
+    }
+  };
 
   return (
     <div className='w-full h-full'>
+      <div className='flex justify-end'>
+        {saveStrategy && (
+          <input
+            type='text'
+            className='border w-96'
+            value={strategyTitle}
+            onChange={strategyTitleHandler}
+            placeholder='100자 이하의 전략명을 입력해주세요.'
+          />
+        )}
+        {saveStrategy && (
+          <input
+            type='button'
+            value='전략 저장'
+            className='border'
+            onClick={saveStrategyHandler}
+          />
+        )}
+        {!saveStrategy && (
+          <input
+            type='button'
+            value='전략 저장'
+            className='border'
+            onClick={showStrategyTitleHandler}
+          />
+        )}
+      </div>
       <div className='flex justify-around'>
         <ResultCumulativeReturnDtos
           cumulativeReturnDtos={data.cumulativeReturnDtos}
