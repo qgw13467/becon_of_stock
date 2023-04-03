@@ -2,6 +2,7 @@ package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
+
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import io.swagger.annotations.ApiModelProperty;
