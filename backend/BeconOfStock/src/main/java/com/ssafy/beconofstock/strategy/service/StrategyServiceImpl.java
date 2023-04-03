@@ -47,7 +47,7 @@ public class StrategyServiceImpl implements StrategyService {
 //            throw new NotYourAuthorizationException();
 //        }
 
-        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
 
         List<Indicator> indicators = strategyIndicatorList.stream()
                 .map(StrategyIndicator::getIndicator)
@@ -139,6 +139,7 @@ public class StrategyServiceImpl implements StrategyService {
 
         // 전략 저장 - id get
         Strategy strategy = new Strategy(member, strategyAddDto);
+        strategy.setRepresentative(false);
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
@@ -261,20 +262,42 @@ public class StrategyServiceImpl implements StrategyService {
             return false;
         }
         Boolean representative = strategy.getRepresentative();
-        if (strategies.size() >= 3 && !representative) {
+        if (strategies.size() == 3 && !representative) {
             return false;
         }
 
         strategy.setRepresentative(!representative);
         strategyRepository.save(strategy);
+
         return true;
     }
 
     @Override
-    public List<Strategy> getRepresentative(OAuth2UserImpl user) {
+    public List<StrategyDetailDto> getRepresentative(OAuth2UserImpl user) {
         List<Strategy> strategies = strategyRepository.findStrategyByMemberList(user.getMember());
+        List<StrategyDetailDto> strategyList = new ArrayList<>();
+        for (Strategy strategy:strategies) {
+            List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
 
-        return strategies;
+            List<Indicator> indicators = strategyIndicatorList.stream()
+                    .map(StrategyIndicator::getIndicator)
+                    .collect(Collectors.toList());
+
+            StrategyDetailDto strategyDetailDto =
+                    StrategyDetailDto.builder()
+                            .id(strategy.getId())
+                            .title(strategy.getTitle())
+                            .memberNickname(strategy.getMember().getNickname())
+                            .memberId((strategy.getMember().getId()))
+                            .indicators(indicators)
+                            .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
+                            .marketValues(toMarketValues(strategy.getCummulateReturnList()))
+                            .representative(strategy.getRepresentative())
+                            .build();
+            strategyList.add(strategyDetailDto);
+        }
+
+        return strategyList;
     }
 
 

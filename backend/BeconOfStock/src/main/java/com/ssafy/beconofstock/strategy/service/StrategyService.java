@@ -27,5 +27,5 @@ public interface StrategyService {
     void deleteStrategy(Member member, Long StrategyId);
     Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable);
     Boolean updateRepresentative(OAuth2UserImpl user, Long strategyId);
-    List<Strategy> getRepresentative(OAuth2UserImpl user);
+    List<StrategyDetailDto> getRepresentative(OAuth2UserImpl user);
 }

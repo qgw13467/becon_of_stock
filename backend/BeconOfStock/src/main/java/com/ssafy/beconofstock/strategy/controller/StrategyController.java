@@ -2,6 +2,7 @@ package com.ssafy.beconofstock.strategy.controller;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.strategy.dto.*;
+import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.service.StrategyDibsService;
 import com.ssafy.beconofstock.strategy.service.StrategyService;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -169,7 +172,7 @@ public class StrategyController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<?> getRepresentative(@AuthenticationPrincipal OAuth2UserImpl user) {
-        strategyService.getRepresentative(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<StrategyDetailDto> strategies = strategyService.getRepresentative(user);
+        return new ResponseEntity<>(strategies, HttpStatus.OK);
     }
 }
