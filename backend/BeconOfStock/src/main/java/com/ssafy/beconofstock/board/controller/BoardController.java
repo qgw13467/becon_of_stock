@@ -186,7 +186,7 @@ public class BoardController {
     @ApiResponses({
         @ApiResponse(code = 201, message = "성공입니다.")
     })
-    @PostMapping("/boards/likes/{boardId}")
+    @PostMapping("/likes/{boardId}")
     public ResponseEntity<HttpStatus> updateLike(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
         boardService.updateLike(boardId, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -196,7 +196,7 @@ public class BoardController {
     @ApiResponses({
         @ApiResponse(code = 201, message = "성공입니다.")
     })
-    @PostMapping("/boards/dibs/{boardId}")
+    @PostMapping("/dibs/{boardId}")
     public ResponseEntity<HttpStatus> updateDibs(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
         boardService.updateDibs(boardId, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
