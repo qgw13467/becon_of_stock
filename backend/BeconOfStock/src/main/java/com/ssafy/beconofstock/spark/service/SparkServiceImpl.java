@@ -101,9 +101,10 @@ public class SparkServiceImpl implements SparkService {
                 trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
                 log.info("============= trade count : {}  ============", trade.count());
             }
-            trade.show();
-            System.out.println(trade.count());
+//            trade.show();
+//            System.out.println(trade.count());
 
+            //todo 구매한 trade(buy)와 판매될 시기의 trade(sell)을 가져와서 넘길것
             Double revenueByDataSet = getRevenueByDataSet(spark, trade, tradeDataset, backtestIndicatorsDto.getRebalance());
             strategyRateDtos.add(new ChangeRateDto(revenueByDataSet, backtestIndicatorsDto.getEndYear(), backtestIndicatorsDto.getEndMonth()));
         }
