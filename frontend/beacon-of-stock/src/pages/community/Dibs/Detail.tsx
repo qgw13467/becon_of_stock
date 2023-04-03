@@ -6,6 +6,7 @@ import { DetailButton } from './DetailButton';
 import DetailComment from './comment/DetailComment';
 import DetailSkeleton from './DetailSkeleton';
 import followAdd from '../../../assets/img/person_add.png';
+import followRemove from '../../../assets/img/person_remove.png';
 
 const Detail = () => {
   const navigate = useNavigate();
@@ -16,6 +17,10 @@ const Detail = () => {
   const [changeLike, setChangeLike] = useState<boolean>(false);
   const changeLikeChange = () => {
     setChangeLike(!changeLike);
+  };
+  const [followStatus, setFollowStatus] = useState<boolean>(false);
+  const changeFollowStatus = () => {
+    setFollowStatus(!followStatus);
   };
   // const [isLike, setIsLike] = useState<boolean>(false);
   // const [isBookmark, setIsBookmark] = useState<boolean>(false);
@@ -33,15 +38,48 @@ const Detail = () => {
         console.log(res.data, 'Detail Main');
         setData(res.data);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
+        // setFollowStatus(res.data.followStatus);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [token, changeLike]);
+  }, [token, changeLike, followStatus]);
 
   if (isLoading) {
     return <DetailSkeleton />;
   }
+
+  const addFollow = () => {
+    axios_api
+      .post(`/follows/${data.memberId}`, {
+        headers: {
+          authentication: token,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        changeFollowStatus();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const removeFollow = () => {
+    axios_api
+      .delete(`/follows/${data.memberId}`, {
+        headers: {
+          authentication: token,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        changeFollowStatus();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <section className='m-9 px-9'>
@@ -51,11 +89,22 @@ const Detail = () => {
       <div className='mt-6'>
         <div className='flex  justify-between items-center'>
           <div className='grid grid-cols-2 items-center'>
-            <img
-              src={followAdd}
-              alt='followImg'
-              className='w-8 h-8 mr-4 cursor-pointer'
-            />
+            {!data.followStatus ? (
+              <img
+                src={followAdd}
+                alt='followImg'
+                className='w-8 h-8 mr-4 cursor-pointer'
+                onClick={addFollow}
+              />
+            ) : (
+              <img
+                src={followRemove}
+                alt='followImg'
+                className='w-8 h-8 mr-4 cursor-pointer'
+                onClick={removeFollow}
+              />
+            )}
+
             <p className='text-[#808080]'>{data.nickname}</p>
           </div>
           <p>{data.title}</p>
