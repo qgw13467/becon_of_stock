@@ -51,9 +51,10 @@ const FactorSettings = () => {
   return (
     <React.Fragment>
       <div className='flex items-center justify-between'>
-        <p className='text-xl font-KJCbold'>팩터 설정</p>
+        <div className='text-xl font-KJCbold w-[60%]'>팩터 설정 </div>
+        <p className='rounded-full border-[#131313] bg-[#FAF6FF]'>사용횟수</p>
         <p
-          className='text-sm mr-[5%] cursor-pointer text-[#808080] hover:text-[#131313] hover:font-KJCbold'
+          className='text-sm mx-[5%] cursor-pointer text-[#808080] hover:text-[#131313] hover:font-KJCbold'
           onClick={resetIndicatorHandler}
         >
           초기화

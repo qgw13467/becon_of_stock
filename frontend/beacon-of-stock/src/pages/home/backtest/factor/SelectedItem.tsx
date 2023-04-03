@@ -23,7 +23,7 @@ const SelectedItem = (props: Props) => {
           src={erase}
           alt='erase'
           onClick={eraseIndicatorHandler}
-          className='w-5 h-5'
+          className='w-5 h-5 cursor-pointer'
         />
       </div>
     </React.Fragment>
