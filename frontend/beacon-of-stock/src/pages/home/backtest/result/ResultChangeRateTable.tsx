@@ -1,4 +1,13 @@
-const ResultChangeRateTable = () => {
+interface Props {
+  revenueDataDto: {
+    winrate: string;
+    strategyRevenue: number;
+    marketRevenue: number;
+    totalMonth: number;
+  };
+}
+
+const ResultChangeRateTable = (props: Props) => {
   return (
     <div className='flex flex-col justify-center'>
       <p className='text-xl font-KJCbold'>ResultChangeRateTable</p>
