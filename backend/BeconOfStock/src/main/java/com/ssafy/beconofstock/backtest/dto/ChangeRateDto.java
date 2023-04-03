@@ -25,7 +25,7 @@ public class ChangeRateDto {
 
     public static ChangeRateDto getMarketByCumulativeReturnDto(CumulativeReturnDto cumulativeReturnDto){
         ChangeRateDto changeRateDto = new ChangeRateDto();
-        changeRateDto.setChangeRate(cumulativeReturnDto.getStrategyValue());
+        changeRateDto.setChangeRate(cumulativeReturnDto.getMarketValue());
         changeRateDto.setYear(cumulativeReturnDto.getYear());
         changeRateDto.setMonth(cumulativeReturnDto.getMonth());
         return  changeRateDto;
