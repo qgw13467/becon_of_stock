@@ -1,8 +1,9 @@
 package com.ssafy.beconofstock.spark.service;
 
-import com.ssafy.beconofstock.spark.dto.TestDto;
+import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
+import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 
 public interface SparkService {
-    TestDto getConnectionTest();
+    BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto);
 
 }

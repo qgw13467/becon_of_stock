@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -23,7 +25,6 @@ import java.util.stream.Collectors;
 public class BacktestServiceImpl implements BacktestService {
 
     private final TradeRepository tradeRepository;
-    private final FinanceRepository financeRepository;
     private final IndicatorRepository indicatorRepository;
     private final BackIndustryRepository backIndustryRepository;
     private final InterestRateRepository interestRateRepository;
@@ -382,7 +383,11 @@ public class BacktestServiceImpl implements BacktestService {
 
     private void calAverageRanking(List<Trade> trades) {
         for (Trade trade : trades) {
-            trade.setRanking(trade.getRanking() / trade.getCnt());
+            if (trade.getCnt() == 0) {
+                trade.setRanking(999);
+            } else {
+                trade.setRanking(trade.getRanking() / trade.getCnt());
+            }
         }
     }
 

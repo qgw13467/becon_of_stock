@@ -1,7 +1,7 @@
 package com.ssafy.beconofstock.spark.controller;
 
 import com.ssafy.beconofstock.backtest.dto.BacktestIndicatorsDto;
-import com.ssafy.beconofstock.spark.dto.TestDto;
+import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.spark.service.SparkService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,17 +25,17 @@ public class SparkController {
 
     private final SparkService sparkService;
 
-    @ApiOperation(value = "스파크 테스트", notes = "trade 테이블 개수를 리턴합니다.")
+    @ApiOperation(value = "백테스트", notes = "스파크처리 백테스트")
     @GetMapping("/spark/test")
     @ApiResponses({@ApiResponse(code = 200, message = "성공입니다."),})
-    public ResponseEntity<TestDto> doSparkTest(
+    public ResponseEntity<BacktestResultDto> doBackTest(
             @ModelAttribute BacktestIndicatorsDto backtestIndicatorsDto) {
 
         log.info("========= doSparkTest : {} ", backtestIndicatorsDto.toString());
 
-        TestDto testDto = sparkService.getConnectionTest();
+        BacktestResultDto backtestResult = sparkService.getBacktestResult(backtestIndicatorsDto);
 
-        return new ResponseEntity<>(testDto, HttpStatus.OK);
+        return new ResponseEntity<>(backtestResult, HttpStatus.OK);
     }
 
 }
