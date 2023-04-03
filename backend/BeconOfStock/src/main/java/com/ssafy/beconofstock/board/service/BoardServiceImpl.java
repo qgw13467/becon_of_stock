@@ -61,7 +61,7 @@ public class BoardServiceImpl implements BoardService {
             .strategy(strategy)
             .build();
 
-        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
 
         List<Indicator> indicators = strategyIndicatorList.stream()
             .map(StrategyIndicator::getIndicator)
@@ -91,7 +91,7 @@ public class BoardServiceImpl implements BoardService {
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
         boardRepository.save(board);
 
-        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(board.getStrategy());
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(board.getStrategy());
 
         List<Indicator> indicators = strategyIndicatorList.stream()
             .map(StrategyIndicator::getIndicator)

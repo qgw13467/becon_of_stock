@@ -47,7 +47,7 @@ public class StrategyServiceImpl implements StrategyService {
 //            throw new NotYourAuthorizationException();
 //        }
 
-        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findBySrategyFetch(strategy);
+        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
 
         List<Indicator> indicators = strategyIndicatorList.stream()
                 .map(StrategyIndicator::getIndicator)
@@ -62,7 +62,7 @@ public class StrategyServiceImpl implements StrategyService {
                         .indicators(indicators)
                         .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
                         .marketValues(toMarketValues(strategy.getCummulateReturnList()))
-//                        .access(strategy.getAccessType())
+                        .representative(strategy.getRepresentative())
                         .build();
 
         return strategyDetailDto;
@@ -126,7 +126,7 @@ public class StrategyServiceImpl implements StrategyService {
     @Override
     public List<StrategyIndicator> getStrategy(Long id) {
 
-        Strategy strategy = strategyRepository.findById(id).orElseThrow(() -> new NotFoundException());
+        Strategy strategy = strategyRepository.findById(id).orElseThrow(NotFoundException::new);
 
         List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
 
@@ -137,16 +137,29 @@ public class StrategyServiceImpl implements StrategyService {
     @Transactional
     public void addStrategy(Member member, StrategyAddDto strategyAddDto) {
 
+        List<ChangeRateDto> strategyDtoValues = strategyAddDto.getCumulativeReturnDtos().stream()
+                .map(ChangeRateDto::getStrategyByCumulativeReturnDto)
+                .collect(Collectors.toList());
+        List<ChangeRateDto> marketDtoValues = strategyAddDto.getCumulativeReturnDtos().stream()
+                .map(ChangeRateDto::getMarketByCumulativeReturnDto)
+                .collect(Collectors.toList());
+
         // 전략 저장 - id get
         Strategy strategy = new Strategy(member, strategyAddDto);
+        strategy.setRepresentative(false);
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
         List<CummulateReturn> cummulateReturnList = new ArrayList<>();
-        List<Double> marketValues = strategyAddDto.getMarketValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
-        List<Double> strategyValues = strategyAddDto.getStrategyValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
-        int year = strategyAddDto.getStrategyValues().get(0).getYear();
-        int month = strategyAddDto.getStrategyValues().get(0).getMonth();
+        List<Double> strategyValues = strategyDtoValues.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+        List<Double> marketValues = marketDtoValues.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+
+        int year = strategyDtoValues.get(0).getYear();
+        int month = strategyDtoValues.get(0).getMonth();
 
         for (int i = 0; i < marketValues.size(); i++) {
             cummulateReturnList.add(CummulateReturn.builder().strategyValue(strategyValues.get(i)).
@@ -195,7 +208,6 @@ public class StrategyServiceImpl implements StrategyService {
         }
 
         strategy.setByStrategyAddDto(strategyAddDto);
-
 
 
 //        if (strategyAddDto.getAccess() != null) {
@@ -251,4 +263,53 @@ public class StrategyServiceImpl implements StrategyService {
         }
         return strategyValues;
     }
+
+
+    @Override
+    public Boolean updateRepresentative(OAuth2UserImpl user, Long strategyId) {
+        Strategy strategy = strategyRepository.findByStrategyId(strategyId);
+        List<Strategy> strategies = strategyRepository.findStrategyByMemberList(user.getMember());
+        if (strategy == null || !strategy.getMember().getId().equals(user.getMember().getId())) {
+            return false;
+        }
+        Boolean representative = strategy.getRepresentative();
+        if (strategies.size() == 3 && !representative) {
+            return false;
+        }
+
+        strategy.setRepresentative(!representative);
+        strategyRepository.save(strategy);
+
+        return true;
+    }
+
+    @Override
+    public List<StrategyDetailDto> getRepresentative(OAuth2UserImpl user) {
+        List<Strategy> strategies = strategyRepository.findStrategyByMemberList(user.getMember());
+        List<StrategyDetailDto> strategyList = new ArrayList<>();
+        for (Strategy strategy:strategies) {
+            List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
+
+            List<Indicator> indicators = strategyIndicatorList.stream()
+                    .map(StrategyIndicator::getIndicator)
+                    .collect(Collectors.toList());
+
+            StrategyDetailDto strategyDetailDto =
+                    StrategyDetailDto.builder()
+                            .id(strategy.getId())
+                            .title(strategy.getTitle())
+                            .memberNickname(strategy.getMember().getNickname())
+                            .memberId((strategy.getMember().getId()))
+                            .indicators(indicators)
+                            .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
+                            .marketValues(toMarketValues(strategy.getCummulateReturnList()))
+                            .representative(strategy.getRepresentative())
+                            .build();
+            strategyList.add(strategyDetailDto);
+        }
+
+        return strategyList;
+    }
+
+
 }
