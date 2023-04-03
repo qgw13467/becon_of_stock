@@ -126,7 +126,7 @@ public class StrategyServiceImpl implements StrategyService {
     @Override
     public List<StrategyIndicator> getStrategy(Long id) {
 
-        Strategy strategy = strategyRepository.findById(id).orElseThrow(() -> new NotFoundException());
+        Strategy strategy = strategyRepository.findById(id).orElseThrow(NotFoundException::new);
 
         List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategy(strategy);
 
@@ -137,16 +137,28 @@ public class StrategyServiceImpl implements StrategyService {
     @Transactional
     public void addStrategy(Member member, StrategyAddDto strategyAddDto) {
 
+        List<ChangeRateDto> strategyDtoValues = strategyAddDto.getCumulativeReturnDtos().stream()
+                .map(ChangeRateDto::getStrategyByCumulativeReturnDto)
+                .collect(Collectors.toList());
+        List<ChangeRateDto> marketDtoValues = strategyAddDto.getCumulativeReturnDtos().stream()
+                .map(ChangeRateDto::getMarketByCumulativeReturnDto)
+                .collect(Collectors.toList());
+
         // 전략 저장 - id get
         Strategy strategy = new Strategy(member, strategyAddDto);
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
         List<CummulateReturn> cummulateReturnList = new ArrayList<>();
-        List<Double> marketValues = strategyAddDto.getMarketValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
-        List<Double> strategyValues = strategyAddDto.getStrategyValues().stream().map(ChangeRateDto::getChangeRate).collect(Collectors.toList());
-        int year = strategyAddDto.getStrategyValues().get(0).getYear();
-        int month = strategyAddDto.getStrategyValues().get(0).getMonth();
+        List<Double> strategyValues = strategyDtoValues.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+        List<Double> marketValues = marketDtoValues.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+
+        int year = strategyDtoValues.get(0).getYear();
+        int month = strategyDtoValues.get(0).getMonth();
 
         for (int i = 0; i < marketValues.size(); i++) {
             cummulateReturnList.add(CummulateReturn.builder().strategyValue(strategyValues.get(i)).
@@ -195,7 +207,6 @@ public class StrategyServiceImpl implements StrategyService {
         }
 
         strategy.setByStrategyAddDto(strategyAddDto);
-
 
 
 //        if (strategyAddDto.getAccess() != null) {
