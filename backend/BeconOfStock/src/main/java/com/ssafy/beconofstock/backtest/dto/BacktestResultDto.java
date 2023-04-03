@@ -1,6 +1,5 @@
 package com.ssafy.beconofstock.backtest.dto;
 
-import com.ssafy.beconofstock.strategy.entity.Indicator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,7 @@ import java.util.List;
 @Setter
 public class BacktestResultDto {
 
-    List<CumulativeReturnDto> cumulativeReturnDtos;
+    List<ChangeRateValueDto> cumulativeReturnDtos;
     //누적 수익률
     private String cumulativeReturnDesc = "전략의 누적 수익률";
     private Double strategyCumulativeReturn;
@@ -38,7 +37,7 @@ public class BacktestResultDto {
 
     //각 기간(연도, 달)별 수익률
     private String changeRateDesc ="구간별 변화량";
-    List<ChangeRateDto> changeRate;
+    List<ChangeRateValueDto> changeRate;
 
     //수익을 만든 횟수
     private String winrate = "수익을 만든 구간의 횟수";
