@@ -1,7 +1,6 @@
 package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Board;
-import com.ssafy.beconofstock.board.service.BoardServiceImpl.UserStatusDto;
 import com.ssafy.beconofstock.strategy.dto.StrategyDetailDto;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.arrow.flatbuf.Bool;
 
 @Data
 @NoArgsConstructor

@@ -6,6 +6,7 @@ import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
+import com.ssafy.beconofstock.board.dto.UserStatusDto;
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.board.entity.BoardDibs;
 import com.ssafy.beconofstock.board.entity.BoardLike;
@@ -26,7 +27,6 @@ import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -50,21 +50,7 @@ public class BoardServiceImpl implements BoardService {
     private final StrategyIndicatorRepository strategyIndicatorRepository;
     private final FollowRepository followRepository;
 
-    @Data
-    public class UserStatusDto {
-        Boolean likeStauts;
-        Boolean dibStatus;
-        Boolean isAuthor;
-        Boolean followStatus;
 
-        public UserStatusDto(Board board, Member member) {
-            this.likeStauts = boardLikeRepository.existsByBoardAndMember(board, member);
-            this.dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
-            this.isAuthor = board.getMember().getId().equals(member.getId());
-            this.followStatus =
-                null != followRepository.findByFollowingAndFollowed(member, board.getMember());
-        }
-    }
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -87,7 +73,7 @@ public class BoardServiceImpl implements BoardService {
             .collect(Collectors.toList());
 
         boardRepository.save(newBoard);
-        UserStatusDto userStatus = new UserStatusDto(newBoard, member);
+        UserStatusDto userStatus = getUserStatusDto(newBoard, member);
 
         return new BoardResponseDto(newBoard, indicators, userStatus);
     }
@@ -117,7 +103,7 @@ public class BoardServiceImpl implements BoardService {
             .map(StrategyIndicator::getIndicator)
             .collect(Collectors.toList());
 
-        UserStatusDto userStatus = new UserStatusDto(board, member);
+        UserStatusDto userStatus = getUserStatusDto(board, member);
 
         return new BoardResponseDto(board, indicators, userStatus);
     }
@@ -156,7 +142,7 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board newBoard = boardRepository.save(board);
-        UserStatusDto userStatus = new UserStatusDto(newBoard, member);
+        UserStatusDto userStatus = getUserStatusDto(newBoard, member);
 
         return new BoardResponseDto(newBoard, userStatus);
     }
@@ -342,6 +328,17 @@ public class BoardServiceImpl implements BoardService {
         }
         Page<Board> searchList = boardRepository.findBoardByNickname(nickname, pageable);
         return searchList.map(BoardListResponseDto::new);
+
+    }
+
+    public UserStatusDto getUserStatusDto(Board board, Member member) {
+        Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
+        Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
+        Boolean isAuthor = board.getMember().getId().equals(member.getId());
+        Boolean followStatus =
+            null != followRepository.findByFollowingAndFollowed(member, board.getMember());
+
+        return new UserStatusDto(likeStatus, dibStatus, isAuthor, followStatus);
 
     }
 
