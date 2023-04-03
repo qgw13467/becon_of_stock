@@ -96,54 +96,19 @@ const Detail = () => {
         // setIsBookmark={setIsBookmark}
       />
       {/* 현재 유저와 게시글의 유저가 같을 때만 보이게. */}
-      <div className='flex justify-end my-6'>
-        <button className='px-1 mr-2'>수정</button>
-        <p className='mx-8 text-[#808080]'>|</p>
-        <button className='px-1'>삭제</button>
-      </div>
+      {data.isAuthor ? (
+        <div className='flex justify-end my-6'>
+          <button className='px-1 mr-2'>수정</button>
+          <p className='mx-8 text-[#808080]'>|</p>
+          <button className='px-1'>삭제</button>
+        </div>
+      ) : (
+        <div className='my-[72px]'></div>
+      )}
+
       <hr className='bg-[#808080] my-4' />
       <DetailComment boardId={data.boardId} />
     </section>
-
-    // <section className='m-9 px-9'>
-    //   <p className='my-9 text-3xl font-bold bg-cyan-600 text-[#fefefe] text-center w-[280px] h-12 grid content-center rounded-[4px]'>
-    //     전략 공유 게시판
-    //   </p>
-    //   <div className='flex justify-between'>
-    //     <p>{data.title}</p>
-    //     <button>목록</button>
-    //   </div>
-    //   <div className='flex justify-evenly'>
-    //     <button>
-    //       <img src='' alt='followImg' />
-    //     </button>
-    //     <p>{data.nickname}</p>
-    //     <p>{data.createDate}</p>
-    //     <p>조회 : {data.hit}</p>
-    //     <p>추천 : {data.likeNum}</p>
-    //   </div>
-    //   <div className='flex justify-between'>
-    //     <p>{data.content}</p>
-    //     <div>{/* 전략 정보 들어올 곳 */}</div>
-    //   </div>
-    //   <div className='flex justify-center'>
-    //     <button className='flex justify-center'>
-    //       <img src='' alt='like' />
-    //       <p>좋아요</p>
-    //     </button>
-    //     <button className='flex justify-center'>
-    //       <img src='' alt='take-bookmark' />
-    //       <p>북마크에 담기</p>
-    //     </button>
-    //   </div>
-    //   <div className='flex justify-end'>
-    //     <button>수정</button>
-    //     <p className='mx-10'>|</p>
-    //     <button>삭제</button>
-    //   </div>
-    //   <DetailComment boardId={data.boardId} />
-    //   {/* 이하 자세한 내용 생략 */}
-    // </section>
   );
 };
 
