@@ -33,7 +33,7 @@ public class SparkController {
 
         log.info("========= doSparkTest : {} ", backtestIndicatorsDto.toString());
 
-        TestDto testDto = sparkService.getConnectionTest();
+        TestDto testDto = sparkService.getConnectionTest(backtestIndicatorsDto);
 
         return new ResponseEntity<>(testDto, HttpStatus.OK);
     }
