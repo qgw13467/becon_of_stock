@@ -54,7 +54,6 @@ public class BoardController {
     }
 
 
-    // 글 작성 -> strategy 작성 이후 strategy도 연결 필요
     @ApiOperation(value = "글 작성",  notes = "새 글을 작성합니다.")
     @ApiResponses({
         @ApiResponse(code = 201, message = "성공입니다", response = BoardResponseDto.class),

@@ -17,6 +17,7 @@ import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.member.repository.FollowRepository;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
@@ -25,8 +26,10 @@ import com.ssafy.beconofstock.strategy.repository.StrategyRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.arrow.flatbuf.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +49,26 @@ public class BoardServiceImpl implements BoardService {
     private final BoardDibsRepository boardDibsRepository;
     private final StrategyRepository strategyRepository;
     private final StrategyIndicatorRepository strategyIndicatorRepository;
+    private final FollowRepository followRepository;
+
+    @Data
+    public class UserStatusDto {
+        Boolean likeStauts;
+        Boolean dibStatus;
+        Boolean isAuthor;
+        Boolean followStatus;
+
+        public UserStatusDto(Board board, Member member) {
+            this.likeStauts = boardLikeRepository.existsByBoardAndMember(board, member);
+            this.dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
+            this.isAuthor = false;
+            if (board.getMember().getId().equals(member.getId()))
+                this.isAuthor = true;
+            this.followStatus = false;
+            if (null != followRepository.findByFollowingAndFollowed(member, board.getMember()))
+                this.followStatus = true;
+        }
+    }
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -67,8 +90,10 @@ public class BoardServiceImpl implements BoardService {
             .map(StrategyIndicator::getIndicator)
             .collect(Collectors.toList());
 
-        return new BoardResponseDto(boardRepository.save(newBoard), indicators, false, false);
+        boardRepository.save(newBoard);
+        UserStatusDto userStatus = new UserStatusDto(newBoard, member);
 
+        return new BoardResponseDto(newBoard, indicators, userStatus);
     }
 
     public Page<BoardListResponseDto> getBoardList(int page, boolean direction, String property) {
@@ -86,8 +111,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto getBoardDetail(Long boardId, OAuth2UserImpl user) {
         Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
-        Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
-        Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
+
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
         boardRepository.save(board);
 
@@ -97,7 +121,9 @@ public class BoardServiceImpl implements BoardService {
             .map(StrategyIndicator::getIndicator)
             .collect(Collectors.toList());
 
-        return new BoardResponseDto(board, indicators, likeStatus, dibStatus);
+        UserStatusDto userStatus = new UserStatusDto(board, member);
+
+        return new BoardResponseDto(board, indicators, userStatus);
     }
 
     // 글 삭제
@@ -116,9 +142,10 @@ public class BoardServiceImpl implements BoardService {
     // 글 수정
     public BoardResponseDto updateBoard(OAuth2UserImpl user, BoardRequestDto updateBoard,
         Long boardId) {
+        Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
 
-        if (!board.getMember().getId().equals(user.getMember().getId())) {
+        if (!board.getMember().getId().equals(member.getId())) {
             return null;
         }
         // 수정
@@ -133,8 +160,9 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board newBoard = boardRepository.save(board);
+        UserStatusDto userStatus = new UserStatusDto(newBoard, member);
 
-        return new BoardResponseDto(newBoard, boardLikeRepository.existsByBoardAndMember(newBoard, user.getMember()), boardDibsRepository.existsByBoardAndMember(newBoard, user.getMember()));
+        return new BoardResponseDto(newBoard, userStatus);
     }
 
     // 댓글 목록 전체 조회
