@@ -6,6 +6,7 @@ import com.ssafy.beconofstock.board.dto.BoardRequestDto;
 import com.ssafy.beconofstock.board.dto.BoardResponseDto;
 import com.ssafy.beconofstock.board.dto.CommentRequestDto;
 import com.ssafy.beconofstock.board.dto.CommentResponseDto;
+import com.ssafy.beconofstock.board.dto.UserStatusDto;
 import com.ssafy.beconofstock.board.entity.Board;
 import com.ssafy.beconofstock.board.entity.BoardDibs;
 import com.ssafy.beconofstock.board.entity.BoardLike;
@@ -17,6 +18,7 @@ import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.board.repository.CommentRelRepository;
 import com.ssafy.beconofstock.board.repository.CommentRepository;
 import com.ssafy.beconofstock.member.entity.Member;
+import com.ssafy.beconofstock.member.repository.FollowRepository;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
@@ -46,6 +48,9 @@ public class BoardServiceImpl implements BoardService {
     private final BoardDibsRepository boardDibsRepository;
     private final StrategyRepository strategyRepository;
     private final StrategyIndicatorRepository strategyIndicatorRepository;
+    private final FollowRepository followRepository;
+
+
 
     @Transactional
     public BoardResponseDto createBoard(Member member, BoardRequestDto board) {
@@ -67,8 +72,10 @@ public class BoardServiceImpl implements BoardService {
             .map(StrategyIndicator::getIndicator)
             .collect(Collectors.toList());
 
-        return new BoardResponseDto(boardRepository.save(newBoard), indicators, false, false);
+        boardRepository.save(newBoard);
+        UserStatusDto userStatus = getUserStatusDto(newBoard, member);
 
+        return new BoardResponseDto(newBoard, indicators, userStatus);
     }
 
     public Page<BoardListResponseDto> getBoardList(int page, boolean direction, String property) {
@@ -86,8 +93,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto getBoardDetail(Long boardId, OAuth2UserImpl user) {
         Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
-        Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
-        Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
+
         board.setHit(board.getHit() + 1);               // 조회수 업데이트
         boardRepository.save(board);
 
@@ -97,7 +103,9 @@ public class BoardServiceImpl implements BoardService {
             .map(StrategyIndicator::getIndicator)
             .collect(Collectors.toList());
 
-        return new BoardResponseDto(board, indicators, likeStatus, dibStatus);
+        UserStatusDto userStatus = getUserStatusDto(board, member);
+
+        return new BoardResponseDto(board, indicators, userStatus);
     }
 
     // 글 삭제
@@ -116,9 +124,10 @@ public class BoardServiceImpl implements BoardService {
     // 글 수정
     public BoardResponseDto updateBoard(OAuth2UserImpl user, BoardRequestDto updateBoard,
         Long boardId) {
+        Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
 
-        if (!board.getMember().getId().equals(user.getMember().getId())) {
+        if (!board.getMember().getId().equals(member.getId())) {
             return null;
         }
         // 수정
@@ -133,25 +142,27 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board newBoard = boardRepository.save(board);
+        UserStatusDto userStatus = getUserStatusDto(newBoard, member);
 
-        return new BoardResponseDto(newBoard, boardLikeRepository.existsByBoardAndMember(newBoard, user.getMember()), boardDibsRepository.existsByBoardAndMember(newBoard, user.getMember()));
+        return new BoardResponseDto(newBoard, userStatus);
     }
 
     // 댓글 목록 전체 조회
-    public List<CommentResponseDto> getCommentList(Long boardId) {
+    public List<CommentResponseDto> getCommentList(Long boardId, OAuth2UserImpl user) {
         List<Comment> commentList= commentRepository.findAllByBoardIdAndDepthEquals(boardId, 0);
-        return commentList.stream().map(x -> getComment(x.getId())).collect(Collectors.toList());
+        return commentList.stream().map(x -> getComment(x.getId(), user)).collect(Collectors.toList());
     }
 
     // 단일 댓글 조회
-    public CommentResponseDto getComment(Long commentId) {
+    public CommentResponseDto getComment(Long commentId, OAuth2UserImpl user) {
+        Member member = user.getMember();
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (0 < comment.getCommentNum()) {
             List<Comment> childrenList = commentRelRepository.findAllByJoinParent(comment);
-            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
-            return new CommentResponseDto(comment, children);
+            List<CommentResponseDto> children = childrenList.stream().map(x -> new CommentResponseDto(x, member)).collect(Collectors.toList());
+            return new CommentResponseDto(comment, member, children);
         }
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(comment, member);
     }
 
     // 댓글 생성
@@ -173,11 +184,12 @@ public class BoardServiceImpl implements BoardService {
             .build();
         commentRepository.save(comment);
 
-        return getCommentList(boardId);
+        return getCommentList(boardId, user);
     }
 
     // 댓글 수정
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto content, OAuth2UserImpl user) {
+        Member member = user.getMember();
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
         if (!comment.getMember().getId().equals(user.getMember().getId())) {
@@ -185,7 +197,7 @@ public class BoardServiceImpl implements BoardService {
         }
         comment.setContent(content.getContent());
         comment.setModified(true);
-        return new CommentResponseDto(commentRepository.save(comment));
+        return new CommentResponseDto(commentRepository.save(comment), member);
     }
 
     // 댓글 삭제
@@ -256,7 +268,7 @@ public class BoardServiceImpl implements BoardService {
 
         commentRelRepository.save(commentRel);
 
-        return getCommentList(boardId);
+        return getCommentList(boardId, user);
     }
 
     // 좋아요 상태 변경
@@ -316,6 +328,17 @@ public class BoardServiceImpl implements BoardService {
         }
         Page<Board> searchList = boardRepository.findBoardByNickname(nickname, pageable);
         return searchList.map(BoardListResponseDto::new);
+
+    }
+
+    public UserStatusDto getUserStatusDto(Board board, Member member) {
+        Boolean likeStatus = boardLikeRepository.existsByBoardAndMember(board, member);
+        Boolean dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
+        Boolean isAuthor = board.getMember().getId().equals(member.getId());
+        Boolean followStatus =
+            null != followRepository.findByFollowingAndFollowed(member, board.getMember());
+
+        return new UserStatusDto(likeStatus, dibStatus, isAuthor, followStatus);
 
     }
 
