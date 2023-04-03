@@ -23,10 +23,12 @@ export const ForumBoard = memo(({ item }: ForumBoard) => {
           to={`/community/detail/${item.boardId}`}
           className='text-center col-span-4'
         >
-          {item.title}
+          {item.title} {item.commentNum > 0 ? <>({item.commentNum})</> : null}
         </Link>
         <p className='text-center col-span-2'>{item.nickname}</p>
-        <p className='text-center col-span-2'>{item.createDate}</p>
+        <p className='text-center col-span-2'>
+          {String(item.createDate).replace('T', ' ')}
+        </p>
         <p className='text-center'>{item.hit}</p>
         <p className='text-center'>{item.likeNum}</p>
       </article>

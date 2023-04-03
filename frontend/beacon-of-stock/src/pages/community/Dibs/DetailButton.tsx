@@ -8,16 +8,18 @@ interface DetailButtonProps {
   boardId: number;
   isLike: boolean;
   isBookmark: boolean;
-  setIsLike: Dispatch<SetStateAction<boolean>>;
-  setIsBookmark: Dispatch<SetStateAction<boolean>>;
+  setChangeLike: () => void;
+  // setIsLike: Dispatch<SetStateAction<boolean>>;
+  // setIsBookmark: Dispatch<SetStateAction<boolean>>;
 }
 
 export const DetailButton: React.FC<DetailButtonProps> = ({
   boardId,
   isLike,
   isBookmark,
-  setIsLike,
-  setIsBookmark,
+  setChangeLike,
+  // setIsLike,
+  // setIsBookmark,
 }) => {
   // console.log(isLike);
   const fileCopy = require('../../../assets/img/file_copy.png');
@@ -25,11 +27,17 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
 
   const clickLikeButton = () => {
     axios_api
-      .post(`/boards/likes/${boardId}`, {
-        headers: { authentication: token },
-      })
+      .post(
+        `/boards/likes/${boardId}`,
+        { boardId },
+        {
+          headers: { authentication: token },
+        }
+      )
       .then((res) => {
+        console.log('보낸다');
         console.log(res);
+        setChangeLike();
       })
       .catch((err) => {
         console.log(err);
@@ -54,8 +62,8 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
       <button
         className='flex items-center text-[#808080] mr-6'
         onClick={() => {
+          // setIsLike(!isLike);
           clickLikeButton();
-          setIsLike(!isLike);
         }}
       >
         <img
@@ -69,7 +77,7 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
         className='flex items-center text-[#808080]'
         onClick={() => {
           clickBookmarkButton();
-          setIsBookmark(!isBookmark);
+          // setIsBookmark(!isBookmark);
         }}
       >
         <img
