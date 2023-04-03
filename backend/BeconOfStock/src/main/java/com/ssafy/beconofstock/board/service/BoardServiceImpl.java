@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.arrow.flatbuf.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,12 +60,9 @@ public class BoardServiceImpl implements BoardService {
         public UserStatusDto(Board board, Member member) {
             this.likeStauts = boardLikeRepository.existsByBoardAndMember(board, member);
             this.dibStatus = boardDibsRepository.existsByBoardAndMember(board, member);
-            this.isAuthor = false;
-            if (board.getMember().getId().equals(member.getId()))
-                this.isAuthor = true;
-            this.followStatus = false;
-            if (null != followRepository.findByFollowingAndFollowed(member, board.getMember()))
-                this.followStatus = true;
+            this.isAuthor = board.getMember().getId().equals(member.getId());
+            this.followStatus =
+                null != followRepository.findByFollowingAndFollowed(member, board.getMember());
         }
     }
 
@@ -166,20 +162,21 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 댓글 목록 전체 조회
-    public List<CommentResponseDto> getCommentList(Long boardId) {
+    public List<CommentResponseDto> getCommentList(Long boardId, OAuth2UserImpl user) {
         List<Comment> commentList= commentRepository.findAllByBoardIdAndDepthEquals(boardId, 0);
-        return commentList.stream().map(x -> getComment(x.getId())).collect(Collectors.toList());
+        return commentList.stream().map(x -> getComment(x.getId(), user)).collect(Collectors.toList());
     }
 
     // 단일 댓글 조회
-    public CommentResponseDto getComment(Long commentId) {
+    public CommentResponseDto getComment(Long commentId, OAuth2UserImpl user) {
+        Member member = user.getMember();
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (0 < comment.getCommentNum()) {
             List<Comment> childrenList = commentRelRepository.findAllByJoinParent(comment);
-            List<CommentResponseDto> children = childrenList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
-            return new CommentResponseDto(comment, children);
+            List<CommentResponseDto> children = childrenList.stream().map(x -> new CommentResponseDto(x, member)).collect(Collectors.toList());
+            return new CommentResponseDto(comment, member, children);
         }
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(comment, member);
     }
 
     // 댓글 생성
@@ -201,11 +198,12 @@ public class BoardServiceImpl implements BoardService {
             .build();
         commentRepository.save(comment);
 
-        return getCommentList(boardId);
+        return getCommentList(boardId, user);
     }
 
     // 댓글 수정
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto content, OAuth2UserImpl user) {
+        Member member = user.getMember();
         Comment comment = commentRepository.findById(commentId).orElse(null);
 
         if (!comment.getMember().getId().equals(user.getMember().getId())) {
@@ -213,7 +211,7 @@ public class BoardServiceImpl implements BoardService {
         }
         comment.setContent(content.getContent());
         comment.setModified(true);
-        return new CommentResponseDto(commentRepository.save(comment));
+        return new CommentResponseDto(commentRepository.save(comment), member);
     }
 
     // 댓글 삭제
@@ -284,7 +282,7 @@ public class BoardServiceImpl implements BoardService {
 
         commentRelRepository.save(commentRel);
 
-        return getCommentList(boardId);
+        return getCommentList(boardId, user);
     }
 
     // 좋아요 상태 변경

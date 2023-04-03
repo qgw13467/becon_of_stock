@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.board.dto;
 
 import com.ssafy.beconofstock.board.entity.Comment;
+import com.ssafy.beconofstock.member.entity.Member;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +28,12 @@ public class CommentResponseDto {
     private Boolean modified;
     @ApiModelProperty(example = "작성일")
     private LocalDateTime createDateTime;
+    @ApiModelProperty(example = "작성자 여부")
+    private Boolean isAuthor;
     @ApiModelProperty(example = "대댓글")
     private List<CommentResponseDto> children;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponseDto(Comment comment, Member member) {
         this.commentId = comment.getId();
         this.memberId = comment.getMember().getId();
         this.userNickname = comment.getMember().getNickname();
@@ -39,8 +42,9 @@ public class CommentResponseDto {
         this.commentNum = comment.getCommentNum();
         this.modified = comment.getModified();
         this.createDateTime = comment.getCreatedDateTime();
+        this.isAuthor = comment.getMember().getId().equals(member.getId());
     }
-    public CommentResponseDto(Comment comment, List<CommentResponseDto> children) {
+    public CommentResponseDto(Comment comment, Member member, List<CommentResponseDto> children) {
         this.commentId = comment.getId();
         this.memberId = comment.getMember().getId();
         this.userNickname = comment.getMember().getNickname();
@@ -49,6 +53,7 @@ public class CommentResponseDto {
         this.commentNum = comment.getCommentNum();
         this.createDateTime = comment.getCreatedDateTime();
         this.modified = comment.getModified();
+        this.isAuthor = comment.getMember().getId().equals(member.getId());
         this.children = children;
     }
 
