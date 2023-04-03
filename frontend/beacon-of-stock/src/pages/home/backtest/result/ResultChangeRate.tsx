@@ -12,7 +12,8 @@ import {
 
 interface Props {
   changeRate: {
-    changeRate: number;
+    strategyValue: number;
+    marketValue: number;
     year: number;
     month: number;
   }[];
@@ -24,7 +25,8 @@ const ResultChangeRate = (props: Props) => {
   const [actualChangeRate, setActualChangeRate] = useState([
     {
       name: '',
-      changeRate: 0,
+      strategyChangeRate: 0,
+      marketChangeRate: 0,
     },
   ]);
 
@@ -32,109 +34,130 @@ const ResultChangeRate = (props: Props) => {
     const dataTemp = props.changeRate.map((data) => {
       return {
         name: `${data.year}-${data.month}`,
-        changeRate: (data.changeRate - 1) * 100,
+        strategyChangeRate: (data.strategyValue - 1) * 100,
+        marketChangeRate: (data.marketValue - 1) * 100,
       };
     });
     setActualChangeRate([...actualChangeRate, ...dataTemp]);
   }, []);
   const data = [
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2011,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2011,
       month: 7,
     },
     {
-      changeRate: -1.63406866729999,
+      strategyValue: -1.63406866729999,
+      marketValue: -1.63406866729999,
       year: 2012,
       month: 1,
     },
     {
-      changeRate: -0.3718405630280321,
+      strategyValue: -0.3718405630280321,
+      marketValue: -0.3718405630280321,
       year: 2012,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2013,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2013,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2014,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2014,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2015,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2015,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2016,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2016,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2017,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2017,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2018,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2018,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2019,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2019,
       month: 7,
     },
     {
-      changeRate: 1.3263406866729999,
+      strategyValue: 1.3263406866729999,
+      marketValue: 1.3263406866729999,
       year: 2020,
       month: 1,
     },
     {
-      changeRate: 0.8718405630280321,
+      strategyValue: 0.8718405630280321,
+      marketValue: 0.8718405630280321,
       year: 2020,
       month: 7,
     },
@@ -162,7 +185,7 @@ const ResultChangeRate = (props: Props) => {
         <Tooltip cursor={{ fill: '#FFF2F8' }} />
         <Legend />
         <ReferenceLine y={0} stroke='#000' />
-        <Bar dataKey='changeRate' fill='#802A57' />
+        <Bar dataKey='strategyChangeRate' fill='#802A57' />
       </BarChart>
     </div>
   );
