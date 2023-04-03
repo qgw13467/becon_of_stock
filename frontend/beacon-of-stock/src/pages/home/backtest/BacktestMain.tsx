@@ -100,7 +100,6 @@ const BacktestMain = () => {
       backtestFactor.selectedIndicators.length === 0
     ) {
       Swal.fire({
-        // title: '<div style="font-size:24px;font-weight:bold;">에러!<div>',
         html: '<div>한 개 이상의 산업과 팩터를</div><div>선택해주세요!</div>',
         width: 300,
         icon: 'warning',
@@ -109,8 +108,19 @@ const BacktestMain = () => {
       });
     } else if (updatedSettings.maxStocks === '0') {
       Swal.fire({
-        // title: '<div style="font-size:24px;font-weight:bold;">에러!<div>',
         html: '<div>최대 종목 수는</div><div>1개 이상 30개 이하여야 합니다!</div>',
+        width: 300,
+        icon: 'warning',
+        confirmButtonText: '<div>확인</div>',
+        confirmButtonColor: '#f8bb86',
+      });
+    } else if (
+      updatedSettings.startYear > updatedSettings.endYear ||
+      (updatedSettings.startYear === updatedSettings.endYear &&
+        updatedSettings.startMonth >= updatedSettings.endMonth)
+    ) {
+      Swal.fire({
+        html: '<div>시작 시점과</div><div>종료 시점을 확인해 주세요!</div>',
         width: 300,
         icon: 'warning',
         confirmButtonText: '<div>확인</div>',
