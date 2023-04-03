@@ -89,7 +89,7 @@ export const WriteCommu = () => {
         <div className='mb-4'>
           <p className='text-[#131313] font-bold mb-2'>내용</p>
           <textarea
-            className='shadow appearance-none border h-80 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            className='resize-none shadow appearance-none border h-80 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
             placeholder='내용을 입력하세요.'
             value={content}
             onChange={contentChange}
