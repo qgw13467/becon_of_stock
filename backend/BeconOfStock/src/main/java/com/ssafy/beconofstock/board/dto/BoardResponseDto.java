@@ -56,7 +56,7 @@ public class BoardResponseDto {
         }
         this.likeNum = board.getLikeNum();
         this.commentNum = board.getCommentNum();
-        this.likeStatus = userStatusDto.getLikeStauts();
+        this.likeStatus = userStatusDto.getLikeStatus();
         this.dibStatus = userStatusDto.getDibStatus();
         this.isAuthor = userStatusDto.getIsAuthor();
         this.followStatus = userStatusDto.getFollowStatus();
@@ -73,7 +73,7 @@ public class BoardResponseDto {
         this.content = board.getContent();
         this.likeNum = board.getLikeNum();
         this.commentNum = board.getCommentNum();
-        this.likeStatus = userStatusDto.getLikeStauts();
+        this.likeStatus = userStatusDto.getLikeStatus();
         this.dibStatus = userStatusDto.getDibStatus();
         this.isAuthor = userStatusDto.getIsAuthor();
         this.followStatus = userStatusDto.getFollowStatus();
