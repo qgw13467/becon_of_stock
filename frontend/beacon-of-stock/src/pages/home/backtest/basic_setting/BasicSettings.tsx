@@ -197,7 +197,7 @@ const BasicSettings = (props: Props) => {
     setBasicSettings((prevState) => {
       return { ...prevState, end: event.target.value };
     });
-    console.log(event.target.value);
+    // console.log(event.target.value);
   };
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import {
 } from '../../../store/store';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
+import Swal from 'sweetalert2';
 
 const BacktestMain = () => {
   const useBacktestIndustry = useBacktestIndustryStore();
@@ -94,31 +95,44 @@ const BacktestMain = () => {
     { arrayFormat: 'repeat' }
   );
   const doBackTestHandler = () => {
-    axios_api
-      .get(`/backtest?${industriesURL}&${indicatorsURL}`, {
-        headers: {
-          authentication: token,
-        },
-        params: {
-          startYear: updatedSettings.startYear,
-          startMonth: updatedSettings.startMonth,
-          endYear: updatedSettings.endYear,
-          endMonth: updatedSettings.endMonth,
-          maxStocks: updatedSettings.maxStocks,
-          fee: updatedSettings.fee,
-          rebalance: updatedSettings.rebalance,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-        console.log(response.data.asd);
-        const data = response.data;
-        useBacktestIndustry.selectAllIndustry();
-        backtestFactor.resetSelectedIndicator();
-        backtestFactor.resetIndicator();
-        navigate('/result', { state: { data } });
-      })
-      .catch((error) => console.log(error));
+    if (
+      useBacktestIndustry.selectedIndustries.length === 0 ||
+      backtestFactor.selectedIndicators.length === 0
+    ) {
+      Swal.fire({
+        // title: '<div style="font-size:24px;font-weight:bold;">에러!<div>',
+        html: '<div>한 개 이상의 산업과 팩터를</div><div>선택해주세요!</div>',
+        width: 300,
+        icon: 'warning',
+        confirmButtonText: '<div>확인</div>',
+        confirmButtonColor: '#f8bb86',
+      });
+    } else {
+      axios_api
+        .get(`/backtest?${industriesURL}&${indicatorsURL}`, {
+          headers: {
+            authentication: token,
+          },
+          params: {
+            startYear: updatedSettings.startYear,
+            startMonth: updatedSettings.startMonth,
+            endYear: updatedSettings.endYear,
+            endMonth: updatedSettings.endMonth,
+            maxStocks: updatedSettings.maxStocks,
+            fee: updatedSettings.fee,
+            rebalance: updatedSettings.rebalance,
+          },
+        })
+        .then((response) => {
+          // console.log(response);
+          const data = response.data;
+          useBacktestIndustry.selectAllIndustry();
+          backtestFactor.resetSelectedIndicator();
+          backtestFactor.resetIndicator();
+          navigate('/result', { state: { data } });
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
