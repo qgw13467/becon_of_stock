@@ -38,7 +38,11 @@ const BasicFactor = (props: Props) => {
         <img
           src={dropdownImg}
           alt='dropdownImg'
-          className='w-6 mx-[5%]'
+          className={
+            showIndicator
+              ? 'w-6 mx-[5%] cursor-pointer origin-center rotate-180 transition duration-300 ease-out hover:ease-in'
+              : 'w-6 mx-[5%] cursor-pointer transition duration-300 ease-out hover:ease-in'
+          }
           onClick={showIndicatorHandler}
         />
         <div className='text-lg'>{props.title}</div>
