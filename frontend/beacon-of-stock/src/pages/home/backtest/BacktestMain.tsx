@@ -107,6 +107,15 @@ const BacktestMain = () => {
         confirmButtonText: '<div>확인</div>',
         confirmButtonColor: '#f8bb86',
       });
+    } else if (updatedSettings.maxStocks === '0') {
+      Swal.fire({
+        // title: '<div style="font-size:24px;font-weight:bold;">에러!<div>',
+        html: '<div>최대 종목 수는</div><div>1개 이상 30개 이하여야 합니다!</div>',
+        width: 300,
+        icon: 'warning',
+        confirmButtonText: '<div>확인</div>',
+        confirmButtonColor: '#f8bb86',
+      });
     } else {
       axios_api
         .get(`/backtest?${industriesURL}&${indicatorsURL}`, {
@@ -147,14 +156,14 @@ const BacktestMain = () => {
           />
         </div>
       </div>
-      <main className='h-[80vh] flex place-content-around items-center mx-[5%]'>
-        <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
+      <main className='h-[80vh] flex justify-center items-center mx-[5%]'>
+        <section className='relative inline-block w-[30%] pl-[2%] h-full border-l border-r border-[#FAF6FF] overflow-y-auto'>
           <BasicSettings onUpdateSettings={updateSettingsHandler} />
         </section>
-        <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
+        <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
           <FactorSettings />
         </section>
-        <section className='relative inline-block w-[29%] h-full border overflow-y-auto'>
+        <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
           <SelectedItems />
         </section>
       </main>
