@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
+import { DetailButton } from './DetailButton';
 import DetailComment from './DetailComment';
 
 const Detail = () => {
+  const followAdd = require('../../../assets/img/person_add.png');
   const navigate = useNavigate();
   const location = useLocation();
   const boardId = location.pathname.split('/').pop();
   const token = getCookie('accessToken');
   const [data, setData] = useState<any>({});
+  const [isLike, setIsLike] = useState<boolean>(false);
+  const [isBookmark, setIsBookmark] = useState<boolean>(false);
 
   // boardId를 사용하여 해당 게시물 정보를 가져오는 로직
   useEffect(() => {
@@ -22,6 +26,8 @@ const Detail = () => {
       .then((res) => {
         console.log(res.data);
         setData(res.data);
+        setIsLike(res.data.likeStatus);
+        setIsBookmark(res.data.dibStatus);
       })
       .catch((err) => {
         console.log(err);
@@ -42,46 +48,38 @@ const Detail = () => {
           목록
         </button>
       </div>
-      <div className='flex justify-between items-center mt-6'>
-        <div className='flex items-center'>
-          <button className='w-10 h-10 mr-4 bg-gray-200 rounded-full hover:bg-gray-300'>
-            <img src='' alt='followImg' />
-          </button>
-          <p className='text-gray-500'>{data.nickname}</p>
-          <p className='ml-4 text-gray-500'>
-            {data.createDate.replace('T', '-')}
-          </p>
-          <p className='ml-4 text-gray-500'>조회: {data.hit}</p>
-          <p className='ml-4 text-gray-500'>추천: {data.likeNum}</p>
-        </div>
-        <div className='flex'>
-          <button className='flex items-center text-gray-500 mr-4'>
-            <img src='' alt='like' className='w-6 h-6 mr-2' />
-            <p>좋아요</p>
-          </button>
-          <button className='flex items-center text-gray-500'>
-            <img src='' alt='take-bookmark' className='w-6 h-6 mr-2' />
-            <p>북마크에 담기</p>
-          </button>
+      <div className='mt-6'>
+        <div className='flex  justify-between items-center'>
+          <div className='flex justify-center'>
+            <button className='w-8 h-8 mr-4'>
+              <img src={followAdd} alt='followImg' />
+            </button>
+            <p className='text-[#808080]'>{data.nickname}</p>
+          </div>
+          <p>{data.title}</p>
+          <div className='flex justify-center'>
+            <p className='ml-4 text-[#808080]'>{data.createDate}</p>
+            <div className='flex justify-center ml-8'>
+              <p className='ml-4 text-[#808080]'>조회: {data.hit}</p>
+              <p className='ml-4 text-[#808080]'>추천: {data.likeNum}</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div className='flex justify-between items-center mt-10'>
-        <p className='text-gray-700 text-lg'>{data.content}</p>
+      <div className='flex justify-between mt-10'>
+        <p className='text-[#131313] text-lg indent-4'>{data.content}</p>
         <div className='w-64 h-64 bg-gray-200 rounded-md'></div>
       </div>
-      <div className='flex justify-center mt-6'>
-        <button className='flex items-center text-gray-500 mr-6'>
-          <img src='' alt='like' className='w-6 h-6 mr-2' />
-          <p>좋아요</p>
-        </button>
-        <button className='flex items-center text-gray-500'>
-          <img src='' alt='take-bookmark' className='w-6 h-6 mr-2' />
-          <p>북마크에 담기</p>
-        </button>
-      </div>
+      <DetailButton
+        boardId={data.boardId}
+        isLike={isLike}
+        isBookmark={isBookmark}
+        setIsLike={setIsLike}
+        setIsBookmark={setIsBookmark}
+      />
       <div className='flex justify-end my-6'>
         <button className='px-4 mr-2'>수정</button>
-        <p className='mx-10 text-gray-500'>|</p>
+        <p className='mx-10 text-[#808080]'>|</p>
         <button className='px-4'>삭제</button>
       </div>
       <DetailComment boardId={data.boardId} />
