@@ -38,4 +38,17 @@ public class SparkController {
         return new ResponseEntity<>(backtestResult, HttpStatus.OK);
     }
 
+
+    @GetMapping("/spark/test2")
+    @ApiResponses({@ApiResponse(code = 200, message = "성공입니다."),})
+    public ResponseEntity<?> doBackTest2(
+            @ModelAttribute BacktestIndicatorsDto backtestIndicatorsDto) {
+
+        log.info("========= doSparkTest : {} ", backtestIndicatorsDto.toString());
+
+        Double backtestResult = sparkService.getRevenueByDataSet(null, null, null, null);
+
+        return new ResponseEntity<>(backtestResult, HttpStatus.OK);
+    }
+
 }
