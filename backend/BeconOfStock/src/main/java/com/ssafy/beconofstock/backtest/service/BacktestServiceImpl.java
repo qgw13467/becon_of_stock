@@ -86,11 +86,11 @@ public class BacktestServiceImpl implements BacktestService {
         //누적수익률 (단위 : % )
         List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(changeRateDtos, backtestIndicatorsDto.getFee());
         List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
-        result.setCumulativeReturnDtos(CumulativeReturnDto.CumulativeReturnDtos(cumulativeReturn, marketCumulativeReturn));
+        result.setCumulativeReturnDtos(ChangeRateValueDto.mergeChangeRateDtos(cumulativeReturn, marketCumulativeReturn));
 
 
         //전략 지표들 계산
-        result.setChangeRate(changeRateDtos);
+        result.setChangeRate(ChangeRateValueDto.mergeChangeRateDtos(changeRateDtos, marketChangeRateDtos));
         result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate());
         result.setStrategyCagr(getAvg(changeRates));
         result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));

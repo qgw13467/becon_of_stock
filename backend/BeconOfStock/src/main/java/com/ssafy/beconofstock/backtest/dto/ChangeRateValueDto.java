@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class CumulativeReturnDto {
+public class ChangeRateValueDto {
 
     private Integer year;
     private Integer month;
@@ -18,11 +18,11 @@ public class CumulativeReturnDto {
     private Double marketValue;
 
 
-    public static List<CumulativeReturnDto> CumulativeReturnDtos(List<ChangeRateDto> stratgy, List<ChangeRateDto> market) {
-        List<CumulativeReturnDto> result = new ArrayList<>();
+    public static List<ChangeRateValueDto> mergeChangeRateDtos(List<ChangeRateDto> stratgy, List<ChangeRateDto> market) {
+        List<ChangeRateValueDto> result = new ArrayList<>();
         for (int i = 0; i < stratgy.size(); i++) {
             result.add(
-                    CumulativeReturnDto.builder()
+                    ChangeRateValueDto.builder()
                             .year(stratgy.get(i).getYear())
                             .month(stratgy.get(i).getMonth())
                             .strategyValue(stratgy.get(i).getChangeRate())
