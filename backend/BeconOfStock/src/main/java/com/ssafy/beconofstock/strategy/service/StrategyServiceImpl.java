@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
 import com.ssafy.beconofstock.backtest.entity.CummulateReturn;
 import com.ssafy.beconofstock.backtest.entity.Industry;
@@ -231,20 +232,16 @@ public class StrategyServiceImpl implements StrategyService {
         strategyRepository.delete(strategy);
     }
 
-    @Override
-    @Transactional
-    public Page<StrategyListDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
-        Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
-
-        PageImpl<StrategyListDto> result = new PageImpl<>(
-                strategies.stream().map(strategy -> new StrategyListDto(
-                        strategy, toStrategyValues(strategy.getCummulateReturnList()), toMarketValues(strategy.getCummulateReturnList()))
-                ).collect(Collectors.toList()),
-                pageable,
-                strategies.getTotalPages());
-
-        return result;
-    }
+//    @Override
+//    @Transactional
+//    public Page<?> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
+//        Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
+//        CummulateReturn 이 테이블이 어떻게 만들어 지는 것인지? 이게 갯수가 자기 각양각색이고 month가 다 1이라 이해가 잘 안됨..
+//        id, title, userNickname, CummulateReturn 이 포함된 Dto 한개 만들고
+//        StrategyRepository 에서 member로 가져온 strategyId List
+//        CummulationReturnRepository 에서 strategyId로 돌려서 찾으면 될거 같긴함..
+//        return null;
+//    }
 
     public List<ChangeRateDto> toMarketValues(List<CummulateReturn> cummulateReturnList) {
         List<ChangeRateDto> marketValues = new ArrayList<>();

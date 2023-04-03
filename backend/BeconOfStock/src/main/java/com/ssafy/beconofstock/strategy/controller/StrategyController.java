@@ -97,18 +97,18 @@ public class StrategyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/strategies")
-    @ApiOperation(value = "자신의 전략리스트 조회")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<Page<StrategyListDto>> getStrategyMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
-
-        return new ResponseEntity<>(strategyService.getStrategyMyList(user, pageable), HttpStatus.OK);
-    }
+//    @GetMapping("/strategies")
+//    @ApiOperation(value = "자신의 전략리스트 조회")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "성공"),
+//            @ApiResponse(code = 401, message = "인증 실패"),
+//            @ApiResponse(code = 404, message = "사용자 없음"),
+//            @ApiResponse(code = 500, message = "서버 오류")
+//    })
+//    public ResponseEntity<Page<StrategyListDto>> getStrategyMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+//
+//        return new ResponseEntity<>(strategyService.getStrategyMyList(user, pageable), HttpStatus.OK);
+//    }
 
     @GetMapping("/strategies/dibs")
     @ApiOperation(value = "자신의 찜 전략 조회")
