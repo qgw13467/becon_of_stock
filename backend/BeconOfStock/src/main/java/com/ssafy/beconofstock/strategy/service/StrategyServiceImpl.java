@@ -150,12 +150,13 @@ public class StrategyServiceImpl implements StrategyService {
 
         // 누적 수익률 저장
         List<CummulateReturn> cummulateReturnList = new ArrayList<>();
-        List<Double> marketValues = strategyDtoValues.stream()
+        List<Double> strategyValues = strategyDtoValues.stream()
                 .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
-        List<Double> strategyValues = marketDtoValues.stream()
+        List<Double> marketValues = marketDtoValues.stream()
                 .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
+
         int year = strategyDtoValues.get(0).getYear();
         int month = strategyDtoValues.get(0).getMonth();
 
