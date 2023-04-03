@@ -33,7 +33,7 @@ export const ForumComponent = () => {
         },
       })
       .then(({ data }) => {
-        // console.log(data);
+        console.log(data);
         setContent(data.content);
         setTotalPage(data.totalPages);
       })
@@ -52,60 +52,78 @@ export const ForumComponent = () => {
 
   return (
     <section className='grid content-between m-9'>
-      <article className='flex justify-between mb-8 mx-10'>
-        <div className='border border-[#3E7CBC] p-1 rounded-sm grid content-center'>
-          <DibsSelect onSelect={handleSelect} />
+      {content.length > 0 ? (
+        <>
+          <article className='flex justify-between mb-8 mx-10'>
+            <div className='border border-[#3E7CBC] p-1 rounded-sm grid content-center'>
+              <DibsSelect onSelect={handleSelect} />
+            </div>
+            <Link
+              to='/community/write'
+              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+            >
+              <p>글쓰기</p>
+            </Link>
+          </article>
+          <article className='grid justify-between grid-cols-11 my-4'>
+            <p className='text-center'>번호</p>
+            <p className='text-center col-span-4'>제목</p>
+            <p className='text-center col-span-2'>글쓴이</p>
+            <p className='text-center col-span-2'>등록일</p>
+            <p className='text-center'>조회</p>
+            <p className='text-center'>추천</p>
+          </article>
+          <hr className='border border-[#808080/75] mx-12' />
+          <article className='text-sm'>
+            {content.length > 0 ? (
+              content.map((item, index) => (
+                <ForumBoard key={index} item={item} />
+              ))
+            ) : (
+              // 로딩 중임을 나타내는 스켈레톤 코드
+              <div className='animate-pulse grid grid-cols-1 gap-2 my-2'>
+                {Array.from({ length: 30 }, (_, i) => (
+                  <div key={i} className='h-6 bg-gray-300 rounded mx-12'></div>
+                ))}
+              </div>
+            )}
+          </article>
+          <article className='flex justify-end mb-8 mx-10'>
+            <button
+              onClick={scrollToTop}
+              className='border-2 border-[#3E7CBC] p-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
+            >
+              <p>목록</p>
+            </button>
+            <Link
+              to='/community/write'
+              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+            >
+              <p>글쓰기</p>
+            </Link>
+          </article>
+          <article>
+            <article className='my-8'>
+              <Pagenation totalPage={totalPage} />
+            </article>
+            <article className='flex justify-center ml-32 my-8'>
+              <SearchbarNone />
+            </article>
+          </article>
+        </>
+      ) : (
+        <div>
+          <p className='m-9 text-center'>아직 작성된 게시글이 없습니다.</p>
+          <article className='flex justify-center mb-8 mx-10'>
+            <Link
+              to='/community/write'
+              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+            >
+              <p>글쓰기</p>
+            </Link>
+          </article>
         </div>
-        <Link
-          to='/community/write'
-          className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
-        >
-          <p>글쓰기</p>
-        </Link>
-      </article>
-      <article className='grid justify-between grid-cols-11 my-4'>
-        <p className='text-center'>번호</p>
-        <p className='text-center col-span-4'>제목</p>
-        <p className='text-center col-span-2'>글쓴이</p>
-        <p className='text-center col-span-2'>등록일</p>
-        <p className='text-center'>조회</p>
-        <p className='text-center'>추천</p>
-      </article>
-      <hr className='border border-[#808080/75] mx-12' />
-      <article className='text-sm'>
-        {content.length > 0 ? (
-          content.map((item, index) => <ForumBoard key={index} item={item} />)
-        ) : (
-          // 로딩 중임을 나타내는 스켈레톤 코드
-          <div className='animate-pulse grid grid-cols-1 gap-2 my-2'>
-            {Array.from({ length: 30 }, (_, i) => (
-              <div key={i} className='h-6 bg-gray-300 rounded mx-12'></div>
-            ))}
-          </div>
-        )}
-      </article>
-      <article className='flex justify-end mb-8 mx-10'>
-        <button
-          onClick={scrollToTop}
-          className='border-2 border-[#3E7CBC] p-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
-        >
-          <p>목록</p>
-        </button>
-        <Link
-          to='/community/write'
-          className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
-        >
-          <p>글쓰기</p>
-        </Link>
-      </article>
-      <article>
-        <article className='my-8'>
-          <Pagenation totalPage={totalPage} />
-        </article>
-        <article className='flex justify-center ml-32 my-8'>
-          <SearchbarNone />
-        </article>
-      </article>
+      )}
     </section>
   );
 };

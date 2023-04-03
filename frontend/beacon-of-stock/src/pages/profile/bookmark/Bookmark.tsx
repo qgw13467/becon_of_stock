@@ -75,7 +75,7 @@ export const Bookmark = () => {
           </article>
         </>
       ) : (
-        <div className='grid content-center justify-center h-[700px]'>
+        <div className='grid content-center justify-center h-[600px]'>
           <p className='text-center m-10 text-xl font-KJCbold'>
             북마크에 아무런 데이터가 없습니다.
           </p>
