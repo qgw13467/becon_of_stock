@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
 import { DetailButton } from './DetailButton';
-import DetailComment from './DetailComment';
+import DetailComment from './comment/DetailComment';
 import DetailSkeleton from './DetailSkeleton';
 import followAdd from '../../../assets/img/person_add.png';
 
