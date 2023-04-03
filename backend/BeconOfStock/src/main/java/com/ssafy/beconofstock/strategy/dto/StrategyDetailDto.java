@@ -21,6 +21,7 @@ public class StrategyDetailDto {
     private String memberNickname;
     private List<Indicator>  indicators = new ArrayList<>();
     private String title;
+    private Boolean representative;
 
     List<ChangeRateDto> marketValues;
     List<ChangeRateDto> strategyValues;

@@ -40,6 +40,10 @@ public class Strategy extends BaseEntity {
     private Integer strategyRevenue;    // H
     private Integer totalMonth;
 
+    /**
+     * Mypage 대표 전략 true or false
+     */
+    private Boolean representative;
 
 //    @Enumerated(EnumType.STRING)
 //    private AccessType accessType
