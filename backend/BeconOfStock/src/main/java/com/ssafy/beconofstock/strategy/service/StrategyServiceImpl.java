@@ -62,7 +62,7 @@ public class StrategyServiceImpl implements StrategyService {
                         .indicators(indicators)
                         .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
                         .marketValues(toMarketValues(strategy.getCummulateReturnList()))
-                        .representative(false)
+                        .representative(strategy.getRepresentative())
                         .build();
 
         return strategyDetailDto;
@@ -258,7 +258,7 @@ public class StrategyServiceImpl implements StrategyService {
     public Boolean updateRepresentative(OAuth2UserImpl user, Long strategyId) {
         Strategy strategy = strategyRepository.findByStrategyId(strategyId);
         List<Strategy> strategies = strategyRepository.findStrategyByMemberList(user.getMember());
-        if (strategy == null && !strategy.getMember().getId().equals(user.getMember().getId())) {
+        if (strategy == null || !strategy.getMember().getId().equals(user.getMember().getId())) {
             return false;
         }
         Boolean representative = strategy.getRepresentative();
