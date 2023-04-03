@@ -4,6 +4,7 @@ import qs from 'qs';
 import BasicSettings from './basic_setting/BasicSettings';
 import FactorSettings from './factor/FactorSettings';
 import SelectedItems from './factor/SelectedItems';
+import Loading from './result/Loading';
 import {
   useBacktestIndustryStore,
   useBacktestFactorStore,
@@ -86,6 +87,8 @@ const BacktestMain = () => {
   // console.log(updatedSettings);
 
   // 백테스트 실행
+  const [isLoading, setIsLoading] = useState(false);
+
   const industriesURL = qs.stringify(
     { industries: useBacktestIndustry.selectedIndustries },
     { arrayFormat: 'repeat' }
@@ -127,6 +130,10 @@ const BacktestMain = () => {
         confirmButtonColor: '#f8bb86',
       });
     } else {
+      setIsLoading(true);
+      useBacktestIndustry.selectAllIndustry();
+      backtestFactor.resetSelectedIndicator();
+      backtestFactor.resetIndicator();
       axios_api
         .get(`/backtest?${industriesURL}&${indicatorsURL}`, {
           headers: {
@@ -145,38 +152,52 @@ const BacktestMain = () => {
         .then((response) => {
           // console.log(response);
           const data = response.data;
-          useBacktestIndustry.selectAllIndustry();
-          backtestFactor.resetSelectedIndicator();
-          backtestFactor.resetIndicator();
           navigate('/result', { state: { data } });
+          setIsLoading(false);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+          Swal.fire({
+            html: '<div>다시 시도해주세요!</div>',
+            width: 300,
+            icon: 'error',
+            confirmButtonText: '<div>확인</div>',
+            confirmButtonColor: '#f27474',
+          });
+        });
     }
   };
 
   return (
     <React.Fragment>
-      <div className='flex justify-between items-center my-[1%] mx-[7%]'>
-        <p className='text-2xl font-KJCbold'>백테스트</p>
-        <div onClick={doBackTestHandler} className='mr-[2.5%]'>
-          <input
-            className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
-            type='submit'
-            value='백테스트'
-          />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div>
+          <div className='flex justify-between items-center my-[1%] mx-[7%]'>
+            <p className='text-2xl font-KJCbold'>백테스트</p>
+            <div onClick={doBackTestHandler} className='mr-[2.5%]'>
+              <input
+                className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
+                type='submit'
+                value='백테스트'
+              />
+            </div>
+          </div>
+          <main className='h-[80vh] flex justify-center items-center mx-[5%]'>
+            <section className='relative inline-block w-[30%] pl-[2%] h-full border-l border-r border-[#FAF6FF] overflow-y-auto'>
+              <BasicSettings onUpdateSettings={updateSettingsHandler} />
+            </section>
+            <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
+              <FactorSettings />
+            </section>
+            <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
+              <SelectedItems />
+            </section>
+          </main>
         </div>
-      </div>
-      <main className='h-[80vh] flex justify-center items-center mx-[5%]'>
-        <section className='relative inline-block w-[30%] pl-[2%] h-full border-l border-r border-[#FAF6FF] overflow-y-auto'>
-          <BasicSettings onUpdateSettings={updateSettingsHandler} />
-        </section>
-        <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
-          <FactorSettings />
-        </section>
-        <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
-          <SelectedItems />
-        </section>
-      </main>
+      )}
     </React.Fragment>
   );
 };
