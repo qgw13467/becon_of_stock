@@ -119,18 +119,16 @@ public class SparkServiceImpl implements SparkService {
         //전략 지표들 계산
         backtestResult.setChangeRate(ChangeRateValueDto.mergeChangeRateDtos(strategyRateDtos, marketChangeRateDtos));
 
-        CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
-                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
-                .strategyCagr(getAvg(changeRates))
-                .strategySharpe(getSharpe(strategyRateDtos, backtestIndicatorsDto))
-                .strategySortino(getSortino(strategyRateDtos, backtestIndicatorsDto))
-                .strategyMDD(getMdd(cumulativeReturn))
-                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate())
-                .marketCagr(getAvg(marketChangeRates))
-                .marketSharpe(getSharpe(marketChangeRateDtos, backtestIndicatorsDto))
-                .marketSortino(getSortino(marketChangeRateDtos, backtestIndicatorsDto))
-                .marketMDD(getMdd(marketCumulativeReturn))
-                .build();
+        CumulativeReturnDataDto cumulativeReturnDataDto =
+                getCumulativeRuturnDataDto(
+                        cumulativeReturn,
+                        changeRates,
+                        strategyRateDtos,
+                        backtestIndicatorsDto,
+                        marketChangeRateDtos,
+                        marketCumulativeReturn,
+                        marketChangeRates
+                );
         backtestResult.setCumulativeReturnDataDto(cumulativeReturnDataDto);
 
         RevenueDataDto revenueDataDto = RevenueDataDto.builder()
@@ -147,7 +145,30 @@ public class SparkServiceImpl implements SparkService {
         return backtestResult;
     }
 
-    public Double getRevenueByDataSet(SparkSession spark,Dataset<Row> buy, Dataset<Row> trade, Integer rebalance) {
+    private CumulativeReturnDataDto getCumulativeRuturnDataDto(List<ChangeRateDto> cumulativeReturn,
+                                                               List<Double> changeRates,
+                                                               List<ChangeRateDto> strategyRateDtos,
+                                                               BacktestIndicatorsDto backtestIndicatorsDto,
+                                                               List<ChangeRateDto> marketChangeRateDtos,
+                                                               List<ChangeRateDto> marketCumulativeReturn,
+                                                               List<Double> marketChangeRates) {
+
+        return CumulativeReturnDataDto.builder()
+                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
+                .strategyCagr(getAvg(changeRates))
+                .strategySharpe(getSharpe(strategyRateDtos, backtestIndicatorsDto))
+                .strategySortino(getSortino(strategyRateDtos, backtestIndicatorsDto))
+                .strategyMDD(getMdd(cumulativeReturn))
+                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate())
+                .marketCagr(getAvg(marketChangeRates))
+                .marketSharpe(getSharpe(marketChangeRateDtos, backtestIndicatorsDto))
+                .marketSortino(getSortino(marketChangeRateDtos, backtestIndicatorsDto))
+                .marketMDD(getMdd(marketCumulativeReturn))
+                .build();
+
+    }
+
+    public Double getRevenueByDataSet(SparkSession spark, Dataset<Row> buy, Dataset<Row> trade, Integer rebalance) {
 
 //        spark = SparkSession.builder()
 //                .appName("becon_of_stock")
