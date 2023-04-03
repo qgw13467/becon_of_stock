@@ -38,8 +38,12 @@ public class BoardResponseDto {
     Boolean likeStatus;
     @ApiModelProperty(example = "찜하기 상태")
     Boolean dibStatus;
+    @ApiModelProperty(example = "작성자 여부")
+    Boolean isAuthor;
+    @ApiModelProperty(example = "작성자 팔로우 상태")
+    Boolean followStatus;
 
-    public BoardResponseDto(Board board, List<Indicator> indicators, Boolean likeStatus, Boolean dibStatus) {
+    public BoardResponseDto(Board board, List<Indicator> indicators, UserStatusDto userStatusDto) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
         this.memberId = board.getMember().getId();
@@ -52,11 +56,14 @@ public class BoardResponseDto {
         }
         this.likeNum = board.getLikeNum();
         this.commentNum = board.getCommentNum();
-        this.likeStatus = likeStatus;
-        this.dibStatus = dibStatus;
+        this.likeStatus = userStatusDto.getLikeStauts();
+        this.dibStatus = userStatusDto.getDibStatus();
+        this.isAuthor = userStatusDto.getIsAuthor();
+        this.followStatus = userStatusDto.getFollowStatus();
+
     }
 
-    public BoardResponseDto(Board board, Boolean likeStatus, Boolean dibStatus) {
+    public BoardResponseDto(Board board, UserStatusDto userStatusDto) {
         this.boardId = board.getId();
         this.createDate = board.getCreatedDateTime();
         this.memberId = board.getMember().getId();
@@ -66,8 +73,10 @@ public class BoardResponseDto {
         this.content = board.getContent();
         this.likeNum = board.getLikeNum();
         this.commentNum = board.getCommentNum();
-        this.likeStatus = likeStatus;
-        this.dibStatus = dibStatus;
+        this.likeStatus = userStatusDto.getLikeStauts();
+        this.dibStatus = userStatusDto.getDibStatus();
+        this.isAuthor = userStatusDto.getIsAuthor();
+        this.followStatus = userStatusDto.getFollowStatus();
     }
 
     public StrategyDetailDto strategyDetailDto(Strategy strategy, List<Indicator> indicators) {

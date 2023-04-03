@@ -54,7 +54,6 @@ public class BoardController {
     }
 
 
-    // 글 작성 -> strategy 작성 이후 strategy도 연결 필요
     @ApiOperation(value = "글 작성",  notes = "새 글을 작성합니다.")
     @ApiResponses({
         @ApiResponse(code = 201, message = "성공입니다", response = BoardResponseDto.class),
@@ -114,8 +113,8 @@ public class BoardController {
         @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class)
     })
     @GetMapping("/{boardId}/comments")
-    public ResponseEntity<?> getCommentList(@PathVariable Long boardId) {
-        List<CommentResponseDto> commentList = boardService.getCommentList(boardId);
+    public ResponseEntity<?> getCommentList(@PathVariable Long boardId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        List<CommentResponseDto> commentList = boardService.getCommentList(boardId, user);
         return new ResponseEntity<>(commentList, HttpStatus.OK);
     }
 
@@ -124,8 +123,8 @@ public class BoardController {
         @ApiResponse(code = 200, message = "성공입니다", response = CommentResponseDto.class)
     })
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<?> getCommentDetail(@PathVariable Long commentId) {
-        CommentResponseDto comment = boardService.getComment(commentId);
+    public ResponseEntity<?> getCommentDetail(@PathVariable Long commentId, @AuthenticationPrincipal OAuth2UserImpl user) {
+        CommentResponseDto comment = boardService.getComment(commentId, user);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
