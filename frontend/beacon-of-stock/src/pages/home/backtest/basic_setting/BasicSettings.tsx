@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SelectIndustries from './SelectIndustries';
 import SelectIndustriesBackground from './SelectIndustriesBackground';
+import question from '../../../../assets/img/question.png';
 
 interface Props {
   onUpdateSettings: (updatedSettings: {
@@ -109,6 +110,15 @@ const BasicSettings = (props: Props) => {
       });
     }
   };
+  // 거래 비용 설명
+  const [showDescription, setShowDescription] = useState<boolean>(false);
+  const mouseEnterHandler = () => {
+    setShowDescription(true);
+  };
+
+  const mouseLeaveHandler = () => {
+    setShowDescription(false);
+  };
   // 최대 종목 수
   const maxStocksChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -207,9 +217,8 @@ const BasicSettings = (props: Props) => {
   return (
     <React.Fragment>
       <p className='mb-2 text-xl font-KJCbold'>기본 설정</p>
-      {/* <div className='flex flex-col justify-center mx-[5%]'> */}
       <div className='flex flex-col justify-center mx-[5%]'>
-        <div className='my-1'>
+        <div className='my-2'>
           <label htmlFor='industries'>산업</label>
           <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
@@ -229,8 +238,24 @@ const BasicSettings = (props: Props) => {
           )}
         </div>
 
-        <div className='my-1'>
-          <label htmlFor='fee'>거래비용</label>
+        <div className='my-2'>
+          <div className='flex items-center'>
+            <label htmlFor='fee'>거래비용</label>
+            <img
+              src={question}
+              alt='question'
+              className='ml-[2%] w-4 h-4'
+              onMouseEnter={mouseEnterHandler}
+              onMouseLeave={mouseLeaveHandler}
+            />
+          </div>
+          {showDescription && (
+            <div className='flex justify-center'>
+              <p className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[3%] py-[2%]'>
+                매도 시 부과되는 세금과 거래 수수료
+              </p>
+            </div>
+          )}
           <div className='flex items-center border-[2px] flex-between rounded-xl hover:border-[#A47ECF]'>
             <input
               type='text'
@@ -243,7 +268,7 @@ const BasicSettings = (props: Props) => {
           </div>
         </div>
 
-        <div className='my-1'>
+        <div className='my-2'>
           <label htmlFor='maxStocks'>최대 종목 수 (max 30)</label>
           <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
@@ -256,7 +281,7 @@ const BasicSettings = (props: Props) => {
           </div>
         </div>
 
-        <div className='my-1'>
+        <div className='my-2'>
           <label htmlFor='rebalance'>리밸런싱 주기</label>
           <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <select
@@ -273,7 +298,7 @@ const BasicSettings = (props: Props) => {
           </div>
         </div>
 
-        {/* <div className='my-1'>
+        {/* <div className='my-2'>
           <label htmlFor='backtestSortType'>정렬 기준</label>
           <div className='flex justify-between'>
             <div className='border-[2px] rounded-xl w-[60%] hover:border-[#A47ECF]'>
@@ -304,7 +329,7 @@ const BasicSettings = (props: Props) => {
           </div>
         </div> */}
 
-        <div className='my-1'>
+        <div className='my-2'>
           <label htmlFor='start'>시작 시점</label>
           <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
@@ -320,7 +345,7 @@ const BasicSettings = (props: Props) => {
           </div>
         </div>
 
-        <div className='my-1'>
+        <div className='my-2'>
           <label htmlFor='end'>종료 시점</label>
           <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
             <input
