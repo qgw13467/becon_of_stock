@@ -66,7 +66,6 @@ public class BacktestServiceImpl implements BacktestService {
                 trades = tradeRepository.findByYearAndMonthAndIndustryList(yearMonth.getYear(), yearMonth.getMonth(), industries);
 
             } else {
-                //TODO 입력받은 산업군에 포함된 회사의 Trade만 가져오도록 고칠것
                 //이번 분기 매수가 가능한 회사목록
                 trades = tradeRepository.findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonth());
             }
@@ -91,22 +90,28 @@ public class BacktestServiceImpl implements BacktestService {
 
         //전략 지표들 계산
         result.setChangeRate(ChangeRateValueDto.mergeChangeRateDtos(changeRateDtos, marketChangeRateDtos));
-        result.setStrategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate());
-        result.setStrategyCagr(getAvg(changeRates));
-        result.setStrategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto));
-        result.setStrategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto));
-        result.setStrategyRevenue(winCount(changeRates));
-        result.setStrategyMDD(getMdd(cumulativeReturn));
 
-        //시장 지표들 계산
-        result.setMarketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate());
-        result.setMarketCagr(getAvg(marketChangeRates));
-        result.setMargetSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
-        result.setMarketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto));
-        result.setMarketRevenue(winCount(marketChangeRates));
-        result.setMarketMDD(getMdd(marketCumulativeReturn));
+        CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
+                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
+                .strategyCagr(getAvg(changeRates))
+                .strategySharpe(getSharpe(changeRateDtos, changeRates, backtestIndicatorsDto))
+                .strategySortino(getSortino(changeRateDtos, changeRates, backtestIndicatorsDto))
+                .strategyMDD(getMdd(cumulativeReturn))
+                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate())
+                .marketCagr(getAvg(marketChangeRates))
+                .marketSharpe(getSharpe(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto))
+                .marketSortino(getSortino(marketChangeRateDtos, marketChangeRates, backtestIndicatorsDto))
+                .marketMDD(getMdd(marketCumulativeReturn))
+                .build();
+        result.setCumulativeReturnDataDto(cumulativeReturnDataDto);
 
-        result.setTotalMonth(rebalanceYearMonth.size());
+        RevenueDataDto revenueDataDto = RevenueDataDto.builder()
+                .strategyRevenue(winCount(changeRates))
+                .marketRevenue(winCount(marketChangeRates))
+                .totalMonth(rebalanceYearMonth.size())
+                .build();
+        result.setRevenueDataDto(revenueDataDto);
+
         result.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
