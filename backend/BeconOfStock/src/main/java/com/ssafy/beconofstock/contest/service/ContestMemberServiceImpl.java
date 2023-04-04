@@ -54,8 +54,8 @@ public class ContestMemberServiceImpl implements ContestMemberService{
     }
 
     @Override
-    public Page<ContestMemberDto> getContestStatus(OAuth2UserImpl user, Long contestId, Pageable pageable) {
-        Page<ContestMember> contestMember = contestMemberRepository.findByContestId(user.getMember(), contestId, pageable);
+    public Page<ContestMemberDto> getContestStatus(Long contestId, Pageable pageable) {
+        Page<ContestMember> contestMember = contestMemberRepository.findByContestId(contestId, pageable);
 
         PageImpl<ContestMemberDto> result = new PageImpl<>(
                 contestMember.stream().map(ContestMemberDto::new).collect(Collectors.toList()),

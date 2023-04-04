@@ -30,12 +30,11 @@ public interface ContestMemberService {
 
     /**
      * 대회 별 참가자
-     * @param user
      * @param contestId
      * @param pageable
      * @return
      */
-    Page<ContestMemberDto> getContestStatus(OAuth2UserImpl user, Long contestId, Pageable pageable);
+    Page<ContestMemberDto> getContestStatus(Long contestId, Pageable pageable);
 
 
     Boolean updateRankingByContest(Long contestId);

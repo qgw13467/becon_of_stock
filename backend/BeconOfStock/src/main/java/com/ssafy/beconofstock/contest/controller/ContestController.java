@@ -118,9 +118,9 @@ public class ContestController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<Page<ContestMemberDto>> getContestStatus(@AuthenticationPrincipal OAuth2UserImpl user, @PathVariable Long contestId, Pageable pageable) {
+    public ResponseEntity<Page<ContestMemberDto>> getContestStatus(@PathVariable Long contestId, Pageable pageable) {
 
-        return new ResponseEntity<>(contestMemberService.getContestStatus(user, contestId, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(contestMemberService.getContestStatus(contestId, pageable), HttpStatus.OK);
     }
 
     @PostMapping("/join")
