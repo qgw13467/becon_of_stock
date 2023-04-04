@@ -14,6 +14,7 @@ export const ForumComponent = () => {
   const [totalPage, setTotalPage] = useState(0);
   // 게시글 목록
   const [content, setContent] = useState([]);
+  // console.log(content);
   // 현재 페이지
   const token = getCookie('accessToken');
   const [selectedValue, setSelectedValue] = useState<string | null>(null);

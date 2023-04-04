@@ -15,6 +15,7 @@ type ForumBoard = {
 };
 
 export const ForumBoard = memo(({ item }: ForumBoard) => {
+  console.log(item);
   return (
     <section className='my-2'>
       <article className='grid justify-between grid-cols-11 my-4 '>
