@@ -315,7 +315,6 @@ public class SparkServiceImpl implements SparkService {
     }
 
 
-    //todo fix logic
     private Double getMdd(List<ChangeRateDto> cumulativeReturn) {
         double mdd = 100D;
         double max = 0D;
@@ -360,7 +359,7 @@ public class SparkServiceImpl implements SparkService {
     private Double getSharpe(List<ChangeRateDto> changeRateDtos, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         List<Double> changeRate = changeRateDtos.stream()
-                .map(dto -> dto.getChangeRate())
+                .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
         Double deviation = getDeviation(changeRate);
         Double result = getRevenueMinusInterest(changeRateDtos, backtestIndicatorsDto);
@@ -372,7 +371,7 @@ public class SparkServiceImpl implements SparkService {
     private Double getSortino(List<ChangeRateDto> changeRateDtos, BacktestIndicatorsDto backtestIndicatorsDto) {
 
         List<Double> changeRate = changeRateDtos.stream()
-                .map(dto -> dto.getChangeRate())
+                .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
         Double nagativeDeviation = getNagativeDeviation(changeRate);
         Double result = getRevenueMinusInterest(changeRateDtos, backtestIndicatorsDto);
@@ -622,66 +621,4 @@ public class SparkServiceImpl implements SparkService {
 
     }
 
-    //구매한 종목이 한주기 다음 수익이 얼마인지 계산
-    private Double getRevenue(YearMonth yearMonth, List<Trade> list, int rebalance, List<List<BuySellDto>> history, List<List<Double>> distHistory) {
-
-        Double result = 0D;
-        List<Double> dist = new ArrayList<>();
-        List<BuySellDto> tradeList = new ArrayList<>();
-        int useYear = yearMonth.getYear();
-        int useMonth = yearMonth.getMonth();
-
-        useMonth += rebalance;
-        if (useMonth > 12) {
-            useYear++;
-            useMonth -= 12;
-        }
-        List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
-
-        List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
-
-        for (Trade trade : list) {
-            Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
-            if (find == null) {
-                dist.add(1D);
-                continue;
-            }
-
-//            System.out.println("start: " + trade.getCorname() + ", " + (find.getMarcap().doubleValue() / 100D) + ", " + trade.getYear() + " " + trade.getMonth() + ", end : "
-//                    + find.getCorname() + ", " + (trade.getMarcap().doubleValue() / 100D) + ", " + find.getYear() + " " + find.getMonth());
-
-            tradeList.add(new BuySellDto(trade, find));
-
-            double temp = (find.getCorclose().doubleValue()) / (trade.getCorclose().doubleValue());
-            if (temp > 2) {
-                double check = find.getMarcap().doubleValue() / trade.getMarcap().doubleValue();
-                if (Math.abs(temp / check - 1) > 0.3) {
-                    continue;
-                }
-            }
-//            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
-            dist.add(temp);
-        }
-
-        history.add(tradeList);
-        distHistory.add(dist);
-//        System.out.println("dist: " + dist);
-
-        result = getAvg(dist);
-        if (result == 0 || result.equals(Double.NaN)) {
-            return 1D;
-        }
-        return result;
-    }
-
-    private Trade findByCorcode(String corcode, List<Trade> trades) {
-        Trade result = null;
-        for (Trade trade : trades) {
-            if (trade.getCorcode().equals(corcode)) {
-                result = trade;
-                break;
-            }
-        }
-        return result;
-    }
 }
