@@ -25,8 +25,8 @@ const ResultChangeRate = (props: Props) => {
   const [actualChangeRate, setActualChangeRate] = useState([
     {
       name: '',
-      strategyChangeRate: 0,
-      marketChangeRate: 0,
+      내전략: 0,
+      시장전략: 0,
     },
   ]);
 
@@ -34,8 +34,8 @@ const ResultChangeRate = (props: Props) => {
     const dataTemp = props.changeRate.map((data) => {
       return {
         name: `${data.year}-${data.month}`,
-        strategyChangeRate: (data.strategyValue - 1) * 100,
-        marketChangeRate: (data.marketValue - 1) * 100,
+        내전략: Number(((data.strategyValue - 1) * 100).toFixed(2)),
+        시장전략: Number(((data.marketValue - 1) * 100).toFixed(2)),
       };
     });
     setActualChangeRate([...actualChangeRate, ...dataTemp]);
@@ -185,7 +185,7 @@ const ResultChangeRate = (props: Props) => {
         <Tooltip cursor={{ fill: '#FFF2F8' }} />
         <Legend />
         <ReferenceLine y={0} stroke='#000' />
-        <Bar dataKey='strategyChangeRate' fill='#802A57' />
+        <Bar dataKey='내전략' fill='#ec6c70' />
       </BarChart>
     </div>
   );
