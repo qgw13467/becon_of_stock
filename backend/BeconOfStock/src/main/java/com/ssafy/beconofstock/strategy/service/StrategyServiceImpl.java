@@ -155,25 +155,12 @@ public class StrategyServiceImpl implements StrategyService {
                 .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
 
-//        int year = strategyDtoValues.get(0).getYear();
-//        int month = strategyDtoValues.get(0).getMonth();
-//
-//        for (int i = 0; i < marketValues.size(); i++) {
-//            cummulateReturnList.add(CummulateReturn.builder().strategyValue(strategyValues.get(i)).
-//                    marketValue(marketValues.get(i)).year(year).month(month).strategy(strategy).build());
-//        }
+        int year = strategyDtoValues.get(0).getYear();
+        int month = strategyDtoValues.get(0).getMonth();
 
         for (int i = 0; i < marketValues.size(); i++) {
-            int year = strategyDtoValues.get(i).getYear();
-            int month = strategyDtoValues.get(i).getMonth();
-            cummulateReturnList.add(
-                    CummulateReturn.builder()
-                            .strategyValue(strategyValues.get(i))
-                            .marketValue(marketValues.get(i))
-                            .year(year)
-                            .month(month)
-                            .strategy(strategy)
-                            .build());
+            cummulateReturnList.add(CummulateReturn.builder().strategyValue(strategyValues.get(i)).
+                    marketValue(marketValues.get(i)).year(year).month(month).strategy(strategy).build());
         }
         cummulationReturnRepository.saveAll(cummulateReturnList);
 
