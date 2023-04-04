@@ -176,10 +176,10 @@ public class StrategyServiceImpl implements StrategyService {
         for (Indicator indicator : indicators) {
             Long count = indicator.getCount() + 1;
             indicator.setCount(count);
-
             StrategyIndicator strategyIndicator = new StrategyIndicator(strategy, indicator);
             changeList.add(strategyIndicator);
         }
+        indicatorRepository.saveAll(indicators);
         strategyIndicatorRepository.saveAll(changeList);
 
     }
