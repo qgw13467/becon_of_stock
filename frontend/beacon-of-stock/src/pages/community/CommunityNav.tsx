@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
-import { useContestState } from '../../store/store';
+import { useContestState, useContestStateStore } from '../../store/store';
 
 export const CommunityNav = () => {
   const { contestData, setContestData } = useContestState();
+  const { setState } = useContestStateStore();
   // console.log(contestData);
   const token = getCookie('accessToken');
   // const [content, setContent] = useState<Contest[]>([]);
@@ -57,6 +58,7 @@ export const CommunityNav = () => {
                   to={`/community/contests/${item.contestId}`}
                   state={index + 1}
                   className='ml-1 cursor-pointer'
+                  onClick={() => setState(false)}
                 >
                   ㄴ{item.title}
                 </Link>
@@ -81,6 +83,7 @@ export const CommunityNav = () => {
                   to={`/community/contests/${item.contestId}`}
                   state={index + 1}
                   className='ml-1 cursor-pointer'
+                  onClick={() => setState(true)}
                 >
                   ㄴ{item.title}
                 </Link>

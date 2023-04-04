@@ -17,6 +17,17 @@ export const useLoginStore = create<loginState>((set) => ({
   },
 }));
 
+interface ContestStore {
+  falseState: boolean;
+  setState: (by: boolean) => void;
+}
+export const useContestStateStore = create<ContestStore>((set) => ({
+  falseState: false,
+  setState: (by) => {
+    set(() => ({ falseState: by }));
+  },
+}));
+
 interface pageState {
   page: number;
   setPage: (by: number) => void;

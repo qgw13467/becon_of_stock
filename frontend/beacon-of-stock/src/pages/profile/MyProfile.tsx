@@ -4,20 +4,18 @@ import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
 import FollowModal from './follow_modal/FollowModal';
 import FollowerModalComponent from './follow_modal/FollowerModalComponent';
+import { MyStrategy } from './MyStrategy';
 
 export const MyProfile: FC = () => {
   const emptyProfile = require('../../assets/img/empty-img.jpg');
   const token = getCookie('accessToken');
   const { profile } = useProfileStore();
-  // console.log(profile);
-  // back에서 받아오는 닉네임 정보
   const [isNickname, setIsNickname] = useState<string>(profile.nickname);
   const [isInput, setIsInput] = useState<boolean>(true);
   const nicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsNickname(e.target.value);
   };
   const nicknameValidation = () => {
-    // console.log('실행 중')
     // 닉네임에 변화가 있을 때, 공백이 없을 때, 길이가 1이상, 8이하 일 때
     if (
       isNickname !== profile.nickname &&
@@ -102,16 +100,19 @@ export const MyProfile: FC = () => {
 
   return (
     <div>
-      <p className='font-KJCbold text-4xl m-9'>내 프로필</p>
-      <div id='프로필-프로필' className='flex justify-start m-9'>
+      <p className='font-KJCbold text-2xl my-9 mx-40'>내 프로필</p>
+      <div
+        id='프로필-프로필'
+        className='flex justify-start my-9 mx-48 w-[932px]'
+      >
         <img
           src={profile.profileImg ? profile.profileImg : emptyProfile}
           alt='empty-profile-img'
-          className='rounded-full border-[#131313] border-[2px] w-[200px] h-[200px] m-9'
+          className='rounded-full border-[#131313] border-[2px] w-[180px] h-[180px] m-9'
         />
         <div
           id='프로필-사진-옆-div'
-          className='grid content-evenly w-[400px] relative'
+          className='grid content-evenly w-[400px] relative ml-10'
         >
           <div className='flex justify-between'>
             <p>닉네임 : </p>
@@ -138,7 +139,7 @@ export const MyProfile: FC = () => {
           <div className='absolute -right-[120px] top-[28px]'>
             {isInput && (
               <button
-                className='bg-[#802A57] text-[#fefefe] rounded-md w-[100px] h-[40px]'
+                className='bg-[#3E7CBC] text-[#fefefe] rounded-md w-[100px] h-[40px]'
                 onClick={() => setIsInput(false)}
               >
                 닉네임 변경
@@ -147,13 +148,13 @@ export const MyProfile: FC = () => {
             {!isInput && (
               <div className='absolute -right-[76px] flex justify-center'>
                 <button
-                  className='bg-[#2a3580] text-[#fefefe] rounded-md w-[80px] h-[40px]'
+                  className='bg-[#3E7CBC] text-[#fefefe] rounded-md w-[80px] h-[40px]'
                   onClick={nicknameValidation}
                 >
                   변경
                 </button>
                 <button
-                  className='bg-[#802A57] text-[#fefefe] rounded-md w-[80px] h-[40px] ml-4'
+                  className='bg-[#F19999] text-[#fefefe] rounded-md w-[80px] h-[40px] ml-4'
                   onClick={cencelChange}
                 >
                   취소
@@ -225,6 +226,12 @@ export const MyProfile: FC = () => {
       </div>
       {/* 내 전략은 전략 컴포넌트 만들어서 해당 컴포넌트에서 앞에서 3개가 어차피 대표전략일거니까
     그 부분 그냥 불러와서 쓰기 */}
+      <div className='my-4 mx-32 px-4 py-1 '>
+        <div className='text-2xl font-bold border-2 border-cyan-600 ml-1 rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px]'>
+          내 대표 전략
+        </div>
+        <MyStrategy />
+      </div>
     </div>
   );
 };

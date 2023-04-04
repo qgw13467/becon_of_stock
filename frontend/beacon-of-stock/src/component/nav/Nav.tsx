@@ -59,7 +59,7 @@ const Nav: FC = () => {
   }, [token]);
 
   const navStyle =
-    'text-lg font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';
+    'lg:text-lg md:text-base text-sm font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';
   return (
     <nav className='flex justify-between mx-10'>
       <div>
