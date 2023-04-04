@@ -60,7 +60,7 @@ public class SparkServiceImpl implements SparkService {
 
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "spark://localhost:7077")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
@@ -154,7 +154,7 @@ public class SparkServiceImpl implements SparkService {
 
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "spark://localhost:7077")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
@@ -237,7 +237,7 @@ public class SparkServiceImpl implements SparkService {
 
         spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "spark://localhost:7077")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
