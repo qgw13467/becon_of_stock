@@ -405,7 +405,7 @@ const BacktestResult = () => {
   };
 
   return (
-    <div className='w-full h-full'>
+    <div className='w-full h-full px-[3%]'>
       <div className='flex justify-end my-[1%] mr-[3%]'>
         {saveStrategy && (
           <input
@@ -441,7 +441,7 @@ const BacktestResult = () => {
           />
         )}
       </div>
-      <div className='flex'>
+      <div className='flex items-end'>
         <ResultCumulativeReturnDtos
           cumulativeReturnDtos={data.cumulativeReturnDtos}
         />
@@ -449,7 +449,7 @@ const BacktestResult = () => {
           cumulativeReturnDataDto={data.cumulativeReturnDataDto}
         />
       </div>
-      <div className='flex'>
+      <div className='flex items-end'>
         <ResultChangeRate changeRate={data.changeRate} />
         <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
       </div>

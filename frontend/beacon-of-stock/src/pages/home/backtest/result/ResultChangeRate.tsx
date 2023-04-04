@@ -163,7 +163,7 @@ const ResultChangeRate = (props: Props) => {
   //   },
   // ];
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col mt-[3%]'>
       <p className='text-xl font-KJCbold'>전월대비 증감률</p>
       <BarChart
         width={800}
