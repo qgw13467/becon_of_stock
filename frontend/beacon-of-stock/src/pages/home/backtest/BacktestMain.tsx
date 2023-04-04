@@ -28,6 +28,12 @@ const BacktestMain = () => {
     end: string;
   };
 
+  // 기본 설정 버튼 클릭
+  const [showFactor, setShowFactor] = useState(false);
+  const showFactorHandler = () => {
+    setShowFactor(true);
+  };
+
   // 기본 설정 Lift
   const [updatedSettings, setUpdatedSettings] = useState({
     startYear: 2001,
@@ -118,6 +124,10 @@ const BacktestMain = () => {
         confirmButtonColor: '#f8bb86',
       });
     } else if (
+      updatedSettings.startYear < 2001 ||
+      updatedSettings.startYear > 2021 ||
+      updatedSettings.endYear < 2001 ||
+      updatedSettings.endYear > 2021 ||
       updatedSettings.startYear > updatedSettings.endYear ||
       (updatedSettings.startYear === updatedSettings.endYear &&
         updatedSettings.startMonth >= updatedSettings.endMonth)
@@ -154,6 +164,7 @@ const BacktestMain = () => {
           const data = response.data;
           navigate('/result', { state: { data } });
           setIsLoading(false);
+          setShowFactor(false);
         })
         .catch((error) => {
           console.log(error);
@@ -177,24 +188,47 @@ const BacktestMain = () => {
         <div>
           <div className='flex justify-between items-center my-[1%] mx-[7%]'>
             <p className='text-2xl font-KJCbold'>백테스트</p>
-            <div onClick={doBackTestHandler} className='mr-[2.5%]'>
-              <input
-                className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
-                type='submit'
-                value='백테스트'
-              />
-            </div>
+            {showFactor && (
+              <div onClick={doBackTestHandler} className='mr-[2.5%]'>
+                <input
+                  className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
+                  type='submit'
+                  value='백테스트'
+                />
+              </div>
+            )}
           </div>
-          <main className='h-[80vh] flex justify-center items-center mx-[5%]'>
+          <main
+            className={
+              showFactor
+                ? 'h-[80vh] flex justify-center items-center mx-[5%]'
+                : 'h-[80vh] flex items-center mx-[7.5%]'
+            }
+          >
             <section className='relative inline-block w-[30%] pl-[2%] h-full border-l border-r border-[#FAF6FF] overflow-y-auto'>
               <BasicSettings onUpdateSettings={updateSettingsHandler} />
+              {!showFactor && (
+                <div className='flex justify-end mt-[5%] mr-[5%]'>
+                  <input
+                    type='button'
+                    onClick={showFactorHandler}
+                    value='팩터 선택하기'
+                    // className='bg-[#B8C2FD]'
+                    className='bg-[#D7DDFF]'
+                  />
+                </div>
+              )}
             </section>
-            <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
-              <FactorSettings />
-            </section>
-            <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
-              <SelectedItems />
-            </section>
+            {showFactor && (
+              <>
+                <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
+                  <FactorSettings />
+                </section>
+                <section className='relative inline-block w-[30%] ml-[2%] h-full border-r border-[#FAF6FF] overflow-y-auto'>
+                  <SelectedItems />
+                </section>
+              </>
+            )}
           </main>
         </div>
       )}
