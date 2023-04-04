@@ -17,8 +17,10 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
         headers: { authentication: token },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setContent(res.data.content);
+        // axios_api
+        //   .put(`/`)
       })
       .catch((err) => {
         console.log(err);
@@ -45,19 +47,21 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
               );
             })}
           </div>
-          <div className='grid grid-cols-10 border border-emerald-700 rounded'>
-            {content.slice(3).map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className='flex justify-center border border-emerald-700 rounded m-1'
-                >
-                  <p>{index + 4} : </p>
-                  <p>{item.userNickname}</p>
-                </div>
-              );
-            })}
-          </div>
+          {content.length > 3 && (
+            <div className='grid grid-cols-10 border border-emerald-700 rounded'>
+              {content.slice(3).map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className='flex justify-center border border-emerald-700 rounded m-1'
+                  >
+                    <p>{index + 4} : </p>
+                    <p>{item.userNickname}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       ) : (
         <div className='text-xl m-9'>

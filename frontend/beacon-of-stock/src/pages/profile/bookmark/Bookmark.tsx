@@ -11,8 +11,8 @@ import { Link } from 'react-router-dom';
 export const Bookmark = () => {
   const { page, setPage } = usePageStore();
   const pageSize = 20;
-  const 게시물수 = 100;
-  const [totalElements, setTotalElements] = useState(게시물수);
+  // const 게시물수 = 100;
+  // const [totalElements, setTotalElements] = useState(게시물수);
   const [totalPages, setTotalPages] = useState(10);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -31,7 +31,8 @@ export const Bookmark = () => {
         },
       })
       .then((res) => {
-        setTotalElements(res.data.totalElements);
+        console.log(res);
+        // setTotalElements(res.data.totalElements);
         setTotalPages(res.data.totalPages);
         setItems(res.data.content);
       })

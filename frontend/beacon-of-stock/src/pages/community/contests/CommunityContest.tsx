@@ -28,7 +28,18 @@ export const CommunityContest: React.FC = () => {
         headers: { authentication: token },
       })
       .then((res) => {
+        console.log('여기까진 오케이');
         setData(res.data);
+        axios_api
+          .put(`/contests/rank/${contestId}`, {
+            headers: { authentication: token },
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -75,8 +86,24 @@ export const CommunityContest: React.FC = () => {
         }
       )
       .then((res) => {
-        // console.log(res);
         setThisId({ id: -1, title: '' });
+        console.log('대회 참가하면 put rank 보냄');
+        axios_api
+          .put(
+            `/contests/rank/${contestId}`,
+            { contestId },
+            {
+              headers: {
+                authentication: token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -86,56 +113,70 @@ export const CommunityContest: React.FC = () => {
   if (!data) return <div></div>;
   return (
     <div className='m-9'>
-      <div className='my-4 flex justify-between px-9 py-5 border border-emerald-700 rounded'>
-        <div className='grid content-center'>
-          <p className='bg-emerald-700 rounded text-center w-80 text-[#fefefe] mb-2'>
-            대회명 : {data.title}
-          </p>
-          <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[900px] p-4 text-emerald-700 mt-2'>
-            <p className='col-span-1'>목표 :</p>
-            <p className=''>{data.description}</p>
+      {falseState ? (
+        <div className='my-4 flex justify-between px-9 py-5 border border-emerald-700 rounded w-[670px]'>
+          <div className='grid content-center'>
+            <p className='bg-emerald-700 rounded text-center w-80 text-[#fefefe] mb-2'>
+              대회명 : {data.title}
+            </p>
+            <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[600px] p-4 text-emerald-700 mt-2'>
+              <p className='col-span-1'>목표 :</p>
+              <p className=''>{data.description}</p>
+            </div>
           </div>
         </div>
-        {thisId.title && (
-          <p className='ml-10 my-auto'>선택된 전략 이름 : {thisId.title}</p>
-        )}
-        <SelectModal isOpen={openModal} onClose={closeModal}>
-          <h2 className='text-xl font-bold mb-4'>내 전략 선택</h2>
-          <article className='grid grid-cols-4 gap-4 content-evenly mx-32'>
-            {items.map((item, index) => (
-              <WriteTileBoard
-                key={index}
-                item={item}
-                setThisId={handleSetThisId}
-                closeModal={closeModal}
-              />
-            ))}
-          </article>
-        </SelectModal>
-        {!falseState && (
-          <>
-            {thisId.title ? (
-              <button
-                className='w-[104px] h-[104px] border-2 bg-emerald-700 rounded text-[#fefefe]'
-                onClick={() => {
-                  joinContest();
-                }}
-              >
-                대회참가
-              </button>
-            ) : (
-              <button
-                className='w-[104px] h-[104px] border-2 border-emerald-700 rounded'
-                onClick={() => {
-                  openModalClick();
-                }}
-              >
-                대회참가
-              </button>
-            )}
-          </>
-        )}
-      </div>
+      ) : (
+        <div className='my-4 flex justify-between px-9 py-5 border border-emerald-700 rounded'>
+          <div className='grid content-center'>
+            <p className='bg-emerald-700 rounded text-center w-80 text-[#fefefe] mb-2'>
+              대회명 : {data.title}
+            </p>
+            <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[900px] p-4 text-emerald-700 mt-2'>
+              <p className='col-span-1'>목표 :</p>
+              <p className=''>{data.description}</p>
+            </div>
+          </div>
+          {thisId.title && (
+            <p className='ml-10 my-auto'>선택된 전략 이름 : {thisId.title}</p>
+          )}
+          <SelectModal isOpen={openModal} onClose={closeModal}>
+            <h2 className='text-xl font-bold mb-4'>내 전략 선택</h2>
+            <article className='grid grid-cols-4 gap-4 content-evenly mx-32'>
+              {items.map((item, index) => (
+                <WriteTileBoard
+                  key={index}
+                  item={item}
+                  setThisId={handleSetThisId}
+                  closeModal={closeModal}
+                />
+              ))}
+            </article>
+          </SelectModal>
+          {!falseState && (
+            <>
+              {thisId.title ? (
+                <button
+                  className='w-[104px] h-[104px] border-2 bg-emerald-700 rounded text-[#fefefe]'
+                  onClick={() => {
+                    joinContest();
+                  }}
+                >
+                  대회참가
+                </button>
+              ) : (
+                <button
+                  className='w-[104px] h-[104px] border-2 border-emerald-700 rounded'
+                  onClick={() => {
+                    openModalClick();
+                  }}
+                >
+                  대회참가
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
       <AttendList contestId={contestId} />
     </div>
   );
