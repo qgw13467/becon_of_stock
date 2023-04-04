@@ -21,15 +21,15 @@ interface Props {
 const ResultCumulativeReturnDtos = (props: Props) => {
   // 시계열 수익률 가공
   const [actualCumulativeReturnDtos, setActualCumulativeReturnDtos] = useState([
-    { name: '', strategyValue: 100, marketValue: 100 },
+    { name: '', 내전략: 100, 시장전략: 100 },
   ]);
 
   useEffect(() => {
     const dataTemp = props.cumulativeReturnDtos.map((data) => {
       return {
         name: `${data.year}-${data.month}`,
-        strategyValue: data.strategyValue,
-        marketValue: data.marketValue,
+        내전략: Number(data.strategyValue.toFixed(2)),
+        시장전략: Number(data.marketValue.toFixed(2)),
       };
     });
     setActualCumulativeReturnDtos([...actualCumulativeReturnDtos, ...dataTemp]);
@@ -58,14 +58,14 @@ const ResultCumulativeReturnDtos = (props: Props) => {
         <Legend />
         <Line
           type='monotone'
-          dataKey='strategyValue'
-          stroke='#802A57'
+          dataKey='내전략'
+          stroke='#f72300'
           dot={false}
           activeDot={{ r: 5 }}
         />
         <Line
           type='monotone'
-          dataKey='marketValue'
+          dataKey='시장전략'
           stroke='#0083B5'
           dot={false}
           activeDot={{ r: 5 }}
