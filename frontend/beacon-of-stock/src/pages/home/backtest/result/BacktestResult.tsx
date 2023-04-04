@@ -331,6 +331,9 @@ const BacktestResult = () => {
   const showStrategyTitleHandler = () => {
     setSaveStrategy(true);
   };
+  const cancelStrategyHandler = () => {
+    setSaveStrategy(false);
+  };
   // title 값
   const [strategyTitle, setStrategyTitle] = useState('');
   const strategyTitleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -387,17 +390,21 @@ const BacktestResult = () => {
             confirmButtonText: '<div>확인</div>',
             confirmButtonColor: '#a5dc86',
           });
+        })
+        .then(() => {
+          setStrategyTitle('');
+          setSaveStrategy(false);
         });
     }
   };
 
   return (
     <div className='w-full h-full'>
-      <div className='flex justify-end'>
+      <div className='flex justify-end my-[1%] mr-[3%]'>
         {saveStrategy && (
           <input
             type='text'
-            className='border w-96'
+            className='px-[1%] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] focus:outline-none h-10 w-96'
             value={strategyTitle}
             onChange={strategyTitleHandler}
             placeholder='100자 이하의 전략명을 입력해주세요.'
@@ -407,15 +414,23 @@ const BacktestResult = () => {
           <input
             type='button'
             value='전략 저장'
-            className='border'
+            className='px-[1%] font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
             onClick={saveStrategyHandler}
+          />
+        )}
+        {saveStrategy && (
+          <input
+            type='button'
+            value='취소'
+            className='px-[1%] font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
+            onClick={cancelStrategyHandler}
           />
         )}
         {!saveStrategy && (
           <input
             type='button'
-            value='전략 저장'
-            className='border'
+            value='현재 전략 저장'
+            className='px-[1%] font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
             onClick={showStrategyTitleHandler}
           />
         )}

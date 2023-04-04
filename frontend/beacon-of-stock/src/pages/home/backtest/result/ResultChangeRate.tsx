@@ -40,128 +40,128 @@ const ResultChangeRate = (props: Props) => {
     });
     setActualChangeRate([...actualChangeRate, ...dataTemp]);
   }, []);
-  const data = [
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2011,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2011,
-      month: 7,
-    },
-    {
-      strategyValue: -1.63406866729999,
-      marketValue: -1.63406866729999,
-      year: 2012,
-      month: 1,
-    },
-    {
-      strategyValue: -0.3718405630280321,
-      marketValue: -0.3718405630280321,
-      year: 2012,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2013,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2013,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2014,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2014,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2015,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2015,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2016,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2016,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2017,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2017,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2018,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2018,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2019,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2019,
-      month: 7,
-    },
-    {
-      strategyValue: 1.3263406866729999,
-      marketValue: 1.3263406866729999,
-      year: 2020,
-      month: 1,
-    },
-    {
-      strategyValue: 0.8718405630280321,
-      marketValue: 0.8718405630280321,
-      year: 2020,
-      month: 7,
-    },
-  ];
+  // const data = [
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2011,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2011,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: -1.63406866729999,
+  //     marketValue: -1.63406866729999,
+  //     year: 2012,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: -0.3718405630280321,
+  //     marketValue: -0.3718405630280321,
+  //     year: 2012,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2013,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2013,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2014,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2014,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2015,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2015,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2016,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2016,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2017,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2017,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2018,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2018,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2019,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2019,
+  //     month: 7,
+  //   },
+  //   {
+  //     strategyValue: 1.3263406866729999,
+  //     marketValue: 1.3263406866729999,
+  //     year: 2020,
+  //     month: 1,
+  //   },
+  //   {
+  //     strategyValue: 0.8718405630280321,
+  //     marketValue: 0.8718405630280321,
+  //     year: 2020,
+  //     month: 7,
+  //   },
+  // ];
   return (
     <div className='flex flex-col'>
       <p className='text-xl font-KJCbold'>전월대비 증감률</p>
