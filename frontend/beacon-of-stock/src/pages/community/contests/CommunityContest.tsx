@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import SelectModal from '../Dibs/SelectModal';
 import { WriteTileBoard } from '../Dibs/WriteTileBoard';
 import { AttendList } from './AttendList';
+import { useContestStateStore } from '../../../store/store';
 // import { useContestState } from '../../../store/store';
 
 interface CommunityContest {
@@ -15,24 +16,25 @@ interface CommunityContest {
 }
 
 export const CommunityContest: React.FC = () => {
+  const { falseState } = useContestStateStore();
   const location = useLocation();
   const contestId = Number(location.pathname.split('/').pop());
   const token = getCookie('accessToken');
   const [data, setData] = useState<CommunityContest>();
-  const [thisId, setThisId] = useState({ id: -1, title: '' });
+
   useEffect(() => {
     axios_api
       .get(`/contests/${contestId}`, {
         headers: { authentication: token },
       })
       .then((res) => {
-        // console.log(res);
         setData(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [data, thisId]);
+  }, []);
+  const [thisId, setThisId] = useState({ id: -1, title: '' });
   const handleSetThisId = (id: number, title: string) => {
     setThisId({ id, title });
   };
@@ -89,9 +91,10 @@ export const CommunityContest: React.FC = () => {
           <p className='bg-emerald-700 rounded text-center w-80 text-[#fefefe] mb-2'>
             대회명 : {data.title}
           </p>
-          <p className='border border-emerald-700 rounded text-center w-80 text-emerald-700 mt-2'>
-            목표 : {data.description}
-          </p>
+          <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[900px] p-4 text-emerald-700 mt-2'>
+            <p className='col-span-1'>목표 :</p>
+            <p className=''>{data.description}</p>
+          </div>
         </div>
         {thisId.title && (
           <p className='ml-10 my-auto'>선택된 전략 이름 : {thisId.title}</p>
@@ -109,24 +112,28 @@ export const CommunityContest: React.FC = () => {
             ))}
           </article>
         </SelectModal>
-        {thisId.title ? (
-          <button
-            className='w-16 h-16 border bg-emerald-700 rounded text-[#fefefe]'
-            onClick={() => {
-              joinContest();
-            }}
-          >
-            대회참가
-          </button>
-        ) : (
-          <button
-            className='w-16 h-16 border border-emerald-700 rounded'
-            onClick={() => {
-              openModalClick();
-            }}
-          >
-            대회참가
-          </button>
+        {!falseState && (
+          <>
+            {thisId.title ? (
+              <button
+                className='w-[104px] h-[104px] border-2 bg-emerald-700 rounded text-[#fefefe]'
+                onClick={() => {
+                  joinContest();
+                }}
+              >
+                대회참가
+              </button>
+            ) : (
+              <button
+                className='w-[104px] h-[104px] border-2 border-emerald-700 rounded'
+                onClick={() => {
+                  openModalClick();
+                }}
+              >
+                대회참가
+              </button>
+            )}
+          </>
         )}
       </div>
       <AttendList contestId={contestId} />

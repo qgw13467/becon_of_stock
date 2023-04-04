@@ -11,13 +11,13 @@ import { Link } from 'react-router-dom';
 export const Strategy = () => {
   const { page, setPage } = usePageStore();
   const pageSize = 20;
-  const 게시물수 = 100;
-  const [totalElements, setTotalElements] = useState(게시물수);
+  // const 게시물수 = 100;
+  // const [totalElements, setTotalElements] = useState(게시물수);
   const [totalPages, setTotalPages] = useState(10);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
   const token = getCookie('accessToken');
-
+  // console.log(items);
   const fetchData = useCallback(() => {
     setLoading(true); // 데이터를 요청할 때 로딩 상태 설정
     axios_api
@@ -32,7 +32,7 @@ export const Strategy = () => {
       })
       .then((res) => {
         // console.log(res.data);
-        setTotalElements(res.data.totalElements);
+        // setTotalElements(res.data.totalElements);
         setTotalPages(res.data.totalPages);
         setItems(res.data.content);
       })
@@ -42,7 +42,7 @@ export const Strategy = () => {
       .finally(() => {
         setLoading(false); // 데이터 요청 완료 후 로딩 상태 설정
       });
-  }, [page]);
+  }, []);
 
   useEffect(() => {
     setPage(1);
@@ -72,9 +72,13 @@ export const Strategy = () => {
             <div className='m-9'>
               <p className='font-KJCbold text-2xl m-9'>내 전략조회</p>
               {/* 필터링 부분 */}
-              <article className='flex justify-between'>
-                <StrategySelect />
-                <SearchbarNone />
+              <article className='flex justify-between mx-5'>
+                <div className='w-[68px] ml-6'>
+                  <StrategySelect />
+                </div>
+                <div className='w-80 m-0'>
+                  <SearchbarNone />
+                </div>
               </article>
               <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly ml-16'>
                 {items.map((item, index) => (
