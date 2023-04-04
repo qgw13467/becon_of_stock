@@ -60,7 +60,7 @@ public class SparkServiceImpl implements SparkService {
 
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "local[*]")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .getOrCreate();
 
         //각 기간에서의 변화량
@@ -152,7 +152,7 @@ public class SparkServiceImpl implements SparkService {
 
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "local[*]")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .getOrCreate();
         String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
         trades = spark
@@ -234,7 +234,7 @@ public class SparkServiceImpl implements SparkService {
 
         spark = SparkSession.builder()
                 .appName("becon_of_stock")
-                .config("spark.master", "local[*]")
+                .config("spark.master", "spark://j8d207.p.ssafy.io:7077")
                 .getOrCreate();
         rebalance = 3;
         String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
