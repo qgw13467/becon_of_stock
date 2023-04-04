@@ -17,19 +17,24 @@ type resultValues = {
     marketValue: number;
   }[];
   cumulativeReturnDataDto: {
+    cumulativeReturn: string;
     cumulativeReturnDesc: string;
     strategyCumulativeReturn: number;
     marketCumulativeReturn: number;
+    cagr: string;
     cagrDesc: string;
     strategyCagr: number;
     marketCagr: number;
     sharpe: string;
+    sharpeDesc: string;
     strategySharpe: number;
     marketSharpe: number;
     sortino: string;
+    sortinoDesc: string;
     strategySortino: number;
     marketSortino: number;
     mdd: string;
+    mddDesc: string;
     strategyMDD: number;
     marketMDD: number;
   };
