@@ -40,8 +40,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/api/spark/test").permitAll()
-                .antMatchers("api/test").permitAll()
+                .antMatchers("/api/spark/**").permitAll()
+                .antMatchers("/api/test").permitAll()
                 .antMatchers("/api/oauth2/**").permitAll()
                 .antMatchers("/login/oauth2/code/kakao").permitAll()
                 .antMatchers("/favicon.ico").permitAll()

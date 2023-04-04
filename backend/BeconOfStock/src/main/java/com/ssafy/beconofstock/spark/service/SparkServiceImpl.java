@@ -61,8 +61,8 @@ public class SparkServiceImpl implements SparkService {
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
                 .config("spark.master", "spark://172.17.0.1:7077")
-                .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
-                .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
+                .config("spark.driver.extraClassPath", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
+                .config("spark.jars", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
 
         //각 기간에서의 변화량
@@ -155,8 +155,8 @@ public class SparkServiceImpl implements SparkService {
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
                 .config("spark.master", "spark://172.17.0.1:7077")
-                .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
-                .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
+                .config("spark.driver.extraClassPath", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
+                .config("spark.jars", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
         String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
         trades = spark
@@ -238,8 +238,8 @@ public class SparkServiceImpl implements SparkService {
         spark = SparkSession.builder()
                 .appName("becon_of_stock")
                 .config("spark.master", "spark://172.17.0.1:7077")
-                .config("spark.driver.extraClassPath", "./src/main/resources/mysql-connector-j-8.0.32.jar")
-                .config("spark.jars", "./src/main/resources/mysql-connector-j-8.0.32.jar")
+                .config("spark.driver.extraClassPath", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
+                .config("spark.jars", "./src/main/java/com/ssafy/beconofstock/spark/mysql-connector-j-8.0.32.jar")
                 .getOrCreate();
         rebalance = 3;
         String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
