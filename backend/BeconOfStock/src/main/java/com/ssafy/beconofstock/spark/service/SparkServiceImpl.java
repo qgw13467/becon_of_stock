@@ -14,9 +14,13 @@ import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.catalyst.encoders.RowEncoder;
+import org.apache.spark.sql.expressions.WindowSpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -28,7 +32,9 @@ import java.util.stream.Collectors;
 
 import static org.apache.spark.sql.functions.avg;
 import static org.apache.spark.sql.functions.col;
-
+import static org.apache.spark.sql.functions.lit;
+import org.apache.spark.sql.expressions.Window;
+import static org.apache.spark.sql.functions.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -142,6 +148,59 @@ public class SparkServiceImpl implements SparkService {
         return backtestResult;
     }
 
+    public void calAverageRanking(Dataset<Row> trades) {
+
+        SparkSession spark = SparkSession.builder()
+                .appName("becon_of_stock")
+                .config("spark.master", "local")
+                .getOrCreate();
+        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+        trades = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        trades.show();
+
+        // Define a window specification for ranking by `priceper` column
+        WindowSpec windowSpec = Window.orderBy(col("priceper"));
+
+// Add a new column `rank` using `dense_rank()` function
+        Dataset<Row> updatedTrades = trades.withColumn("rank", dense_rank().over(windowSpec));
+        Dataset<Row> rank = updatedTrades.orderBy(updatedTrades.col("rank"));
+        rank.show(100);
+
+//        Dataset<Row> updatedTrades = trades.as("trades").map((MapFunction<Row, Row>) t -> {
+//            if(t.getInt(t.fieldIndex("Cnt")) ==0){
+//                return RowFactory.create(
+//                        t.get(0),
+//                        t.get(1),
+//                        999
+//                );
+//            }else{
+//                int ranking = t.getInt(t.fieldIndex("Ranking"));
+//                int cnt = t.getInt(t.fieldIndex("Cnt"));
+//                int newRanking = ranking / cnt; // calculate the new ranking by dividing Ranking by Cnt
+//                return RowFactory.create(
+//                        t.get(0),
+//                        t.get(1),
+//                        t.get(2),
+//                        newRanking // add the new ranking as the last column
+//                );
+//            }
+//
+//        }, RowEncoder.apply(trades.schema()));
+
+//        updatedTrades.show(); // 변경된 trades 데이터셋 출력
+
+        // trades에 변경된 데이터셋 할당
+//        trades = updatedTrades;
+    }
+
     private CumulativeReturnDataDto getCumulativeRuturnDataDto(List<ChangeRateDto> cumulativeReturn,
                                                                List<ChangeRateDto> strategyRateDtos,
                                                                BacktestIndicatorsDto backtestIndicatorsDto,
@@ -173,33 +232,33 @@ public class SparkServiceImpl implements SparkService {
 
     public Double getRevenueByDataSet(SparkSession spark, Dataset<Row> buy, Dataset<Row> trade, Integer rebalance) {
 
-//        spark = SparkSession.builder()
-//                .appName("becon_of_stock")
-//                .config("spark.master", "local")
-//                .getOrCreate();
-//        rebalance = 3;
-//        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
-//        buy = spark
-//                .read()
-//                .format("jdbc")
-//                .option("driver", "com.mysql.cj.jdbc.Driver")
-//                .option("url", url)
-//                .option("user", userName)
-//                .option("password", password)
-//                .option("query", query)
-//                .load();
-//        buy.show();
-//        query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month in (1, 2, 3 ,4)";
-//        trade = spark
-//                .read()
-//                .format("jdbc")
-//                .option("driver", "com.mysql.cj.jdbc.Driver")
-//                .option("url", url)
-//                .option("user", userName)
-//                .option("password", password)
-//                .option("query", query)
-//                .load();
-//        trade.show();
+        spark = SparkSession.builder()
+                .appName("becon_of_stock")
+                .config("spark.master", "local")
+                .getOrCreate();
+        rebalance = 3;
+        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+        buy = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        buy.show();
+        query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month in (1, 2, 3 ,4)";
+        trade = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        trade.show();
 
 
         Integer year = (Integer) buy.select("year").first().get(0);
@@ -232,17 +291,17 @@ public class SparkServiceImpl implements SparkService {
 //        result.show();
 //        System.out.println(calibratedChangeRate+", "+ priceChangeRate+", "+marcapChangeRate);
 
-        if (priceChangeRate == null) {
-            return 1D;
-        }
-        if (priceChangeRate > 2) {
-            if (Math.abs(priceChangeRate / calibratedChangeRate - 1) > 0.3) {
-                return 1D;
-            }
-        }
-        return priceChangeRate;
+//        if (priceChangeRate == null) {
+//            return 1D;
+//        }
+//        if (priceChangeRate > 2) {
+//            if (Math.abs(priceChangeRate / calibratedChangeRate - 1) > 0.3) {
+//                return 1D;
+//            }
+//        }
+//        return priceChangeRate;
 
-//        return 1D;
+        return 1D;
     }
 
     private Dataset<Row> getDataSet(SparkSession spark, String query) {
