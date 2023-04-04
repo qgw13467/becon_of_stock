@@ -144,6 +144,7 @@ public class StrategyServiceImpl implements StrategyService {
         // 전략 저장 - id get
         Strategy strategy = new Strategy(member, strategyAddDto);
         strategy.setRepresentative(false);
+        strategy.setRebalance(strategyAddDto.getRebalcnce());
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
@@ -155,6 +156,7 @@ public class StrategyServiceImpl implements StrategyService {
                 .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
 
+        Integer rebalance = strategy.getRebalance();
 
         for (int i = 0; i < marketValues.size(); i++) {
             int year = strategyDtoValues.get(i).getYear();
@@ -163,7 +165,8 @@ public class StrategyServiceImpl implements StrategyService {
                     CummulateReturn.builder()
                             .strategyValue(strategyValues.get(i))
                             .marketValue(marketValues.get(i))
-                            .year(year).month(month)
+                            .year(year+(rebalance*i))
+                            .month(month+(rebalance*i))
                             .strategy(strategy)
                             .build());
         }
