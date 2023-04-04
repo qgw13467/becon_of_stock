@@ -1,16 +1,17 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
 import thumbUpTrue from '../../../assets/img/thumbs-up-solid.svg';
 import thumbUp from '../../../assets/img/thumbs-up-regular.svg';
+import setBookmark from '../../../assets/img/file_copy.png';
+import yaBookmark from '../../../assets/img/file_copy_1.png';
 
 interface DetailButtonProps {
   boardId: number;
   isLike: boolean;
   isBookmark: boolean;
   setChangeLike: () => void;
-  // setIsLike: Dispatch<SetStateAction<boolean>>;
-  // setIsBookmark: Dispatch<SetStateAction<boolean>>;
+  setChangeBookmark: () => void;
 }
 
 export const DetailButton: React.FC<DetailButtonProps> = ({
@@ -18,11 +19,8 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
   isLike,
   isBookmark,
   setChangeLike,
-  // setIsLike,
-  // setIsBookmark,
+  setChangeBookmark,
 }) => {
-  // console.log(isLike);
-  const fileCopy = require('../../../assets/img/file_copy.png');
   const token = getCookie('accessToken');
 
   const clickLikeButton = () => {
@@ -35,8 +33,8 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
         }
       )
       .then((res) => {
-        console.log('보낸다');
-        console.log(res);
+        // console.log('보낸다');
+        // console.log(res);
         setChangeLike();
       })
       .catch((err) => {
@@ -46,11 +44,17 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
 
   const clickBookmarkButton = () => {
     axios_api
-      .post(`/boards/boards/dibs/${boardId}`, {
-        headers: { authentication: token },
-      })
+      .post(
+        `/dibs/${boardId}`,
+        { boardId },
+        {
+          headers: { authentication: token },
+        }
+      )
       .then((res) => {
         console.log(res);
+        // console.log('bookmark에 담겼어요.');
+        setChangeBookmark();
       })
       .catch((err) => {
         console.log(err);
@@ -62,7 +66,6 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
       <button
         className='flex items-center text-[#808080] mr-6'
         onClick={() => {
-          // setIsLike(!isLike);
           clickLikeButton();
         }}
       >
@@ -77,11 +80,10 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
         className='flex items-center text-[#808080]'
         onClick={() => {
           clickBookmarkButton();
-          // setIsBookmark(!isBookmark);
         }}
       >
         <img
-          src={!isBookmark ? fileCopy : null}
+          src={!isBookmark ? setBookmark : yaBookmark}
           alt='take-bookmark'
           className='w-6 h-6 mr-2'
         />

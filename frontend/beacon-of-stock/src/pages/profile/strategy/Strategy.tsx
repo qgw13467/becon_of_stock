@@ -56,11 +56,20 @@ export const Strategy = () => {
     <section>
       {loading ? (
         <div className='h-[600px] m-20'>
-          <div className='flex justify-between'>
+          {/* <div className='flex justify-between'>
             <div className='animate-pulse rounded-md bg-gray-200 w-20 h-12'></div>
             <div className='animate-pulse rounded-md bg-gray-200 w-64 h-12'></div>
+          </div> */}
+          <div className='grid grid-cols-5 ml-16'>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
           </div>
-          <div className='grid grid-cols-4'>
+          <div className='grid grid-cols-5 ml-16'>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
             <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
             <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
             <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
@@ -71,15 +80,15 @@ export const Strategy = () => {
           {items.length > 0 ? (
             <div className='m-9'>
               <p className='font-KJCbold text-2xl m-9'>내 전략조회</p>
-              {/* 필터링 부분 */}
-              <article className='flex justify-between mx-5'>
+              {/* 필터링 부분 나중에 다시 만질 일 있으면 ㄱㄱ */}
+              {/* <article className='flex justify-between mx-5'>
                 <div className='w-[68px] ml-6'>
                   <StrategySelect />
                 </div>
                 <div className='w-80 m-0'>
                   <SearchbarNone />
                 </div>
-              </article>
+              </article> */}
               <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly ml-16'>
                 {items.map((item, index) => (
                   <TileBoard key={index} item={item} />
@@ -88,9 +97,9 @@ export const Strategy = () => {
               <article className='my-8'>
                 <Pagenation totalPage={totalPages} />
               </article>
-              <article className='flex justify-center ml-32 my-8'>
+              {/* <article className='flex justify-center ml-32 my-8'>
                 <SearchbarNone />
-              </article>
+              </article> */}
             </div>
           ) : (
             <div className='grid content-center justify-center h-[600px]'>

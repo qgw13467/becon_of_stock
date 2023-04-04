@@ -18,6 +18,10 @@ const Detail = () => {
   const changeLikeChange = () => {
     setChangeLike(!changeLike);
   };
+  const [changeBookmark, setChangeBookmark] = useState<boolean>(false);
+  const changeBookmarkChange = () => {
+    setChangeBookmark(!changeBookmark);
+  };
   const [followStatus, setFollowStatus] = useState<boolean>(false);
   const changeFollowStatus = () => {
     setFollowStatus(!followStatus);
@@ -35,7 +39,7 @@ const Detail = () => {
         },
       })
       .then((res) => {
-        console.log(res.data, 'Detail Main');
+        // console.log(res.data, 'Detail Main');
         setData(res.data);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
         // setFollowStatus(res.data.followStatus);
@@ -43,7 +47,7 @@ const Detail = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, changeLike, followStatus]);
+  }, [token, changeLike, changeBookmark, followStatus]);
 
   if (isLoading) {
     return <DetailSkeleton />;
@@ -51,17 +55,13 @@ const Detail = () => {
 
   const addFollow = () => {
     axios_api
-      .post(
-        `/follows/${data.memberId}`,
-        {},
-        {
-          headers: {
-            authentication: token,
-          },
-        }
-      )
+      .post(`/follows/${data.memberId}`, {
+        headers: {
+          authentication: token,
+        },
+      })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         changeFollowStatus();
       })
       .catch((err) => {
@@ -77,7 +77,7 @@ const Detail = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         changeFollowStatus();
       })
       .catch((err) => {
@@ -140,13 +140,10 @@ const Detail = () => {
       </div>
       <DetailButton
         boardId={data.boardId}
-        // isLike={isLike}
-        // isBookmark={isBookmark}
         isLike={data.likeStatus}
         isBookmark={data.dibStatus}
         setChangeLike={changeLikeChange}
-        // setIsLike={setIsLike}
-        // setIsBookmark={setIsBookmark}
+        setChangeBookmark={changeBookmarkChange}
       />
       {/* 현재 유저와 게시글의 유저가 같을 때만 보이게. */}
       {data.isAuthor ? (
