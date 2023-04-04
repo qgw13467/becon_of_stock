@@ -33,7 +33,7 @@ export const ForumComponent = () => {
         },
       })
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
         setContent(data.content);
         setTotalPage(data.totalPages);
       })

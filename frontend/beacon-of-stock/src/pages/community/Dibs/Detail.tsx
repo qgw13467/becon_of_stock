@@ -51,11 +51,15 @@ const Detail = () => {
 
   const addFollow = () => {
     axios_api
-      .post(`/follows/${data.memberId}`, {
-        headers: {
-          authentication: token,
-        },
-      })
+      .post(
+        `/follows/${data.memberId}`,
+        {},
+        {
+          headers: {
+            authentication: token,
+          },
+        }
+      )
       .then((res) => {
         console.log(res);
         changeFollowStatus();
