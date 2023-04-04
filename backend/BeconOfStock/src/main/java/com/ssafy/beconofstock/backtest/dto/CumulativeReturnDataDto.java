@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class CumulativeReturnDataDto {
 
-    private final String culmulativeReturn = "누적 수익률";
+    private final String cumulativeReturn = "누적 수익률";
     private final String cumulativeReturnDesc = "전략의 누적 수익률";
     private Double strategyCumulativeReturn;
     private Double marketCumulativeReturn;
