@@ -21,8 +21,8 @@ const ResultCompareTable = (props: Props) => {
     setShowDesc(false);
   };
   return (
-    <div>
-      <p className='text-xl font-KJCbold'>구간별 수익률 비교</p>
+    <div className='mt-[3%]'>
+      <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
       <table className='border-r border-b flex'>
         <thead className='flex'>
           <tr>
