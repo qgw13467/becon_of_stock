@@ -39,6 +39,17 @@ export const useProfileStore = create<profileState>((set) => ({
   },
 }));
 
+interface ContestState {
+  contestData: any[];
+  setContestData: (by: any) => void;
+}
+export const useContestState = create<ContestState>((set) => ({
+  contestData: [],
+  setContestData: (by) => {
+    set(() => ({ contestData: by }));
+  },
+}));
+
 // Backtest
 
 // industries

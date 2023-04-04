@@ -2,15 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
-
-interface Contest {
-  type: number;
-  contestId: number;
-}
+import { useContestState } from '../../store/store';
 
 export const CommunityNav = () => {
+  const { contestData, setContestData } = useContestState();
+  // console.log(contestData);
   const token = getCookie('accessToken');
-  const [content, setContent] = useState<Contest[]>([]);
+  // const [content, setContent] = useState<Contest[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
     setIsLoading(true); // 로딩 중 상태로 설정
@@ -22,7 +20,9 @@ export const CommunityNav = () => {
         },
       })
       .then((res) => {
-        setContent(res.data.content);
+        // console.log(res);
+        // setContent(res.data.content);
+        setContestData(res.data.content);
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -49,7 +49,7 @@ export const CommunityNav = () => {
           <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
         </div>
       ) : (
-        content.map((item, index) => {
+        contestData.map((item, index) => {
           if (item.type === 0) {
             return (
               <div key={index}>
@@ -58,7 +58,7 @@ export const CommunityNav = () => {
                   state={index + 1}
                   className='ml-1 cursor-pointer'
                 >
-                  ㄴ임의의 대회 {index + 1}
+                  ㄴ{item.title}
                 </Link>
               </div>
             );
@@ -73,7 +73,7 @@ export const CommunityNav = () => {
           <div className='h-6 bg-gray-300 rounded w-4/3 mx-auto my-2'></div>
         </div>
       ) : (
-        content.map((item, index) => {
+        contestData.map((item, index) => {
           if (item.type === 1) {
             return (
               <div key={index}>
@@ -82,7 +82,7 @@ export const CommunityNav = () => {
                   state={index + 1}
                   className='ml-1 cursor-pointer'
                 >
-                  ㄴ임의의 대회 {index + 1}
+                  ㄴ{item.title}
                 </Link>
               </div>
             );
