@@ -101,8 +101,6 @@ public class SparkServiceImpl implements SparkService {
                 trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
                 log.info("============= trade count : {}  ============", trade.count());
             }
-//            trade.show();
-//            System.out.println(trade.count());
 
             //todo 구매한 trade(buy)와 판매될 시기의 trade(sell)을 가져와서 넘길것
             Double revenueByDataSet = getRevenueByDataSet(spark, trade, tradeDataset, backtestIndicatorsDto.getRebalance());
@@ -123,12 +121,10 @@ public class SparkServiceImpl implements SparkService {
         CumulativeReturnDataDto cumulativeReturnDataDto =
                 getCumulativeRuturnDataDto(
                         cumulativeReturn,
-                        changeRates,
                         strategyRateDtos,
                         backtestIndicatorsDto,
                         marketChangeRateDtos,
-                        marketCumulativeReturn,
-                        marketChangeRates
+                        marketCumulativeReturn
                 );
         backtestResult.setCumulativeReturnDataDto(cumulativeReturnDataDto);
 
@@ -147,12 +143,18 @@ public class SparkServiceImpl implements SparkService {
     }
 
     private CumulativeReturnDataDto getCumulativeRuturnDataDto(List<ChangeRateDto> cumulativeReturn,
-                                                               List<Double> changeRates,
                                                                List<ChangeRateDto> strategyRateDtos,
                                                                BacktestIndicatorsDto backtestIndicatorsDto,
                                                                List<ChangeRateDto> marketChangeRateDtos,
-                                                               List<ChangeRateDto> marketCumulativeReturn,
-                                                               List<Double> marketChangeRates) {
+                                                               List<ChangeRateDto> marketCumulativeReturn) {
+
+        List<Double> changeRates = cumulativeReturn.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+        List<Double> marketChangeRates = marketCumulativeReturn.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+
 
         return CumulativeReturnDataDto.builder()
                 .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
@@ -222,6 +224,7 @@ public class SparkServiceImpl implements SparkService {
                 );
 
 //        result.show();
+
         Double calibratedChangeRate = result.first().getDouble(0);
         Double priceChangeRate = result.first().getDouble(1);
         Double marcapChangeRate = result.first().getDouble(2);
