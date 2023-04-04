@@ -235,8 +235,6 @@ public class StrategyServiceImpl implements StrategyService {
         List<StrategyGraphDto> result = new ArrayList<>();
         
         List<Long> strategyIds = strategyRepository.findStrategyIdByMember(user.getMember());
-//        List<CummulateReturn> cummulateReturns = new ArrayList<>();
-//        List<ChangeRateValueDto> changeRateValueDto = new ArrayList<>();
 
         for (Long strategyId : strategyIds) {
             StrategyGraphDto total = new StrategyGraphDto();
