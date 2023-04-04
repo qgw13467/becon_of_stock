@@ -17,7 +17,7 @@ interface Props {
 }
 
 const BasicFactor = (props: Props) => {
-  const [showIndicator, setShowIndicator] = useState<boolean>(false);
+  const [showIndicator, setShowIndicator] = useState<boolean>(true);
   const [showDescription, setShowDescription] = useState<boolean>(false);
 
   const showIndicatorHandler = () => {
