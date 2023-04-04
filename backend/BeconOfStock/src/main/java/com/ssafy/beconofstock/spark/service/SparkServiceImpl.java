@@ -9,13 +9,18 @@ import com.ssafy.beconofstock.backtest.repository.BackIndustryRepository;
 import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
 import com.ssafy.beconofstock.backtest.repository.KospiRepository;
 import com.ssafy.beconofstock.backtest.repository.TradeRepository;
+import com.ssafy.beconofstock.board.repository.BoardRepository;
 import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.catalyst.encoders.RowEncoder;
+import org.apache.spark.sql.expressions.WindowSpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -25,11 +30,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.spark.sql.functions.avg;
+import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.lit;
+import org.apache.spark.sql.expressions.Window;
+import static org.apache.spark.sql.functions.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @PropertySource("classpath:application.yml")
 public class SparkServiceImpl implements SparkService {
+    private final BoardRepository boardRepository;
 
     private final TradeRepository tradeRepository;
     private final IndicatorRepository indicatorRepository;
@@ -53,7 +64,7 @@ public class SparkServiceImpl implements SparkService {
                 .getOrCreate();
 
         //각 기간에서의 변화량
-        List<ChangeRateDto> changeRateDtos = new ArrayList<>();
+        List<ChangeRateDto> strategyRateDtos = new ArrayList<>();
         List<Double> changeRates = new ArrayList<>();
         List<List<Double>> distHistory = new ArrayList<>();
         List<List<BuySellDto>> history = new ArrayList<>();
@@ -62,7 +73,6 @@ public class SparkServiceImpl implements SparkService {
         //시장 리벨런싱별 수익률
         List<ChangeRateDto> marketChangeRateDtos = getKospiList(backtestIndicatorsDto, rebalanceYearMonth);
         List<Double> marketChangeRates = changDtoToDoubleList(marketChangeRateDtos);
-
         //입력받은 지표들
         List<Indicator> indicators = indicatorRepository.findByIdIn(backtestIndicatorsDto.getIndicators());
         List<Industry> industries = new ArrayList<>();
@@ -75,29 +85,223 @@ public class SparkServiceImpl implements SparkService {
         Dataset<Row> tradeDataset;
         String query;
         if (industries.size() != industryAllList.size() && industries.size() != 0) {
-            query = getQueryTradeView("trade_finance_industry", rebalanceYearMonth);
+            query = getQueryTradeView("trade_industry", rebalanceYearMonth);
             query = getQueryAppendIndustryCondition(query, backtestIndicatorsDto.getIndustries());
             tradeDataset = getDataSet(spark, query);
         } else {
-            query = getQueryTradeView("trade_view", rebalanceYearMonth);
+            query = getQueryTradeView("trade", rebalanceYearMonth);
             tradeDataset = getDataSet(spark, query);
         }
 
         log.info("============= rebalanceYearMonth size : {}  ============", rebalanceYearMonth.size());
         for (YearMonth yearMonth : rebalanceYearMonth) {
 //            List<Trade> trades;
+
+            Dataset<Row> trade;
             if (industries.size() != industryAllList.size() && industries.size() != 0) {
-                Dataset<Row> trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear())
+                trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear())
                         .and(tradeDataset.col("month").equalTo(yearMonth.getMonth())))
                         .and(tradeDataset.col("industry_id").isInCollection(backtestIndicatorsDto.getIndustries())));
                 log.info("============= trade count : {}  ============", trade.count());
             } else {
-                Dataset<Row> trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
+                trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
                 log.info("============= trade count : {}  ============", trade.count());
             }
+
+            //todo 구매한 trade(buy)와 판매될 시기의 trade(sell)을 가져와서 넘길것
+            Double revenueByDataSet = getRevenueByDataSet(spark, trade, tradeDataset, backtestIndicatorsDto.getRebalance());
+            strategyRateDtos.add(new ChangeRateDto(revenueByDataSet, backtestIndicatorsDto.getEndYear(), backtestIndicatorsDto.getEndMonth()));
         }
+        tradeDataset.show();
+        System.out.println(tradeDataset.count());
+
+
+        //누적수익률 (단위 : % )
+        List<ChangeRateDto> cumulativeReturn = getCumulativeReturn(strategyRateDtos, backtestIndicatorsDto.getFee());
+        List<ChangeRateDto> marketCumulativeReturn = getCumulativeReturn(marketChangeRateDtos, backtestIndicatorsDto.getFee());
+        backtestResult.setCumulativeReturnDtos(ChangeRateValueDto.mergeChangeRateDtos(cumulativeReturn, marketCumulativeReturn));
+
+        //전략 지표들 계산
+        backtestResult.setChangeRate(ChangeRateValueDto.mergeChangeRateDtos(strategyRateDtos, marketChangeRateDtos));
+
+        CumulativeReturnDataDto cumulativeReturnDataDto =
+                getCumulativeRuturnDataDto(
+                        cumulativeReturn,
+                        strategyRateDtos,
+                        backtestIndicatorsDto,
+                        marketChangeRateDtos,
+                        marketCumulativeReturn
+                );
+        backtestResult.setCumulativeReturnDataDto(cumulativeReturnDataDto);
+
+        RevenueDataDto revenueDataDto = RevenueDataDto.builder()
+                .strategyRevenue(winCount(changeRates))
+                .marketRevenue(winCount(marketChangeRates))
+                .totalMonth(rebalanceYearMonth.size())
+                .build();
+        backtestResult.setRevenueDataDto(revenueDataDto);
+
+        backtestResult.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
+
+
         spark.close();
         return backtestResult;
+    }
+
+    public void calAverageRanking(Dataset<Row> trades) {
+
+        SparkSession spark = SparkSession.builder()
+                .appName("becon_of_stock")
+                .config("spark.master", "local")
+                .getOrCreate();
+        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+        trades = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        trades.show();
+
+        // Define a window specification for ranking by `priceper` column
+        WindowSpec windowSpec = Window.orderBy(col("priceper"));
+
+// Add a new column `rank` using `dense_rank()` function
+        Dataset<Row> updatedTrades = trades.withColumn("rank", dense_rank().over(windowSpec));
+        Dataset<Row> rank = updatedTrades.orderBy(updatedTrades.col("rank"));
+        rank.show(100);
+
+//        Dataset<Row> updatedTrades = trades.as("trades").map((MapFunction<Row, Row>) t -> {
+//            if(t.getInt(t.fieldIndex("Cnt")) ==0){
+//                return RowFactory.create(
+//                        t.get(0),
+//                        t.get(1),
+//                        999
+//                );
+//            }else{
+//                int ranking = t.getInt(t.fieldIndex("Ranking"));
+//                int cnt = t.getInt(t.fieldIndex("Cnt"));
+//                int newRanking = ranking / cnt; // calculate the new ranking by dividing Ranking by Cnt
+//                return RowFactory.create(
+//                        t.get(0),
+//                        t.get(1),
+//                        t.get(2),
+//                        newRanking // add the new ranking as the last column
+//                );
+//            }
+//
+//        }, RowEncoder.apply(trades.schema()));
+
+//        updatedTrades.show(); // 변경된 trades 데이터셋 출력
+
+        // trades에 변경된 데이터셋 할당
+//        trades = updatedTrades;
+    }
+
+    private CumulativeReturnDataDto getCumulativeRuturnDataDto(List<ChangeRateDto> cumulativeReturn,
+                                                               List<ChangeRateDto> strategyRateDtos,
+                                                               BacktestIndicatorsDto backtestIndicatorsDto,
+                                                               List<ChangeRateDto> marketChangeRateDtos,
+                                                               List<ChangeRateDto> marketCumulativeReturn) {
+
+        List<Double> changeRates = cumulativeReturn.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+        List<Double> marketChangeRates = marketCumulativeReturn.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
+
+
+        return CumulativeReturnDataDto.builder()
+                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
+                .strategyCagr(getAvg(changeRates))
+                .strategySharpe(getSharpe(strategyRateDtos, backtestIndicatorsDto))
+                .strategySortino(getSortino(strategyRateDtos, backtestIndicatorsDto))
+                .strategyMDD(getMdd(cumulativeReturn))
+                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate())
+                .marketCagr(getAvg(marketChangeRates))
+                .marketSharpe(getSharpe(marketChangeRateDtos, backtestIndicatorsDto))
+                .marketSortino(getSortino(marketChangeRateDtos, backtestIndicatorsDto))
+                .marketMDD(getMdd(marketCumulativeReturn))
+                .build();
+
+    }
+
+    public Double getRevenueByDataSet(SparkSession spark, Dataset<Row> buy, Dataset<Row> trade, Integer rebalance) {
+
+        spark = SparkSession.builder()
+                .appName("becon_of_stock")
+                .config("spark.master", "local")
+                .getOrCreate();
+        rebalance = 3;
+        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+        buy = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        buy.show();
+        query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month in (1, 2, 3 ,4)";
+        trade = spark
+                .read()
+                .format("jdbc")
+                .option("driver", "com.mysql.cj.jdbc.Driver")
+                .option("url", url)
+                .option("user", userName)
+                .option("password", password)
+                .option("query", query)
+                .load();
+        trade.show();
+
+
+        Integer year = (Integer) buy.select("year").first().get(0);
+        Integer month = (Integer) buy.select("month").first().get(0);
+        month += rebalance;
+        if (month > 12) {
+            year++;
+            month -= 12;
+        }
+
+        Dataset<Row> result = buy.as("buy")
+                .join(trade.as("trade"), buy.col("corcode").equalTo(trade.col("corcode")))
+                .where("trade.year = " + year + " AND trade.month =" + month)
+                .select(
+                        avg(
+                                (trade.col("corclose").multiply(trade.col("stocks")))
+                                        .divide
+                                                (buy.col("corclose").multiply(buy.col("stocks")))).as("calibratedChangeRate")
+                        ,
+                        avg(trade.col("corclose").divide(buy.col("corclose"))).as("PriceChangeRate"),
+                        avg(trade.col("marcap").divide(buy.col("marcap"))).as("MarcapChangeRate")
+                );
+
+//        result.show();
+
+        Double calibratedChangeRate = result.first().getDouble(0);
+        Double priceChangeRate = result.first().getDouble(1);
+        Double marcapChangeRate = result.first().getDouble(2);
+
+//        result.show();
+//        System.out.println(calibratedChangeRate+", "+ priceChangeRate+", "+marcapChangeRate);
+
+//        if (priceChangeRate == null) {
+//            return 1D;
+//        }
+//        if (priceChangeRate > 2) {
+//            if (Math.abs(priceChangeRate / calibratedChangeRate - 1) > 0.3) {
+//                return 1D;
+//            }
+//        }
+//        return priceChangeRate;
+
+        return 1D;
     }
 
     private Dataset<Row> getDataSet(SparkSession spark, String query) {
@@ -173,7 +377,6 @@ public class SparkServiceImpl implements SparkService {
     }
 
 
-    //todo fix logic
     private Double getMdd(List<ChangeRateDto> cumulativeReturn) {
         double mdd = 100D;
         double max = 0D;
@@ -215,24 +418,36 @@ public class SparkServiceImpl implements SparkService {
 
 
     //샤프지수 계산
-    private Double getSharpe(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getSharpe(List<ChangeRateDto> changeRateDtos, BacktestIndicatorsDto backtestIndicatorsDto) {
 
+        List<Double> changeRate = changeRateDtos.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
         Double deviation = getDeviation(changeRate);
-        Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
+        Double result = getRevenueMinusInterest(changeRateDtos, backtestIndicatorsDto);
         result = 1.0 * result / deviation;
         return Math.abs(result);
     }
 
     //소티노 계산
-    private Double getSortino(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getSortino(List<ChangeRateDto> changeRateDtos, BacktestIndicatorsDto backtestIndicatorsDto) {
+
+        List<Double> changeRate = changeRateDtos.stream()
+                .map(ChangeRateDto::getChangeRate)
+                .collect(Collectors.toList());
         Double nagativeDeviation = getNagativeDeviation(changeRate);
-        Double result = getRevenueMinusInterest(changeRateDtos, changeRate, backtestIndicatorsDto);
+        Double result = getRevenueMinusInterest(changeRateDtos, backtestIndicatorsDto);
         result = 1.0 * result / nagativeDeviation;
         return Math.abs(result);
     }
 
     //샤프,소티노 공통부분 분리
-    private Double getRevenueMinusInterest(List<ChangeRateDto> changeRateDtos, List<Double> changeRate, BacktestIndicatorsDto backtestIndicatorsDto) {
+    private Double getRevenueMinusInterest(List<ChangeRateDto> changeRateDtos, BacktestIndicatorsDto backtestIndicatorsDto) {
+
+        List<Double> changeRate = changeRateDtos.stream()
+                .map(dto -> dto.getChangeRate())
+                .collect(Collectors.toList());
+
         List<InterestRate> interestRates =
                 interestRateRepository.findByYearMonthList(
                         backtestIndicatorsDto.getStartYear(),
@@ -307,7 +522,9 @@ public class SparkServiceImpl implements SparkService {
 
     //ChangDto리스트의 변화량을 Double리스트로 변환
     private List<Double> changDtoToDoubleList(List<ChangeRateDto> changeRateDtos) {
-        return changeRateDtos.stream().map(changeRateDto -> changeRateDto.getChangeRate()).collect(Collectors.toList());
+        return changeRateDtos.stream()
+                .map(changeRateDto -> changeRateDto.getChangeRate())
+                .collect(Collectors.toList());
 
     }
 
@@ -363,11 +580,6 @@ public class SparkServiceImpl implements SparkService {
             }
         }
         return result;
-    }
-
-    //산업으로 회사찾기
-    private List<String> getCorpByIndustry(List<String> industries) {
-        return new ArrayList<>();
     }
 
 
@@ -471,66 +683,4 @@ public class SparkServiceImpl implements SparkService {
 
     }
 
-    //구매한 종목이 한주기 다음 수익이 얼마인지 계산
-    private Double getRevenue(YearMonth yearMonth, List<Trade> list, int rebalance, List<List<BuySellDto>> history, List<List<Double>> distHistory) {
-
-        Double result = 0D;
-        List<Double> dist = new ArrayList<>();
-        List<BuySellDto> tradeList = new ArrayList<>();
-        int useYear = yearMonth.getYear();
-        int useMonth = yearMonth.getMonth();
-
-        useMonth += rebalance;
-        if (useMonth > 12) {
-            useYear++;
-            useMonth -= 12;
-        }
-        List<String> corcodes = list.stream().map(Trade::getCorcode).collect(Collectors.toList());
-
-        List<Trade> byYearAndMonthAndCorcodeList = tradeRepository.findByYearAndMonthAndCorcodeList(useYear, useMonth, corcodes);
-
-        for (Trade trade : list) {
-            Trade find = findByCorcode(trade.getCorcode(), byYearAndMonthAndCorcodeList);
-            if (find == null) {
-                dist.add(1D);
-                continue;
-            }
-
-//            System.out.println("start: " + trade.getCorname() + ", " + (find.getMarcap().doubleValue() / 100D) + ", " + trade.getYear() + " " + trade.getMonth() + ", end : "
-//                    + find.getCorname() + ", " + (trade.getMarcap().doubleValue() / 100D) + ", " + find.getYear() + " " + find.getMonth());
-
-            tradeList.add(new BuySellDto(trade, find));
-
-            double temp = (find.getCorclose().doubleValue()) / (trade.getCorclose().doubleValue());
-            if (temp > 2) {
-                double check = find.getMarcap().doubleValue() / trade.getMarcap().doubleValue();
-                if (Math.abs(temp / check - 1) > 0.3) {
-                    continue;
-                }
-            }
-//            double temp = (find.getCorclose().doubleValue() / trade.getCorclose().doubleValue());
-            dist.add(temp);
-        }
-
-        history.add(tradeList);
-        distHistory.add(dist);
-//        System.out.println("dist: " + dist);
-
-        result = getAvg(dist);
-        if (result == 0 || result.equals(Double.NaN)) {
-            return 1D;
-        }
-        return result;
-    }
-
-    private Trade findByCorcode(String corcode, List<Trade> trades) {
-        Trade result = null;
-        for (Trade trade : trades) {
-            if (trade.getCorcode().equals(corcode)) {
-                result = trade;
-                break;
-            }
-        }
-        return result;
-    }
 }
