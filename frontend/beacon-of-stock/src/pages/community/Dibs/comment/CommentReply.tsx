@@ -1,27 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReplyReply } from './ReplyReply';
+import { ReplyCreate } from './ReplyCreate';
+import { ReplyMain } from './ReplyMain';
 
 type ReplyProps = {
   comments: any[];
+  changeImeeey: () => void;
 };
 
-export const CommentReply: React.FC<ReplyProps> = ({ comments }) => {
+export const CommentReply: React.FC<ReplyProps> = ({
+  comments,
+  changeImeeey,
+}) => {
+  const [createState, setCreateState] = useState<number>(-1);
+
   return (
     <ul className='bg-[#fefefe] p-2 rounded'>
       {comments.map((comment, index) => (
         <div key={index}>
           {index > 0 && <hr />}
-          <li className='my-2 flex justify-between'>
-            <p className='text-gray-700'>
-              <span className='font-bold mr-2'>{comment.userNickname}:</span>
-              <span className='ml-4'>{comment.content}</span>
-            </p>
-            <p>
-              <span>수정</span>
-              <span className='mx-4'> | </span>
-              <span>삭제</span>
-            </p>
-          </li>
+          <ReplyMain
+            comment={comment}
+            changeImeeey={changeImeeey}
+            setCreateState={setCreateState}
+          />
+          {/* 답글 쓰기 버튼이 눌리면 활성화 되는 컴포넌트 */}
+          <ReplyCreate
+            comment={comment}
+            createState={createState}
+            setCreateState={setCreateState}
+          />
           {comment.children !== null && (
             <ul className='bg-[#808080] ml-4 p-2 rounded text-[#fefefe]'>
               {comment.children.map((child: any, childIndex: any) => (

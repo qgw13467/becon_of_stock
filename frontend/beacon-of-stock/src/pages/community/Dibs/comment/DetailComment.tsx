@@ -11,6 +11,8 @@ interface Comment {
   userNickname: string;
   content: string;
   children: any[];
+  isAuthor: boolean;
+  modified: boolean;
 }
 
 interface DetailCommentProps {
@@ -21,6 +23,10 @@ const DetailComment: React.FC<DetailCommentProps> = ({ boardId }) => {
   const navigate = useNavigate();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState({ content: '' });
+  const [imeeey, setImeeey] = useState<boolean>(false);
+  const changeImeeey = () => {
+    setImeeey(!imeeey);
+  };
   const token = getCookie('accessToken');
   const changeNewComment = (e: any) => {
     setNewComment(e);
@@ -32,13 +38,13 @@ const DetailComment: React.FC<DetailCommentProps> = ({ boardId }) => {
         headers: { authentication: token },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res.data);
         setComments(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [boardId, token]);
+  }, [boardId, token, imeeey]);
 
   const handleSubmit = () => {
     // e.preventDefault();
@@ -75,7 +81,7 @@ const DetailComment: React.FC<DetailCommentProps> = ({ boardId }) => {
       {comments.length === 0 ? (
         <p className='text-gray-500'>댓글이 없습니다.</p>
       ) : (
-        <CommentReply comments={comments} />
+        <CommentReply comments={comments} changeImeeey={changeImeeey} />
       )}
       <CreateComment
         handleSubmit={handleSubmit}
