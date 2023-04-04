@@ -45,9 +45,7 @@ public class BacktestServiceImpl implements BacktestService {
         List<YearMonth> rebalanceYearMonth = getRebalanceYearMonth(backtestIndicatorsDto);
         //시장 리벨런싱별 수익률
         List<ChangeRateDto> marketChangeRateDtos = getKospiList(backtestIndicatorsDto, rebalanceYearMonth);
-//        for (int i = 0; i < marketChangeRateDtos.size(); i++) {
-//            System.out.println("market: " + marketChangeRateDtos.get(i).getChangeRate());
-//        }
+
         List<Double> marketChangeRates = changDtoToDoubleList(marketChangeRateDtos);
 
         //입력받은 지표들
@@ -355,12 +353,6 @@ public class BacktestServiceImpl implements BacktestService {
         }
         return result;
     }
-
-    //산업으로 회사찾기
-    private List<String> getCorpByIndustry(List<String> industries) {
-        return new ArrayList<>();
-    }
-
 
     // TODO : 각 지표 정렬, 합산 수행
     private List<Trade> calcTradesIndicator(List<Trade> trades, List<Indicator> indicators, int maxNum) {
