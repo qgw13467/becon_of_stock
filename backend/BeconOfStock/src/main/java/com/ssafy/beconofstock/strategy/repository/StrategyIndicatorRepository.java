@@ -16,4 +16,7 @@ public interface StrategyIndicatorRepository extends JpaRepository<StrategyIndic
 
     @Query("SELECT si FROM StrategyIndicator si LEFT JOIN FETCH si.indicator WHERE si.strategy=:strategy")
     List<StrategyIndicator> findByStrategyFetch(@Param("strategy") Strategy strategy);
+
+    @Query("SELECT si FROM StrategyIndicator si LEFT JOIN FETCH si.indicator WHERE si.strategy.id=:strategyId")
+    List<StrategyIndicator> findStrategyIndicatorByStrategyId(@Param("strategyId") Long strategyId);
 }

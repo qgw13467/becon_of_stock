@@ -1,8 +1,8 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
-import com.ssafy.beconofstock.backtest.dto.BacktestResultDto;
 import com.ssafy.beconofstock.backtest.dto.ChangeRateDto;
+import com.ssafy.beconofstock.backtest.dto.CumulativeReturnDataDto;
 import com.ssafy.beconofstock.backtest.entity.CummulateReturn;
 import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.exception.NotFoundException;
@@ -14,11 +14,7 @@ import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
 import com.ssafy.beconofstock.strategy.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -232,16 +228,55 @@ public class StrategyServiceImpl implements StrategyService {
         strategyRepository.delete(strategy);
     }
 
-//    @Override
-//    @Transactional
-//    public Page<?> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
-//        Page<Strategy> strategies = strategyRepository.findStrategyByMember(user.getMember(), pageable);
-//        CummulateReturn 이 테이블이 어떻게 만들어 지는 것인지? 이게 갯수가 자기 각양각색이고 month가 다 1이라 이해가 잘 안됨..
-//        id, title, userNickname, CummulateReturn 이 포함된 Dto 한개 만들고
-//        StrategyRepository 에서 member로 가져온 strategyId List
-//        CummulationReturnRepository 에서 strategyId로 돌려서 찾으면 될거 같긴함..
-//        return null;
-//    }
+    @Override
+    @Transactional
+    public List<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user) {
+
+        List<StrategyGraphDto> result = new ArrayList<>();
+        
+        List<Long> strategyIds = strategyRepository.findStrategyIdByMember(user.getMember());
+//        List<CummulateReturn> cummulateReturns = new ArrayList<>();
+//        List<ChangeRateValueDto> changeRateValueDto = new ArrayList<>();
+
+        for (Long strategyId : strategyIds) {
+            StrategyGraphDto total = new StrategyGraphDto();
+            List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
+            List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
+                    .map(cummulateReturn -> CummulateReturnDto.builder()
+                            .year(cummulateReturn.getYear())
+                            .month(cummulateReturn.getMonth())
+                            .strategyValue(cummulateReturn.getStrategyValue())
+                            .marketValue(cummulateReturn.getMarketValue())
+                            .build())
+                    .collect(Collectors.toList());
+            total.setCummulateReturnDtos(cummulateReturnDtoList);
+//            List<ChangeRateValueDto> changeRateValueDto = new ArrayList<>();
+
+            // StrategyIndicator table에서 strategyId로 가져와야함
+            List<StrategyIndicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
+            total.setIndicators(indicators.stream().map(StrategyIndicator::getId).collect(Collectors.toList()));
+
+            Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
+            total.setStrategyId(strategy.getId());
+            total.setTitle(strategy.getTitle());
+            // builder 로 처리(strategy에 있는 값 가져오면 됨)
+            CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
+                    .strategyCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                    .strategyCagr(strategy.getStrategyCagr())
+                    .strategySharpe(strategy.getStrategySharpe())
+                    .strategySortino(strategy.getStrategySortino())
+                    .strategyMDD(strategy.getStrategyMDD())
+                    .marketCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                    .marketCagr(strategy.getStrategyCagr())
+                    .marketSharpe(strategy.getStrategySharpe())
+                    .marketSortino(strategy.getStrategySortino())
+                    .marketMDD(strategy.getStrategyMDD())
+                    .build();
+            total.setCumulativeReturnDataDto(cumulativeReturnDataDto);
+            result.add(total);
+        }
+        return result;
+    }
 
     public List<ChangeRateDto> toMarketValues(List<CummulateReturn> cummulateReturnList) {
         List<ChangeRateDto> marketValues = new ArrayList<>();
