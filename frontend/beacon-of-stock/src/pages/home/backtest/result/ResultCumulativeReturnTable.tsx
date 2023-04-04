@@ -130,15 +130,15 @@ const ResultCumulativeReturnTable = (props: Props) => {
         {/* 제목 행을 그룹화하는 태그 */}
         <thead className='border'>
           <tr>
-            <th className='border'>구분</th>
-            <th className='border'>시장</th>
-            <th className='border'>내 전략</th>
+            <th className='border px-2 py-1 w-40'>구분</th>
+            <th className='border px-2 py-1 w-24'>시장</th>
+            <th className='border px-2 py-1 w-24'>내 전략</th>
           </tr>
         </thead>
         {/* 본문 행을 그룹화하는 태그 */}
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>{props.cumulativeReturnDataDto.cumulativeReturn}</div>
               <img
                 src={question}
@@ -148,7 +148,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
                 onMouseLeave={mouseLeaveHandler1}
               />
               {showDesc.showCumul && (
-                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-[2%] mt-[4%]'>
+                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-2 mt-14'>
                   {props.cumulativeReturnDataDto.cumulativeReturnDesc}
                 </div>
               )}
@@ -166,17 +166,17 @@ const ResultCumulativeReturnTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>{props.cumulativeReturnDataDto.cagr}</div>
               <img
                 src={question}
                 alt='question'
-                className='w-4 h-4'
+                className='w-4 h-4 ml-[2%]'
                 onMouseEnter={mouseEnterHandler2}
                 onMouseLeave={mouseLeaveHandler2}
               />
               {showDesc.showCagr && (
-                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-[2%] mt-[4%]'>
+                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-2 mt-14'>
                   {props.cumulativeReturnDataDto.cagrDesc}
                 </div>
               )}
@@ -191,7 +191,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>{props.cumulativeReturnDataDto.sharpe}</div>
               <img
                 src={question}
@@ -201,7 +201,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
                 onMouseLeave={mouseLeaveHandler3}
               />
               {showDesc.showSharpe && (
-                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-[2%] mt-[4%]'>
+                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-2 mt-14'>
                   {props.cumulativeReturnDataDto.sharpeDesc}
                 </div>
               )}
@@ -216,7 +216,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>{props.cumulativeReturnDataDto.sortino}</div>
               <img
                 src={question}
@@ -226,7 +226,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
                 onMouseLeave={mouseLeaveHandler4}
               />
               {showDesc.showSortino && (
-                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-[2%] mt-[4%]'>
+                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-2 mt-14'>
                   {props.cumulativeReturnDataDto.sortinoDesc}
                 </div>
               )}
@@ -241,7 +241,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>{props.cumulativeReturnDataDto.mdd}</div>
               <img
                 src={question}
@@ -251,7 +251,7 @@ const ResultCumulativeReturnTable = (props: Props) => {
                 onMouseLeave={mouseLeaveHandler5}
               />
               {showDesc.showMdd && (
-                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-[2%] mt-[4%]'>
+                <div className='text-sm absolute border rounded-lg border-[#131313] bg-[#FEFEFE] px-[1%] py-[0.5%] ml-2 mt-14'>
                   {props.cumulativeReturnDataDto.mddDesc}
                 </div>
               )}

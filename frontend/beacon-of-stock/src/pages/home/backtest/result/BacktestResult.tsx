@@ -8,6 +8,7 @@ import axios_api from '../../../../assets/config/Axios';
 import { getCookie } from '../../../../assets/config/Cookie';
 import question from '../../../../assets/img/question.png';
 import Swal from 'sweetalert2';
+import ResultCompareTable from './ResultCompareTable';
 
 type resultValues = {
   cumulativeReturnDtos: {
@@ -327,7 +328,7 @@ const BacktestResult = () => {
   //   },
   //   indicators: [1, 2],
   // };
-  console.log(data);
+  // console.log(data);
 
   // 전략 저장
   const token = getCookie('accessToken');
@@ -440,7 +441,7 @@ const BacktestResult = () => {
           />
         )}
       </div>
-      <div className='flex justify-around'>
+      <div className='flex'>
         <ResultCumulativeReturnDtos
           cumulativeReturnDtos={data.cumulativeReturnDtos}
         />
@@ -448,9 +449,12 @@ const BacktestResult = () => {
           cumulativeReturnDataDto={data.cumulativeReturnDataDto}
         />
       </div>
-      <div className='flex justify-around'>
+      <div className='flex'>
         <ResultChangeRate changeRate={data.changeRate} />
         <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
+      </div>
+      <div className='mb-[5%] overflow-auto'>
+        <ResultCompareTable changeRate={data.changeRate} />
       </div>
     </div>
   );

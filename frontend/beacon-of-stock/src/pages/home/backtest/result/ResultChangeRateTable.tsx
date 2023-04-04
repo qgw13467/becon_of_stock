@@ -16,15 +16,15 @@ const ResultChangeRateTable = (props: Props) => {
         {/* 제목 행을 그룹화하는 태그 */}
         <thead className='border'>
           <tr>
-            <th className='border'>구분</th>
-            <th className='border'>시장</th>
-            <th className='border'>내 전략</th>
+            <th className='border px-2 py-1 w-40'>구분</th>
+            <th className='border px-2 py-1 w-24'>시장</th>
+            <th className='border px-2 py-1 w-24'>내 전략</th>
           </tr>
         </thead>
         {/* 본문 행을 그룹화하는 태그 */}
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>수익이 있는 달</div>
             </td>
             <td className='px-2 py-1 text-right border'>
@@ -37,7 +37,7 @@ const ResultChangeRateTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>전체 달</div>
             </td>
             <td className='px-2 py-1 text-right border'>
@@ -50,7 +50,7 @@ const ResultChangeRateTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1'>
+            <td className='flex items-center px-2 py-1 w-40'>
               <div>승률</div>
             </td>
             <td className='px-2 py-1 text-right border'>
@@ -70,9 +70,9 @@ const ResultChangeRateTable = (props: Props) => {
           </tr>
         </tbody>
         {/* 바닥 행을 그룹화하는 태그 */}
-        <tfoot>
+        {/* <tfoot>
           <tr></tr>
-        </tfoot>
+        </tfoot> */}
       </table>
     </div>
   );
