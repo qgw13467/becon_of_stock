@@ -113,6 +113,8 @@ public class BacktestServiceImpl implements BacktestService {
 
         result.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
+        result.setRebalance(backtestIndicatorsDto.getRebalance());
+
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         System.out.println(history.size());
         for (int i = 0; i < history.size(); i++) {

@@ -35,15 +35,14 @@ public class Strategy extends BaseEntity {
     private Double strategySharpe;      // H
     private Double strategySortino;     // H
     private Double strategyMDD;         // L(ASC)
-    //
-
     private Integer strategyRevenue;    // H
     private Integer totalMonth;
-
     /**
      * Mypage 대표 전략 true or false
      */
     private Boolean representative;
+
+    private Integer rebalance;
 
 //    @Enumerated(EnumType.STRING)
 //    private AccessType accessType
@@ -58,6 +57,7 @@ public class Strategy extends BaseEntity {
         this.strategyMDD = dto.getStrategyMDD();
         this.strategyRevenue = dto.getStrategyRevenue();
         this.totalMonth = dto.getTotalMonth();
+        this.rebalance = dto.getRebalcnce();
     }
 
     public void setByStrategyAddDto(StrategyAddDto dto) {
@@ -73,6 +73,7 @@ public class Strategy extends BaseEntity {
         this.strategyMDD = (dto.getStrategyMDD() != null) ? dto.getStrategyMDD() : this.strategyMDD;
         this.strategyRevenue = (dto.getStrategyRevenue() != null) ? dto.getStrategyRevenue() : this.strategyRevenue;
         this.totalMonth = (dto.getTotalMonth() != null) ? dto.getTotalMonth() : this.totalMonth;
+        this.rebalance = (dto.getRebalcnce() != null) ? dto.getRebalcnce() : this.rebalance;
     }
 
     public Strategy(List<CummulateReturn> cummulateReturnList) {

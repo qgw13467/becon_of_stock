@@ -22,4 +22,7 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
 
     @Query("select sm from Strategy sm where sm.member=:member and sm.representative=true")
     List<Strategy> findStrategyByMemberList (@Param("member") Member member);
+
+    @Query("select sm.id from Strategy sm where sm.member=:member")
+    List<Long> findStrategyIdByMember(@Param("member") Member member);
 }
