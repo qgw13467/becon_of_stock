@@ -21,13 +21,14 @@ export const Bookmark = () => {
   const fetchData = useCallback(() => {
     setLoading(true); // 데이터를 요청할 때 로딩 상태 설정
     axios_api
-      .get('/strategies/dibs', {
+      .get('/boards/dibs', {
         headers: {
           authentication: token,
         },
         params: {
-          pageSize: pageSize,
-          pageNumber: page,
+          // pageSize: pageSize,
+          // page: 0,
+          page: page,
         },
       })
       .then((res) => {

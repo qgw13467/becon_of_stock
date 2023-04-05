@@ -15,10 +15,9 @@ import { Bookmark } from './pages/profile/bookmark/Bookmark';
 import { MyProfile } from './pages/profile/MyProfile';
 import { Strategy } from './pages/profile/strategy/Strategy';
 import { useLoginStore } from './store/store';
-import { useEffect } from 'react';
 
 const App = () => {
-  const { isLogin, setIsLogout } = useLoginStore();
+  const { isLogin } = useLoginStore();
 
   return (
     <>
