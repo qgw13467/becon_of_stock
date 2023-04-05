@@ -6,6 +6,7 @@ import BacktestResult from './pages/home/backtest/result/BacktestResult';
 import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
 import { WriteCommu } from './pages/community/Dibs/WriteCommu';
+import { UpdateCommu } from './pages/community/Dibs/UpdateCommu';
 import Detail from './pages/community/Dibs/Detail';
 import { LoginIndex } from './component/login/LoginIndex';
 import { Contests } from './pages/community/contests/Contests';
@@ -33,6 +34,7 @@ const App = () => {
               <Route path='/result' element={<BacktestResult />} />
               <Route path='/community' element={<CommunityMain />}>
                 <Route path='write' element={<WriteCommu />} />
+                <Route path='update/:id' element={<UpdateCommu />} />
                 <Route path='dibs' element={<CommunityDibs />} />
                 <Route path='contests/:id' element={<Contests />} />
                 <Route path='detail/:id' element={<Detail />} />

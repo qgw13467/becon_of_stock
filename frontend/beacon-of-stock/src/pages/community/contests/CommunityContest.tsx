@@ -21,19 +21,27 @@ export const CommunityContest: React.FC = () => {
   const contestId = Number(location.pathname.split('/').pop());
   const token = getCookie('accessToken');
   const [data, setData] = useState<CommunityContest>();
-
+  const [reload, setReload] = useState<boolean>(false);
+  const changeReload = () => {
+    setReload(!reload);
+  };
   useEffect(() => {
     axios_api
       .get(`/contests/${contestId}`, {
         headers: { authentication: token },
       })
       .then((res) => {
-        console.log('여기까진 오케이');
+        // console.log('여기까진 오케이');
+        // const thisDate = res.data;
         setData(res.data);
         axios_api
-          .put(`/contests/rank/${contestId}`, {
-            headers: { authentication: token },
-          })
+          .put(
+            `/contests/rank/${contestId}`,
+            { contestId },
+            {
+              headers: { authentication: token },
+            }
+          )
           .then((res) => {
             console.log(res);
           })
@@ -44,7 +52,7 @@ export const CommunityContest: React.FC = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [reload]);
   const [thisId, setThisId] = useState({ id: -1, title: '' });
   const handleSetThisId = (id: number, title: string) => {
     setThisId({ id, title });
@@ -87,7 +95,7 @@ export const CommunityContest: React.FC = () => {
       )
       .then((res) => {
         setThisId({ id: -1, title: '' });
-        console.log('대회 참가하면 put rank 보냄');
+        // console.log('대회 참가하면 put rank 보냄');
         axios_api
           .put(
             `/contests/rank/${contestId}`,
@@ -100,6 +108,7 @@ export const CommunityContest: React.FC = () => {
           )
           .then((res) => {
             console.log(res);
+            changeReload();
           })
           .catch((err) => {
             console.log(err);
