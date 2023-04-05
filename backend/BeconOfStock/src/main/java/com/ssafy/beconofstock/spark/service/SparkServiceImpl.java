@@ -4,7 +4,6 @@ import com.ssafy.beconofstock.backtest.dto.*;
 import com.ssafy.beconofstock.backtest.entity.Industry;
 import com.ssafy.beconofstock.backtest.entity.InterestRate;
 import com.ssafy.beconofstock.backtest.entity.Kospi;
-import com.ssafy.beconofstock.backtest.entity.Trade;
 import com.ssafy.beconofstock.backtest.repository.BackIndustryRepository;
 import com.ssafy.beconofstock.backtest.repository.InterestRateRepository;
 import com.ssafy.beconofstock.backtest.repository.KospiRepository;
@@ -14,19 +13,15 @@ import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.catalyst.encoders.RowEncoder;
 import org.apache.spark.sql.expressions.WindowSpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,58 +143,58 @@ public class SparkServiceImpl implements SparkService {
         return backtestResult;
     }
 
-    public void calAverageRanking(Dataset<Row> trades) {
-
-        SparkSession spark = SparkSession.builder()
-                .appName("becon_of_stock")
-                .config("spark.master", "local[*]")
-                .getOrCreate();
-        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
-        trades = spark
-                .read()
-                .format("jdbc")
-                .option("driver", "com.mysql.cj.jdbc.Driver")
-                .option("url", url)
-                .option("user", userName)
-                .option("password", password)
-                .option("query", query)
-                .load();
-        trades.show();
-
-        // Define a window specification for ranking by `priceper` column
-        WindowSpec windowSpec = Window.orderBy(col("priceper"));
-
-// Add a new column `rank` using `dense_rank()` function
-        Dataset<Row> updatedTrades = trades.withColumn("rank", dense_rank().over(windowSpec));
-        Dataset<Row> rank = updatedTrades.orderBy(updatedTrades.col("rank"));
-        rank.show(100);
-
-//        Dataset<Row> updatedTrades = trades.as("trades").map((MapFunction<Row, Row>) t -> {
-//            if(t.getInt(t.fieldIndex("Cnt")) ==0){
-//                return RowFactory.create(
-//                        t.get(0),
-//                        t.get(1),
-//                        999
-//                );
-//            }else{
-//                int ranking = t.getInt(t.fieldIndex("Ranking"));
-//                int cnt = t.getInt(t.fieldIndex("Cnt"));
-//                int newRanking = ranking / cnt; // calculate the new ranking by dividing Ranking by Cnt
-//                return RowFactory.create(
-//                        t.get(0),
-//                        t.get(1),
-//                        t.get(2),
-//                        newRanking // add the new ranking as the last column
-//                );
-//            }
+//    public void calAverageRanking(Dataset<Row> trades) {
 //
-//        }, RowEncoder.apply(trades.schema()));
-
-//        updatedTrades.show(); // 변경된 trades 데이터셋 출력
-
-        // trades에 변경된 데이터셋 할당
-//        trades = updatedTrades;
-    }
+//        SparkSession spark = SparkSession.builder()
+//                .appName("becon_of_stock")
+//                .config("spark.master", "local[*]")
+//                .getOrCreate();
+//        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+//        trades = spark
+//                .read()
+//                .format("jdbc")
+//                .option("driver", "com.mysql.cj.jdbc.Driver")
+//                .option("url", url)
+//                .option("user", userName)
+//                .option("password", password)
+//                .option("query", query)
+//                .load();
+//        trades.show();
+//
+//        // Define a window specification for ranking by `priceper` column
+//        WindowSpec windowSpec = Window.orderBy(col("priceper"));
+//
+//// Add a new column `rank` using `dense_rank()` function
+//        Dataset<Row> updatedTrades = trades.withColumn("rank", dense_rank().over(windowSpec));
+//        Dataset<Row> rank = updatedTrades.orderBy(updatedTrades.col("rank"));
+//        rank.show(100);
+//
+////        Dataset<Row> updatedTrades = trades.as("trades").map((MapFunction<Row, Row>) t -> {
+////            if(t.getInt(t.fieldIndex("Cnt")) ==0){
+////                return RowFactory.create(
+////                        t.get(0),
+////                        t.get(1),
+////                        999
+////                );
+////            }else{
+////                int ranking = t.getInt(t.fieldIndex("Ranking"));
+////                int cnt = t.getInt(t.fieldIndex("Cnt"));
+////                int newRanking = ranking / cnt; // calculate the new ranking by dividing Ranking by Cnt
+////                return RowFactory.create(
+////                        t.get(0),
+////                        t.get(1),
+////                        t.get(2),
+////                        newRanking // add the new ranking as the last column
+////                );
+////            }
+////
+////        }, RowEncoder.apply(trades.schema()));
+//
+////        updatedTrades.show(); // 변경된 trades 데이터셋 출력
+//
+//        // trades에 변경된 데이터셋 할당
+////        trades = updatedTrades;
+//    }
 
     private CumulativeReturnDataDto getCumulativeRuturnDataDto(List<ChangeRateDto> cumulativeReturn,
                                                                List<ChangeRateDto> strategyRateDtos,
@@ -584,103 +579,97 @@ public class SparkServiceImpl implements SparkService {
 
 
     // TODO : 각 지표 정렬, 합산 수행
-    private List<Trade> calcTradesIndicator(List<Trade> trades, List<Indicator> indicators, int maxNum) {
+    private Dataset<Row> calcTradesIndicator(Dataset<Row> trades, List<Indicator> indicators, int maxNum) {
+        trades = trades.withColumn("ranking", lit(0))
+            .withColumn("cnt", lit(0));
+
+        trades.show();
 
         for (Indicator indicator : indicators) {
-            trades.sort(sortByIndicator(indicator));
-            calSumTradesIndicator(trades, indicator);
+            trades = sortByIndicator(trades, indicator);
+            log.info("===================================indicator : {}", indicator.getTitle().toString());
+            trades.show();
+            trades = calSumTradesIndicator(trades, indicator);
+            log.info("===================================indicator : {} Ranking, cnt 추가", indicator.getTitle().toString());
+            trades.show();
         }
-        calAverageRanking(trades);
-        trades.sort(sortByIndicator(new Indicator("ranking")));
 
-//        maxnum만큼 잘라서 반환
-        if (maxNum > trades.size()) {
-            maxNum = trades.size();
+        trades = calAverageRanking(trades);
+        log.info("===================랭킹 평균 산출");
+        trades.show();
+
+        trades = sortByIndicator(trades, new Indicator("ranking"));
+        log.info("===================랭킹 평균 기준 정렬");
+        trades.show();
+
+        //  maxnum만큼 잘라서 반환
+        if (maxNum > trades.count()) {
+            maxNum = (int) trades.count();
         }
-        trades = trades.subList(0, maxNum);
+        trades = trades.limit(maxNum);
+        trades.show();
 
         return trades;
     }
 
-    private void calAverageRanking(List<Trade> trades) {
-        for (Trade trade : trades) {
-            if (trade.getCnt() == 0) {
-                trade.setRanking(999);
-            } else {
-                trade.setRanking(trade.getRanking() / trade.getCnt());
-            }
-        }
+    public Dataset<Row> calAverageRanking(Dataset<Row> trades) {
+        Dataset<Row> updatedTrades = trades.withColumn("newRanking",
+            when(col("cnt").equalTo(0), lit(999))
+                .otherwise(col("ranking").divide(col("cnt"))));
+        updatedTrades = updatedTrades.drop("ranking", "cnt")
+            .withColumnRenamed("newRanking", "ranking");
+        trades = updatedTrades;
+        return trades;
     }
 
-    private void calSumTradesIndicator(List<Trade> trades, Indicator indicator) {
 
-        int idx = 0;
-        switch (indicator.getTitle()) {
-            case "pricePER":
-                for (int i = 0; i < trades.size(); i++) {
-                    if (trades.get(i).getPricePER() > 0) {
-                        idx = i;
-                        break;
-                    }
-                }
-                break;
-            case "pricePBR":
-                for (int i = 0; i < trades.size(); i++) {
-                    if (trades.get(i).getPricePBR() > 0) {
-                        idx = i;
-                        break;
-                    }
-                }
-                break;
-            case "pricePSR":
-                for (int i = 0; i < trades.size(); i++) {
-                    if (trades.get(i).getPricePSR() > 0) {
-                        idx = i;
-                        break;
-                    }
-                }
-                break;
-            case "pricePOR":
-                for (int i = 0; i < trades.size(); i++) {
-                    if (trades.get(i).getPricePOR() > 0) {
-                        idx = i;
-                        break;
-                    }
-                }
-                break;
+    private Dataset<Row> calSumTradesIndicator(Dataset<Row> trades, Indicator indicator) {
+        String indicatorColumn = indicator.getTitle();
+
+        WindowSpec w = Window.partitionBy(lit(1)).orderBy(trades.col(indicatorColumn));
+
+        Dataset<Row> select;
+        if (indicatorColumn.startsWith("price")) {
+            select = trades.where(trades.col(indicatorColumn).gt(0))
+                .sort(trades.col(indicatorColumn))
+                .select("*")
+                .withColumn("newRanking",lit(col("ranking").plus(row_number().over(w))))
+                .withColumn("newCnt", lit(col("cnt").plus(1)));
+        } else {
+            select = trades
+                .withColumn("newRanking",lit(col("ranking").plus(row_number().over(w))))
+                .withColumn("newCnt", lit(col("cnt").plus(1)));
         }
+        select = select.drop("ranking", "cnt")
+            .withColumnRenamed("newRanking", "ranking")
+            .withColumnRenamed("newCnt", "cnt");
 
-        for (int i = idx, j = 1; i < trades.size(); i++, j++) {
-            trades.get(i).addRanking(j);
-            trades.get(i).addCnt();
-        }
-
+        trades = select;
+        return trades;
     }
 
-    private Comparator<Trade> sortByIndicator(Indicator indicator) {
+    private Dataset<Row> sortByIndicator(Dataset<Row> trades, Indicator indicator) {
         switch (indicator.getTitle()) {
             case "pricePER":
-                return Comparator.comparing(Trade::getPricePER);
+                return trades.sort(trades.col("priceper"));
             case "pricePBR":
-                return Comparator.comparing(Trade::getPricePBR);
+                return trades.sort(trades.col("pricepbr"));
             case "pricePSR":
-                return Comparator.comparing(Trade::getPricePSR);
+                return trades.sort(trades.col("pricepsr"));
             case "pricePOR":
-                return Comparator.comparing(Trade::getPricePOR);
+                return trades.sort(trades.col("pricepor"));
             case "qualityROE":
-                return Comparator.comparing(Trade::getQualityROE).reversed();
+                return trades.sort(trades.col("qualityroe").desc());
             case "qualityROA":
-                return Comparator.comparing(Trade::getQualityROA).reversed();
+                return trades.sort(trades.col("qualityroa").desc());
             case "growth3MonthTake":
-                return Comparator.comparing(Trade::getGrowth3MonthTake).reversed();
+                return trades.sort(trades.col("growth3month_take").desc());
             case "growth3MonthOperatingProfit":
-                return Comparator.comparing(Trade::getGrowth3MonthOperatingProfit).reversed();
+                return trades.sort(trades.col("growth3month_operating_profit").desc());
             case "growth3MonthNetProfit":
-                return Comparator.comparing(Trade::getGrowth3MonthNetProfit).reversed();
+                return trades.sort(trades.col("growth3month_net_profit").desc());
             default:
-                return Comparator.comparing(Trade::getRanking);
+                return trades.sort(trades.col("ranking"));
         }
-
     }
-
 }
