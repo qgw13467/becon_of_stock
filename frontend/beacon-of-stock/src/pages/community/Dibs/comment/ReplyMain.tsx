@@ -59,6 +59,7 @@ export const ReplyMain: React.FC<ReplyProps> = ({
       alert('대댓글이 있는 게시글은 삭제하실 수 없습니다.');
     }
   };
+  console.log(editingCommentId);
   const createReplyReply = () => {
     setCreateState(editingCommentId);
   };
@@ -71,7 +72,7 @@ export const ReplyMain: React.FC<ReplyProps> = ({
             type='text'
             value={editedCommentContent}
             onChange={(e) => setEditedCommentContent(e.target.value)}
-            className='w-[1000px] border-2 indent-4 rounded-lg border-[#131313]'
+            className='w-[800px] border-2 indent-4 rounded-lg border-[#131313]'
           />
         ) : (
           <span>

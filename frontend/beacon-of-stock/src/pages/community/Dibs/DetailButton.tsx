@@ -45,7 +45,7 @@ export const DetailButton: React.FC<DetailButtonProps> = ({
   const clickBookmarkButton = () => {
     axios_api
       .post(
-        `/dibs/${boardId}`,
+        `/boards/dibs/${boardId}`,
         { boardId },
         {
           headers: { authentication: token },

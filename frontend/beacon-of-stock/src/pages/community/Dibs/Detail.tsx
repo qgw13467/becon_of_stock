@@ -22,6 +22,8 @@ const Detail = () => {
   const changeBookmarkChange = () => {
     setChangeBookmark(!changeBookmark);
   };
+  // console.log(changeBookmark);
+  // console.log(data);
   const [followStatus, setFollowStatus] = useState<boolean>(false);
   const changeFollowStatus = () => {
     setFollowStatus(!followStatus);
