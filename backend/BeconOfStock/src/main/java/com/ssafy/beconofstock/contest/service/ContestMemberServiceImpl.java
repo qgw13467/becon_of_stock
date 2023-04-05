@@ -34,6 +34,11 @@ public class ContestMemberServiceImpl implements ContestMemberService{
 
     @Override
     public ContestMemberJoinResDto joinContestMember(OAuth2UserImpl user, ContestMemberJoinReqDto contestMemberJoinReqDto) {
+        List<Long> checkList = contestMemberRepository.contestJoinMember(user.getMember(), contestMemberJoinReqDto.getContestId());
+        if (checkList.contains(contestMemberJoinReqDto.getStrategyId())){
+            throw new NotFoundException("Strategy ID is already present in the check list.");
+        }
+
         ContestMember contestMember = ContestMember.builder()
                 .member(user.getMember())
                 .contest(contestRepository.findById(contestMemberJoinReqDto.getContestId()).orElseThrow(() -> new NotFoundException()))
