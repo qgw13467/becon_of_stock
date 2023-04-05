@@ -5,6 +5,7 @@ import { getCookie } from '../../../assets/config/Cookie';
 import { DetailButton } from './DetailButton';
 import DetailComment from './comment/DetailComment';
 import DetailSkeleton from './DetailSkeleton';
+import DetailGraph from './DetailGraph';
 import followAdd from '../../../assets/img/person_add.png';
 import followRemove from '../../../assets/img/person_remove.png';
 
@@ -14,6 +15,7 @@ const Detail = () => {
   const boardId = location.pathname.split('/').pop();
   const token = getCookie('accessToken');
   const [data, setData] = useState<any>({});
+  const [graphData, setGraphData] = useState<any>(false);
   // console.log(data);
   const [strategyId, setStrategyId] = useState<undefined | number>(undefined);
   const [changeLike, setChangeLike] = useState<boolean>(false);
@@ -60,6 +62,7 @@ const Detail = () => {
           })
           .then((res) => {
             console.log(res);
+            setGraphData(res.data);
           })
           .catch((err) => {
             console.log(err);
@@ -123,6 +126,8 @@ const Detail = () => {
       });
   };
 
+  // console.log(graphData.cummulateReturnDtos);
+
   return (
     <section className='m-9 px-9'>
       <p className='my-9 text-3xl font-bold bg-cyan-600 text-white text-center w-[280px] h-12 grid place-content-center rounded-md'>
@@ -179,7 +184,11 @@ const Detail = () => {
       <div className='flex justify-between mt-8'>
         <p className='text-[#131313] text-lg indent-4'>{data.content}</p>
         {/* 이 밑이에요 !!! */}
-        <div className='w-64 h-64 bg-gray-200 rounded-md'></div>
+        {graphData && (
+          <div className='bg-gray-200 rounded-md'>
+            <DetailGraph cumulativeReturnDtos={graphData.cummulateReturnDtos} />
+          </div>
+        )}
       </div>
       <DetailButton
         boardId={data.boardId}
