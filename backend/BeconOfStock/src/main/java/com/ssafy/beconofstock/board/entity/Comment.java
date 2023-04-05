@@ -40,9 +40,7 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<CommentRel> children;
 
-    public void increaseCommentNum(int num) {
-        this.commentNum += num;
-    }
+    public void increaseCommentNum() { this.commentNum += 1; }
 
     public void decreaseCommentNum(int num) {
         this.commentNum -= num;
