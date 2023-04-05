@@ -116,9 +116,13 @@ public class BoardServiceImpl implements BoardService {
         if (board.getMember().getId().equals(user.getMember().getId())) {
             List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
             commentRepository.deleteAllInBatch(commentList);        // 댓글 삭제
+            boardDibsRepository.deleteAllInBatch(boardDibsRepository.findAllByBoard(board));        // 찜 삭제
+            boardLikeRepository.deleteAllInBatch(boardLikeRepository.findAllByBoard(board));// 좋아요 삭제
             boardRepository.deleteById(boardId);
             return true;
         }
+
+
         return false;
     }
 
