@@ -173,7 +173,7 @@ public class StrategyController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<?> getRepresentative(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
-        Page<StrategyGraphDto> strategies = strategyService.getRepresentative(user, pageable);
-        return new ResponseEntity<>(strategies, HttpStatus.OK);
+        Page<StrategyGraphRepresentativeDto> result = strategyService.getRepresentative(user, pageable);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

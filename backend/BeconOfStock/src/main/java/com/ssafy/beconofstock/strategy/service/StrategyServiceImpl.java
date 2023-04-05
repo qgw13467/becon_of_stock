@@ -332,13 +332,13 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public Page<StrategyGraphDto> getRepresentative(OAuth2UserImpl user, Pageable pageable) {
-        List<StrategyGraphDto> result = new ArrayList<>();
+    public Page<StrategyGraphRepresentativeDto> getRepresentative(OAuth2UserImpl user, Pageable pageable) {
+        List<StrategyGraphRepresentativeDto> result = new ArrayList<>();
 
         List<Long> strategyIds = strategyRepository.findStrategyIdByMemberList(user.getMember());
 
         for (Long strategyId : strategyIds) {
-            StrategyGraphDto total = new StrategyGraphDto();
+            StrategyGraphRepresentativeDto total = new StrategyGraphRepresentativeDto();
             List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
             List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
                     .map(cummulateReturn -> CummulateReturnDto.builder()
@@ -356,6 +356,7 @@ public class StrategyServiceImpl implements StrategyService {
             Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
             total.setStrategyId(strategy.getId());
             total.setTitle(strategy.getTitle());
+            total.setRepresentative(strategy.getRepresentative());
             // builder 로 처리(strategy에 있는 값 가져오면 됨)
             CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
                     .strategyCumulativeReturn(strategy.getStrategyCumulativeReturn())

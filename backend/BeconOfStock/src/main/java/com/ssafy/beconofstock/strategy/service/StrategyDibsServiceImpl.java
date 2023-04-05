@@ -1,6 +1,7 @@
 package com.ssafy.beconofstock.strategy.service;
 
 import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
+import com.ssafy.beconofstock.exception.NotFoundException;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.strategy.dto.StrategyDibsDto;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +28,9 @@ public class StrategyDibsServiceImpl implements StrategyDibsService{
 
 
     @Override
+    @Transactional
     public void dibsStrategy(Long strategyId, OAuth2UserImpl user) {
-        Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
+        Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
         Member member = user.getMember();
         StrategyDibs dibs = StrategyDibs.builder()
                 .member(member)
