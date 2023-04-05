@@ -188,21 +188,12 @@ const BacktestMain = () => {
         <div>
           <div className='flex justify-between items-center my-[1%] mx-[7%]'>
             <p className='text-2xl font-KJCbold'>백테스트</p>
-            {showFactor && (
-              <div onClick={doBackTestHandler} className='mr-[2.5%]'>
-                <input
-                  className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
-                  type='submit'
-                  value='백테스트'
-                />
-              </div>
-            )}
           </div>
           <main
             className={
               showFactor
-                ? 'h-[80vh] flex justify-center items-center mx-[5%]'
-                : 'h-[80vh] flex items-center mx-[7.5%]'
+                ? 'h-[80vh] flex items-center mx-[5%]'
+                : 'h-[80vh] flex items-center mx-[5%]'
             }
           >
             <section className='relative inline-block w-[30%] pl-[2%] h-full border-l border-r border-[#FAF6FF] overflow-y-auto'>
@@ -212,9 +203,9 @@ const BacktestMain = () => {
                   <input
                     type='button'
                     onClick={showFactorHandler}
-                    value='팩터 선택하기'
+                    value='다음'
                     // className='bg-[#B8C2FD]'
-                    className='bg-[#D7DDFF]'
+                    className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[30%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
                   />
                 </div>
               )}
@@ -228,6 +219,15 @@ const BacktestMain = () => {
                   <SelectedItems />
                 </section>
               </>
+            )}
+            {showFactor && (
+              <div onClick={doBackTestHandler} className='mr-[2.5%]'>
+                <input
+                  className='absolute text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
+                  type='submit'
+                  value='백테스트'
+                />
+              </div>
             )}
           </main>
         </div>

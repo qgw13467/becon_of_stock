@@ -1,7 +1,7 @@
 import { TileBoard } from './TileBoard';
 import { Pagenation } from '../../../component/Pagenation';
-// import { SearchbarNone } from '../../../component/search/SearchbarNone';
-// import StrategySelect from '../../../component/select_box/StrategySelect';
+import { SearchbarNone } from '../../../component/search/SearchbarNone';
+import StrategySelect from '../../../component/select_box/StrategySelect';
 import { useEffect, useState, useCallback } from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
@@ -57,39 +57,39 @@ export const Strategy = () => {
       {loading ? (
         <div className='h-[600px] m-20'>
           {/* <div className='flex justify-between'>
-            <div className='animate-pulse rounded-md bg-gray-200 w-20 h-12'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-12'></div>
+            <div className='w-20 h-12 bg-gray-200 rounded-md animate-pulse'></div>
+            <div className='w-64 h-12 bg-gray-200 rounded-md animate-pulse'></div>
           </div> */}
           <div className='grid grid-cols-5 ml-16'>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
           </div>
           <div className='grid grid-cols-5 ml-16'>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
-            <div className='animate-pulse rounded-md bg-gray-200 w-64 h-44 m-8'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
+            <div className='w-64 m-8 bg-gray-200 rounded-md animate-pulse h-44'></div>
           </div>
         </div>
       ) : (
         <>
           {items.length > 0 ? (
             <div className='m-9'>
-              <p className='font-KJCbold text-2xl m-9'>내 전략조회</p>
+              <p className='text-2xl font-KJCbold m-9'>내 전략조회</p>
               {/* 필터링 부분 나중에 다시 만질 일 있으면 ㄱㄱ */}
               {/* <article className='flex justify-between mx-5'>
                 <div className='w-[68px] ml-6'>
                   <StrategySelect />
                 </div>
-                <div className='w-80 m-0'>
+                <div className='m-0 w-80'>
                   <SearchbarNone />
                 </div>
               </article> */}
-              <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly ml-16'>
+              <article className='grid grid-cols-1 ml-16 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 content-evenly'>
                 {items.map((item, index) => (
                   <TileBoard key={index} item={item} />
                 ))}
@@ -97,16 +97,16 @@ export const Strategy = () => {
               <article className='my-8'>
                 <Pagenation totalPage={totalPages} />
               </article>
-              {/* <article className='flex justify-center ml-32 my-8'>
+              {/* <article className='flex justify-center my-8 ml-32'>
                 <SearchbarNone />
               </article> */}
             </div>
           ) : (
             <div className='grid content-center justify-center h-[600px]'>
-              <p className='text-center m-10 text-xl font-KJCbold'>
+              <p className='m-10 text-xl text-center font-KJCbold'>
                 내 전략에 아무런 데이터가 없습니다.
               </p>
-              <p className='text-center mb-5'>
+              <p className='mb-5 text-center'>
                 내 전략보기 기능은 백테스트 후 저장하는 기능입니다.
               </p>
               <Link
