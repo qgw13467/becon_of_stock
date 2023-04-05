@@ -24,8 +24,11 @@ public interface ContestMemberRepository extends JpaRepository<ContestMember, Lo
     Page<ContestMember> findByContestId(@Param("contestId") Long contestId, Pageable pageable);
 
     @Query("SELECT cm.strategy FROM ContestMember cm WHERE cm.contest.id=:contestId")
-    List<Strategy> findStrategyByContestId(Long contestId);
+    List<Strategy> findStrategyByContestId(@Param("contestId") Long contestId);
 
     @Query("select cm from ContestMember cm where cm.contest.id=:contestId")
-    List<ContestMember> findByRank(Long contestId);
+    List<ContestMember> findByRank(@Param("contestId") Long contestId);
+
+    @Query("select cm.strategy.id from ContestMember cm Where cm.member=:member and cm.contest.id=:contestId")
+    List<Long> contestJoinMember(@Param("member") Member member, @Param("contestId") Long contestId);
 }
