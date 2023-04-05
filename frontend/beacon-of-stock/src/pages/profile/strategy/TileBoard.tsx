@@ -4,12 +4,17 @@ import star from '../../../assets/img/star.png';
 import starOn from '../../../assets/img/starOn.png';
 import { useCallback, useEffect, useState } from 'react';
 import StrategyGraph from './StrategyGraph';
+import { useNavigate } from 'react-router';
+import { useBacktestFactorStore } from '../../../store/store';
 
 type TileBoard = {
   item: any;
 };
 
 export const TileBoard = ({ item }: TileBoard) => {
+  const backtestFactor = useBacktestFactorStore();
+  const navigate = useNavigate();
+
   // console.log('1', item);
   const title = item.title;
   const strategyId = item.strategyId;
@@ -25,7 +30,7 @@ export const TileBoard = ({ item }: TileBoard) => {
         },
       })
       .then((res) => {
-        console.log('2', res);
+        // console.log(res);
         setRep(res.data.representative);
       })
       .catch((err) => {
@@ -57,6 +62,15 @@ export const TileBoard = ({ item }: TileBoard) => {
         console.log(err);
       });
   };
+
+  const backtestHandler = () => {
+    backtestFactor.loadSelectedIndicator(item.indicators);
+    console.log(backtestFactor.selectedIndicators);
+  };
+
+  console.log(item);
+  console.log(item.indicators);
+
   return (
     <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden'>
       <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
@@ -67,7 +81,10 @@ export const TileBoard = ({ item }: TileBoard) => {
           <img src={star} alt='star' />
         )}
       </div>
-      <div className='absolute grid content-center border-[#7D8AD8] border-2 bg-[#5598DE] w-[240px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto '>
+      <div
+        className='absolute grid content-center border-[#7D8AD8] border-2 bg-[#5598DE] w-[240px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto'
+        onClick={backtestHandler}
+      >
         <p className='text-[#fefefe] text-center'>{title}</p>
       </div>
     </div>
