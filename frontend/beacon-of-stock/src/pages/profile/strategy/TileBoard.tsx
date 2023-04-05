@@ -3,12 +3,14 @@ import axios_api from '../../../assets/config/Axios';
 import star from '../../../assets/img/star.png';
 import starOn from '../../../assets/img/starOn.png';
 import { useCallback, useEffect, useState } from 'react';
+import StrategyGraph from './StrategyGraph';
 
 type TileBoard = {
   item: any;
 };
 
 export const TileBoard = ({ item }: TileBoard) => {
+  // console.log(item);
   const title = item.title;
   const strategyId = item.strategyId;
   const token = getCookie('accessToken');
@@ -47,7 +49,7 @@ export const TileBoard = ({ item }: TileBoard) => {
         }
       )
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         fatchData();
       })
       .catch((err) => {
@@ -56,6 +58,7 @@ export const TileBoard = ({ item }: TileBoard) => {
   };
   return (
     <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden'>
+      <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
       <div className='absolute right-1 top-1' onClick={putStrategy}>
         {rep ? (
           <img src={starOn} alt='starOn' />

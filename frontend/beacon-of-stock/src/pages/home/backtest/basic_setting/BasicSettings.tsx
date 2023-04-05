@@ -220,13 +220,13 @@ const BasicSettings = (props: Props) => {
       <div className='flex flex-col justify-center mx-[5%]'>
         <div className='my-2'>
           <label htmlFor='industries'>산업</label>
-          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] border-[1px] rounded-xl border-[#A47ECF]'>
             <input
               type='button'
               id='industries'
               defaultValue={industries}
               onClick={showIndustryHandler}
-              className='flex m-1 w-[95%] text-sm cursor-pointer'
+              className='flex m-1 w-[95%] text-sm cursor-pointer p-[2px]'
             />
           </div>
 
@@ -256,13 +256,13 @@ const BasicSettings = (props: Props) => {
               </p>
             </div>
           )}
-          <div className='flex items-center border-[2px] flex-between rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] flex items-center border-[1px] flex-between rounded-xl border-[#A47ECF]'>
             <input
               type='text'
               id='fee'
               onChange={feeChangeHandler}
               value={fee}
-              className='flex m-1 w-[95%] text-sm'
+              className='flex m-1 w-[95%] text-sm p-[2px]'
             />
             <p className='mr-[3%] text-sm'>%</p>
           </div>
@@ -270,26 +270,26 @@ const BasicSettings = (props: Props) => {
 
         <div className='my-2'>
           <label htmlFor='maxStocks'>최대 종목 수 (max 30)</label>
-          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] border-[1px] rounded-xl border-[#A47ECF]'>
             <input
               type='text'
               id='maxStocks'
               value={maxStocks}
               onChange={maxStocksChangeHandler}
-              className='flex m-1 w-[95%] text-sm'
+              className='flex m-1 w-[95%] text-sm p-[2px]'
             />
           </div>
         </div>
 
         <div className='my-2'>
           <label htmlFor='rebalance'>리밸런싱 주기</label>
-          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] border-[1px] rounded-xl border-[#A47ECF]'>
             <select
               name='rebalance'
               id='rebalance'
               value={rebalance}
               onChange={rebalanceChangeHandler}
-              className='flex m-1 w-[95%] text-sm'
+              className='flex m-1 w-[95%] text-sm p-[2px]'
             >
               <option value='3개월'>3개월</option>
               <option value='6개월'>6개월</option>
@@ -301,7 +301,7 @@ const BasicSettings = (props: Props) => {
         {/* <div className='my-2'>
           <label htmlFor='backtestSortType'>정렬 기준</label>
           <div className='flex justify-between'>
-            <div className='border-[2px] rounded-xl w-[60%] hover:border-[#A47ECF]'>
+            <div className='mt-[5px] border-[1px] rounded-xl w-[60%] border-[#A47ECF]'>
               <select
                 name='backtestSortType'
                 id='backtestSortType'
@@ -316,13 +316,13 @@ const BasicSettings = (props: Props) => {
                 <option value='F-score 높은 순'>F-score 높은 순</option>
               </select>
             </div>
-            <div className='flex items-center justify-center border-[2px] rounded-xl w-[35%] hover:border-[#A47ECF]'>
+            <div className='mt-[5px] flex items-center justify-center border-[1px] rounded-xl w-[35%] border-[#A47ECF]'>
               <input
                 type='text'
                 id='sortRatio'
                 value={sortRatio}
                 onChange={sortRatioChangeHandler}
-                className='w-[90%] m-1 text-sm'
+                className='w-[90%] m-1 text-sm p-[2px]'
               />
               <p className='mr-[5%] text-sm'>%</p>
             </div>
@@ -331,7 +331,7 @@ const BasicSettings = (props: Props) => {
 
         <div className='my-2'>
           <label htmlFor='start'>시작 시점</label>
-          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] border-[1px] rounded-xl border-[#A47ECF]'>
             <input
               type='month'
               id='start'
@@ -340,14 +340,14 @@ const BasicSettings = (props: Props) => {
               max='2022-12'
               onKeyDown={(event) => event.preventDefault()}
               onChange={startChangeHandler}
-              className='flex m-1 w-[95%] text-sm'
+              className='flex m-1 w-[95%] text-sm p-[2px]'
             />
           </div>
         </div>
 
         <div className='my-2'>
           <label htmlFor='end'>종료 시점</label>
-          <div className='border-[2px] rounded-xl hover:border-[#A47ECF]'>
+          <div className='mt-[5px] border-[1px] rounded-xl border-[#A47ECF]'>
             <input
               type='month'
               id='end'
@@ -356,7 +356,7 @@ const BasicSettings = (props: Props) => {
               max='2022-12'
               onKeyDown={(event) => event.preventDefault()}
               onChange={endChangeHandler}
-              className='flex m-1 w-[95%] text-sm'
+              className='flex m-1 w-[95%] text-sm p-[2px]'
             />
           </div>
         </div>
