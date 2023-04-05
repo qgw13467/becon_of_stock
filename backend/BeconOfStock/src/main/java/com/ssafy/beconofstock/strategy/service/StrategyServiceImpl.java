@@ -164,12 +164,16 @@ public class StrategyServiceImpl implements StrategyService {
         for (int i = 0; i < marketValues.size(); i++) {
             int year = strategyDtoValues.get(i).getYear();
             int month = strategyDtoValues.get(i).getMonth();
+//            if (month >= 12) {
+//                month -= 12;
+//                year += 1;
+//            }
             cummulateReturnList.add(
                     CummulateReturn.builder()
                             .strategyValue(strategyValues.get(i))
                             .marketValue(marketValues.get(i))
-                            .year(year+(rebalance*i))
-                            .month(month+(rebalance*i))
+                            .year(year)
+                            .month(month)
                             .strategy(strategy)
                             .build());
         }
