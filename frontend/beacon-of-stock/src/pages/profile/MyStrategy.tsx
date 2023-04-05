@@ -13,14 +13,14 @@ export const MyStrategy = () => {
         headers: { authentication: token },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setData(res.data.content);
       })
       .catch((res) => {
         console.log(res);
       });
   }, []);
-  console.log(data);
+  // console.log(data);
   return (
     <div>
       {data !== undefined && (
@@ -32,7 +32,10 @@ export const MyStrategy = () => {
             {data.map((item: any, index: number) => {
               return (
                 <div key={index}>
-                  <div className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 mx-1 my-2 overflow-hidden'>
+                  <div
+                    id='hover-big'
+                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 mx-1 my-2 overflow-hidden hover:scale-125 bg-[#fefefe]'
+                  >
                     <MyStrategyGraph
                       cumulativeReturnDtos={item.cummulateReturnDtos}
                     />

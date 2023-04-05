@@ -63,13 +63,15 @@ const Nav: FC = () => {
           console.error('에러가 발생했습니다:', error);
         }
       });
-  }, [token]);
-
+  }, [token, setProfile]);
+  // ================================================================================
+  // error 해결을 위해 dependency array에 함수, 매서드들을 추가했는데 문제 될 시 제거하기.
+  // ================================================================================
   useEffect(() => {
     if (isLogin) {
       fatchData();
     }
-  }, [isLogin]);
+  }, [isLogin, fatchData]);
 
   const navStyle =
     'lg:text-lg md:text-base text-sm font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';

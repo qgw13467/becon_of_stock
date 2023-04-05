@@ -111,7 +111,7 @@ export const WriteCommu = () => {
           <p className='text-[#131313] font-bold mb-2'>내 전략 등록</p>
           <div className='flex justify-start'>
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              className='bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded'
               onClick={() => {
                 openModalClick();
               }}
@@ -142,7 +142,7 @@ export const WriteCommu = () => {
         </SelectModal>
         <div className='flex justify-end'>
           <button
-            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
+            className='bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded'
             onClick={whiteBoard}
           >
             게시글 등록

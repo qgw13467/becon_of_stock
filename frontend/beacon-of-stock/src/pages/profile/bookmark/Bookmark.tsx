@@ -66,7 +66,15 @@ export const Bookmark = () => {
                 <StrategySelect />
                 <SearchbarNone />
               </article> */}
-              <article className='grid grid-cols-1 content-evenly mx-32'>
+              <article className='flex justify-around w-1/2'>
+                <p className='border w-1/2 text-center rounded ml-32 border-[#131313]'>
+                  작성자
+                </p>
+                <p className='border w-full text-center rounded mr-32 border-[#131313]'>
+                  제목
+                </p>
+              </article>
+              <article className='grid grid-cols-2 content-evenly mx-32'>
                 {items.map((item, index) => (
                   <BookBoard key={index} item={item} />
                 ))}

@@ -15,7 +15,14 @@ type ForumBoard = {
 };
 
 export const ForumBoard = memo(({ item }: ForumBoard) => {
-  // console.log(item);
+  // =======================================================================
+  // 일정 수치를 뛰어넘는 조회수, 추천수가 있다면 스타일 태그를 다르게 적용하기 위한 부분.
+  const defaultStyle = 'text-center';
+  const hitRedStyle = 'text-center text-red-500 font-KJCbold';
+  const likeRedStyle = 'text-center text-red-500 font-KJCbold';
+  const thisHitStyle = item.hit >= 100 ? hitRedStyle : defaultStyle;
+  const thisLikeStyle = item.likeNum >= 10 ? likeRedStyle : defaultStyle;
+  // =======================================================================
   return (
     <section className='my-2'>
       <article className='grid justify-between grid-cols-11 my-4 '>
@@ -30,8 +37,8 @@ export const ForumBoard = memo(({ item }: ForumBoard) => {
         <p className='text-center col-span-2'>
           {String(item.createDate).replace('T', ' ')}
         </p>
-        <p className='text-center'>{item.hit}</p>
-        <p className='text-center'>{item.likeNum}</p>
+        <p className={thisHitStyle}>{item.hit}</p>
+        <p className={thisLikeStyle}>{item.likeNum}</p>
       </article>
     </section>
   );
