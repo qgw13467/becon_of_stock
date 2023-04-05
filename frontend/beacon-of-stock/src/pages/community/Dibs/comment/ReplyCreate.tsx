@@ -10,7 +10,7 @@ export const ReplyCreate: React.FC<ReplyProps> = ({
   createState,
   setCreateState,
 }) => {
-  console.log(comment, createState);
+  // console.log(comment, createState);
   if (comment.commentId === createState) {
     return <div className='bg-[#808080] ml-4 p-2 rounded text-[#fefefe]'></div>;
   } else {

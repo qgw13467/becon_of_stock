@@ -73,7 +73,7 @@ const DetailComment: React.FC<DetailCommentProps> = ({ boardId }) => {
         </div>
         <button
           onClick={() => navigate('/community/dibs')}
-          className='border-2 border-[#3E7CBC] py-1 px-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
+          className='border-2 border-cyan-600 py-1 px-2 mr-2 rounded-sm bg-cyan-600 text-[#fefefe]'
         >
           <p>목록</p>
         </button>

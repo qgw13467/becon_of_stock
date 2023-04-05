@@ -49,7 +49,7 @@ export const ReplyMain: React.FC<ReplyProps> = ({
           headers: { authentication: token },
         })
         .then((res) => {
-          console.log('삭제 실행');
+          // console.log('삭제 실행');
           changeImeeey();
         })
         .catch((err) => {
@@ -59,7 +59,7 @@ export const ReplyMain: React.FC<ReplyProps> = ({
       alert('대댓글이 있는 게시글은 삭제하실 수 없습니다.');
     }
   };
-  console.log(editingCommentId);
+  // console.log(editingCommentId);
   const createReplyReply = () => {
     setCreateState(editingCommentId);
   };

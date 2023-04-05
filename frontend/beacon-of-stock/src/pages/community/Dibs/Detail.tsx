@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
 import { DetailButton } from './DetailButton';
@@ -14,6 +14,7 @@ const Detail = () => {
   const boardId = location.pathname.split('/').pop();
   const token = getCookie('accessToken');
   const [data, setData] = useState<any>({});
+  // console.log(data);
   const [changeLike, setChangeLike] = useState<boolean>(false);
   const changeLikeChange = () => {
     setChangeLike(!changeLike);
@@ -41,7 +42,7 @@ const Detail = () => {
         },
       })
       .then((res) => {
-        // console.log(res.data, 'Detail Main');
+        console.log(res.data, 'Detail Main');
         setData(res.data);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
         // setFollowStatus(res.data.followStatus);
@@ -87,6 +88,23 @@ const Detail = () => {
       });
   };
 
+  const deleteDetail = () => {
+    axios_api
+      .delete(`/boards/${boardId}`, {
+        headers: {
+          authentication: token,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/community/dibs');
+      })
+      .catch((err) => {
+        alert('글 삭제에 실패했습니다');
+        console.log(err);
+      });
+  };
+
   return (
     <section className='m-9 px-9'>
       <p className='my-9 text-3xl font-bold bg-cyan-600 text-white text-center w-[280px] h-12 grid place-content-center rounded-md'>
@@ -95,20 +113,24 @@ const Detail = () => {
       <div className='mt-6'>
         <div className='flex  justify-between items-center'>
           <div className='grid grid-cols-2 items-center'>
-            {!data.followStatus ? (
-              <img
-                src={followAdd}
-                alt='followImg'
-                className='w-8 h-8 mr-4 cursor-pointer'
-                onClick={addFollow}
-              />
-            ) : (
-              <img
-                src={followRemove}
-                alt='followImg'
-                className='w-8 h-8 mr-4 cursor-pointer'
-                onClick={removeFollow}
-              />
+            {!data.isAuthor && (
+              <>
+                {!data.followStatus ? (
+                  <img
+                    src={followAdd}
+                    alt='followImg'
+                    className='w-8 h-8 mr-4 cursor-pointer'
+                    onClick={addFollow}
+                  />
+                ) : (
+                  <img
+                    src={followRemove}
+                    alt='followImg'
+                    className='w-8 h-8 mr-4 cursor-pointer'
+                    onClick={removeFollow}
+                  />
+                )}
+              </>
             )}
 
             <p className='text-[#808080]'>{data.nickname}</p>
@@ -128,7 +150,7 @@ const Detail = () => {
             </div>
             <button
               onClick={() => navigate('/community/dibs')}
-              className='border-2 border-[#3E7CBC] p-2 ml-4 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
+              className='border-2 border-cyan-600 p-2 ml-4 rounded bg-cyan-600 text-[#fefefe]'
             >
               <p>목록</p>
             </button>
@@ -138,6 +160,7 @@ const Detail = () => {
       <hr className='bg-[#808080] mt-4' />
       <div className='flex justify-between mt-8'>
         <p className='text-[#131313] text-lg indent-4'>{data.content}</p>
+        {/* 이 밑이에요 !!! */}
         <div className='w-64 h-64 bg-gray-200 rounded-md'></div>
       </div>
       <DetailButton
@@ -150,9 +173,13 @@ const Detail = () => {
       {/* 현재 유저와 게시글의 유저가 같을 때만 보이게. */}
       {data.isAuthor ? (
         <div className='flex justify-end my-6'>
-          <button className='px-1 mr-2'>수정</button>
+          <Link to={`/community/update/${boardId}`} className='px-1 mr-2'>
+            수정
+          </Link>
           <p className='mx-8 text-[#808080]'>|</p>
-          <button className='px-1'>삭제</button>
+          <button className='px-1' onClick={deleteDetail}>
+            삭제
+          </button>
         </div>
       ) : (
         <div className='my-[72px]'></div>

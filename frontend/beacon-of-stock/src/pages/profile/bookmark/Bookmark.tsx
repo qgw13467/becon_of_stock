@@ -28,7 +28,7 @@ export const Bookmark = () => {
         params: {
           // pageSize: pageSize,
           // page: 0,
-          page: page,
+          page: page - 1,
         },
       })
       .then((res) => {
