@@ -28,8 +28,11 @@ import java.util.stream.Collectors;
 import static org.apache.spark.sql.functions.avg;
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.lit;
+
 import org.apache.spark.sql.expressions.Window;
+
 import static org.apache.spark.sql.functions.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -83,11 +86,11 @@ public class SparkServiceImpl implements SparkService {
         Dataset<Row> tradeDataset;
         String query;
         if (industries.size() != industryAllList.size() && industries.size() != 0) {
-            query = getQueryTradeView("trade_industry", rebalanceYearMonth);
+            query = getQueryTradeView("trade_industry", rebalanceYearMonth, backtestIndicatorsDto.getRebalance());
             query = getQueryAppendIndustryCondition(query, backtestIndicatorsDto.getIndustries());
             tradeDataset = getDataSet(spark, query);
         } else {
-            query = getQueryTradeView("trade", rebalanceYearMonth);
+            query = getQueryTradeView("trade", rebalanceYearMonth, backtestIndicatorsDto.getRebalance());
             tradeDataset = getDataSet(spark, query);
         }
 
@@ -102,15 +105,14 @@ public class SparkServiceImpl implements SparkService {
                         .and(tradeDataset.col("industry_id").isInCollection(backtestIndicatorsDto.getIndustries())));
                 log.info("============= trade count : {}  ============", trade.count());
             } else {
-                trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").$eq$eq$eq(yearMonth.getMonth()))));
+                trade = tradeDataset.filter((tradeDataset.col("year").equalTo(yearMonth.getYear()).and(tradeDataset.col("month").equalTo(yearMonth.getMonth()))));
                 log.info("============= trade count : {}  ============", trade.count());
             }
-
-            //todo 구매한 trade(buy)와 판매될 시기의 trade(sell)을 가져와서 넘길것
+            trade = calcTradesIndicator(trade, indicators, backtestIndicatorsDto.getMaxStocks());
             Double revenueByDataSet = getRevenueByDataSet(spark, trade, tradeDataset, backtestIndicatorsDto.getRebalance());
-            strategyRateDtos.add(new ChangeRateDto(revenueByDataSet, backtestIndicatorsDto.getEndYear(), backtestIndicatorsDto.getEndMonth()));
+            strategyRateDtos.add(new ChangeRateDto(revenueByDataSet, yearMonth.getYear(), yearMonth.getMonth()));
         }
-        tradeDataset.show();
+//        tradeDataset.show();
         System.out.println(tradeDataset.count());
 
 
@@ -141,7 +143,7 @@ public class SparkServiceImpl implements SparkService {
 
         backtestResult.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
-
+        log.info("{}", rebalanceYearMonth.get(rebalanceYearMonth.size() - 1).getMonth());
         spark.close();
         return backtestResult;
     }
@@ -230,33 +232,33 @@ public class SparkServiceImpl implements SparkService {
 
     public Double getRevenueByDataSet(SparkSession spark, Dataset<Row> buy, Dataset<Row> trade, Integer rebalance) {
 
-        spark = SparkSession.builder()
-                .appName("becon_of_stock")
-                .config("spark.master", "local[*]")
-                .getOrCreate();
-        rebalance = 3;
-        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
-        buy = spark
-                .read()
-                .format("jdbc")
-                .option("url", url)
-                .option("driver", "com.mysql.cj.jdbc.Driver")
-                .option("user", userName)
-                .option("password", password)
-                .option("query", query)
-                .load();
-        buy.show();
-        query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month in (1, 2, 3 ,4)";
-        trade = spark
-                .read()
-                .format("jdbc")
-                .option("driver", "com.mysql.cj.jdbc.Driver")
-                .option("url", url)
-                .option("user", userName)
-                .option("password", password)
-                .option("query", query)
-                .load();
-        trade.show();
+//        spark = SparkSession.builder()
+//                .appName("becon_of_stock")
+//                .config("spark.master", "local[*]")
+//                .getOrCreate();
+//        rebalance = 3;
+//        String query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month = " + 1;
+//        buy = spark
+//                .read()
+//                .format("jdbc")
+//                .option("url", url)
+//                .option("driver", "com.mysql.cj.jdbc.Driver")
+//                .option("user", userName)
+//                .option("password", password)
+//                .option("query", query)
+//                .load();
+//        buy.show();
+//        query = "SELECT * FROM trade WHERE trade.year=" + 2010 + " AND trade.month in (1, 2, 3 ,4)";
+//        trade = spark
+//                .read()
+//                .format("jdbc")
+//                .option("driver", "com.mysql.cj.jdbc.Driver")
+//                .option("url", url)
+//                .option("user", userName)
+//                .option("password", password)
+//                .option("query", query)
+//                .load();
+//        trade.show();
 
 
         Integer year = (Integer) buy.select("year").first().get(0);
@@ -266,40 +268,46 @@ public class SparkServiceImpl implements SparkService {
             year++;
             month -= 12;
         }
+        trade = trade
+                .withColumnRenamed("marcap", "trade_marcap")
+                .withColumnRenamed("corclose", "trade_corclose")
+                .withColumnRenamed("stocks", "trade_stocks");
+        buy.as("buy");
+        trade.as("trade");
 
-        Dataset<Row> result = buy.as("buy")
+        Dataset<Row> join = buy.as("buy")
                 .join(trade.as("trade"), buy.col("corcode").equalTo(trade.col("corcode")))
-                .where("trade.year = " + year + " AND trade.month =" + month)
+                .where("trade.year = " + year + " AND trade.month =" + month);
+        join.show();
+
+        Dataset<Row> result = join
                 .select(
-                        avg(
-                                (trade.col("corclose").multiply(trade.col("stocks")))
-                                        .divide
-                                                (buy.col("corclose").multiply(buy.col("stocks")))).as("calibratedChangeRate")
-                        ,
-                        avg(trade.col("corclose").divide(buy.col("corclose"))).as("PriceChangeRate"),
-                        avg(trade.col("marcap").divide(buy.col("marcap"))).as("MarcapChangeRate")
+//                        avg(
+//                                (col("trade_corclose").multiply(col("trade_stocks")))
+//                                        .divide
+//                                                (buy.col("corclose").multiply(buy.col("stocks")))).as("calibratedChangeRate")
+//                        ,
+                        avg(col("trade_corclose").divide(buy.col("corclose"))).as("PriceChangeRate"),
+                        avg(col("trade_marcap").divide(buy.col("marcap"))).as("MarcapChangeRate")
                 );
 
-//        result.show();
-
-        Double calibratedChangeRate = result.first().getDouble(0);
-        Double priceChangeRate = result.first().getDouble(1);
-        Double marcapChangeRate = result.first().getDouble(2);
-
-//        result.show();
+        result.show();
+//        Double calibratedChangeRate = result.first().getDouble(0);
+        Double priceChangeRate = result.first().getDouble(0);
+        Double marcapChangeRate = result.first().getDouble(1);
 //        System.out.println(calibratedChangeRate+", "+ priceChangeRate+", "+marcapChangeRate);
 
-//        if (priceChangeRate == null) {
-//            return 1D;
-//        }
-//        if (priceChangeRate > 2) {
-//            if (Math.abs(priceChangeRate / calibratedChangeRate - 1) > 0.3) {
-//                return 1D;
-//            }
-//        }
-//        return priceChangeRate;
+        if (priceChangeRate == null) {
+            return 1D;
+        }
+        if (priceChangeRate > 2) {
+            if (Math.abs(priceChangeRate / marcapChangeRate - 1) > 0.3) {
+                return 1D;
+            }
+        }
+        return priceChangeRate;
 
-        return 1D;
+//        return 1D;
     }
 
     private Dataset<Row> getDataSet(SparkSession spark, String query) {
@@ -316,7 +324,9 @@ public class SparkServiceImpl implements SparkService {
         return df;
     }
 
-    private String getQueryTradeView(String table, List<YearMonth> yearMonths) {
+    private String getQueryTradeView(String table, List<YearMonth> yearMonths, Integer rebalance) {
+
+        YearMonth lastYearMonth = addLastYearMonth(yearMonths, rebalance);
 
         StringBuilder sb = new StringBuilder();
         sb.append("select * from ").
@@ -328,6 +338,10 @@ public class SparkServiceImpl implements SparkService {
                     append(" ( year = ").append(yearMonths.get(i).getYear()).
                     append(" and month = ").append(yearMonths.get(i).getMonth()).append(")");
         }
+
+        sb.append(" or").
+                append(" ( year = ").append(lastYearMonth.getYear()).
+                append(" and month = ").append(lastYearMonth.getMonth()).append(")");
         sb.append(")");
         return sb.toString();
     }
@@ -341,6 +355,17 @@ public class SparkServiceImpl implements SparkService {
         }
         sb.append(")").append(")");
         return sb.toString();
+    }
+
+    private YearMonth addLastYearMonth(List<YearMonth> yearMonths, Integer rebalance) {
+        Integer lastYear = yearMonths.get(yearMonths.size() - 1).getYear();
+        Integer lastMonth = yearMonths.get(yearMonths.size() - 1).getMonth() + rebalance;
+
+        if (lastMonth > 12) {
+            lastYear++;
+            lastMonth -= 12;
+        }
+        return new YearMonth(lastYear, lastMonth);
     }
 
     //포스피리스트를 리벨런싱 기간메 맞게 ChangeRateDto리스트로 변환
@@ -584,43 +609,43 @@ public class SparkServiceImpl implements SparkService {
     // TODO : 각 지표 정렬, 합산 수행
     private Dataset<Row> calcTradesIndicator(Dataset<Row> trades, List<Indicator> indicators, int maxNum) {
         trades = trades.withColumn("ranking", lit(0))
-            .withColumn("cnt", lit(0));
+                .withColumn("cnt", lit(0));
 
-        trades.show();
+//        trades.show();
 
         for (Indicator indicator : indicators) {
             trades = sortByIndicator(trades, indicator);
             log.info("===================================indicator : {}", indicator.getTitle().toString());
-            trades.show();
+//            trades.show();
             trades = calSumTradesIndicator(trades, indicator);
             log.info("===================================indicator : {} Ranking, cnt 추가", indicator.getTitle().toString());
-            trades.show();
+//            trades.show();
         }
 
         trades = calAverageRanking(trades);
         log.info("===================랭킹 평균 산출");
-        trades.show();
+//        trades.show();
 
         trades = sortByIndicator(trades, new Indicator("ranking"));
         log.info("===================랭킹 평균 기준 정렬");
-        trades.show();
+//        trades.show();
 
         //  maxnum만큼 잘라서 반환
         if (maxNum > trades.count()) {
             maxNum = (int) trades.count();
         }
         trades = trades.limit(maxNum);
-        trades.show();
+//        trades.show();
 
         return trades;
     }
 
-    public Dataset<Row> calAverageRanking(Dataset<Row> trades) {
+    private Dataset<Row> calAverageRanking(Dataset<Row> trades) {
         Dataset<Row> updatedTrades = trades.withColumn("newRanking",
-            when(col("cnt").equalTo(0), lit(999))
-                .otherwise(col("ranking").divide(col("cnt"))));
+                when(col("cnt").equalTo(0), lit(999))
+                        .otherwise(col("ranking").divide(col("cnt"))));
         updatedTrades = updatedTrades.drop("ranking", "cnt")
-            .withColumnRenamed("newRanking", "ranking");
+                .withColumnRenamed("newRanking", "ranking");
         trades = updatedTrades;
         return trades;
     }
@@ -634,18 +659,18 @@ public class SparkServiceImpl implements SparkService {
         Dataset<Row> select;
         if (indicatorColumn.startsWith("price")) {
             select = trades.where(trades.col(indicatorColumn).gt(0))
-                .sort(trades.col(indicatorColumn))
-                .select("*")
-                .withColumn("newRanking",lit(col("ranking").plus(row_number().over(w))))
-                .withColumn("newCnt", lit(col("cnt").plus(1)));
+                    .sort(trades.col(indicatorColumn))
+                    .select("*")
+                    .withColumn("newRanking", lit(col("ranking").plus(row_number().over(w))))
+                    .withColumn("newCnt", lit(col("cnt").plus(1)));
         } else {
             select = trades
-                .withColumn("newRanking",lit(col("ranking").plus(row_number().over(w))))
-                .withColumn("newCnt", lit(col("cnt").plus(1)));
+                    .withColumn("newRanking", lit(col("ranking").plus(row_number().over(w))))
+                    .withColumn("newCnt", lit(col("cnt").plus(1)));
         }
         select = select.drop("ranking", "cnt")
-            .withColumnRenamed("newRanking", "ranking")
-            .withColumnRenamed("newCnt", "cnt");
+                .withColumnRenamed("newRanking", "ranking")
+                .withColumnRenamed("newCnt", "cnt");
 
         trades = select;
         return trades;
