@@ -105,9 +105,10 @@ public class StrategyController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<Page<StrategyListDto>> getStrategyMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+    public ResponseEntity<Page<StrategyGraphDto>> getStrategyMyList(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+        Page<StrategyGraphDto> strategyGraphDtoList = strategyService.getStrategyMyList(user, pageable);
 
-        return new ResponseEntity<>(strategyService.getStrategyMyList(user, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(strategyGraphDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/strategies/dibs")

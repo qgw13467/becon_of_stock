@@ -20,6 +20,8 @@ public class BacktestResultDto {
 
     List<Long> indicators;
 
+    Integer rebalance;
+
     //주기별 수익률 평균
 //    private Double strategyRevenueAvg;
 //    private Double marketRevenueAvg;

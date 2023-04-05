@@ -56,6 +56,9 @@ public class SparkServiceImpl implements SparkService {
 
         BacktestResultDto backtestResult = new BacktestResultDto();
 
+        // rebalance 추가
+        backtestResult.setRebalance(backtestIndicatorsDto.getRebalance());
+
         SparkSession spark = SparkSession.builder()
                 .appName("becon_of_stock")
                 .config("spark.master", "local[*]")
