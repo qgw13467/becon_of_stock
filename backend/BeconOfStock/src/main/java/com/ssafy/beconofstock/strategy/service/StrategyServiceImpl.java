@@ -38,34 +38,43 @@ public class StrategyServiceImpl implements StrategyService {
     private final CummulationReturnRepository cummulationReturnRepository;
 
     @Override
-    public StrategyDetailDto getStrategyDetail(Member member, Long strategyId) {
+    public StrategyGraphDto getStrategyDetail(Member member, Long strategyId) {
 
-        Strategy strategy = strategyRepository.findById(strategyId).orElseThrow(() -> new NotFoundException());
-
-//        if (strategy.getAccessType() == AccessType.PRIVATE
-//                && strategy.getMember().getId() != member.getId()) {
-//            throw new NotYourAuthorizationException();
-//        }
-
-        List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
-
-        List<Indicator> indicators = strategyIndicatorList.stream()
-                .map(StrategyIndicator::getIndicator)
+        StrategyGraphDto result = new StrategyGraphDto();
+        List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
+        List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
+                .map(cummulateReturn -> CummulateReturnDto.builder()
+                        .year(cummulateReturn.getYear())
+                        .month(cummulateReturn.getMonth())
+                        .strategyValue(cummulateReturn.getStrategyValue())
+                        .marketValue(cummulateReturn.getMarketValue())
+                        .build())
                 .collect(Collectors.toList());
+        result.setCummulateReturnDtos(cummulateReturnDtoList);
 
-        StrategyDetailDto strategyDetailDto =
-                StrategyDetailDto.builder()
-                        .id(strategy.getId())
-                        .title(strategy.getTitle())
-                        .memberNickname(strategy.getMember().getNickname())
-                        .memberId((strategy.getMember().getId()))
-                        .indicators(indicators)
-                        .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
-                        .marketValues(toMarketValues(strategy.getCummulateReturnList()))
-                        .representative(strategy.getRepresentative())
-                        .build();
+        // StrategyIndicator table에서 strategyId로 가져와야함
+        List<Indicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
+        result.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
-        return strategyDetailDto;
+        Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
+        result.setStrategyId(strategy.getId());
+        result.setTitle(strategy.getTitle());
+        // builder 로 처리(strategy에 있는 값 가져오면 됨)
+        CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
+                .strategyCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                .strategyCagr(strategy.getStrategyCagr())
+                .strategySharpe(strategy.getStrategySharpe())
+                .strategySortino(strategy.getStrategySortino())
+                .strategyMDD(strategy.getStrategyMDD())
+                .marketCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                .marketCagr(strategy.getStrategyCagr())
+                .marketSharpe(strategy.getStrategySharpe())
+                .marketSortino(strategy.getStrategySortino())
+                .marketMDD(strategy.getStrategyMDD())
+                .build();
+        result.setCumulativeReturnDataDto(cumulativeReturnDataDto);
+
+        return result;
     }
 
     @Override

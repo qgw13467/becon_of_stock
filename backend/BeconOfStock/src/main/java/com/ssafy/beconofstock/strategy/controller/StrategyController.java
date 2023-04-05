@@ -35,9 +35,9 @@ public class StrategyController {
     public ResponseEntity<?> getStrategyDetails(@AuthenticationPrincipal OAuth2UserImpl oAuth2User,
                                                 @PathVariable("strategyId") Long strategyId) {
 
-        StrategyDetailDto strategyDetailDto = strategyService.getStrategyDetail(oAuth2User.getMember(), strategyId);
+        StrategyGraphDto strategyGraphDto = strategyService.getStrategyDetail(oAuth2User.getMember(), strategyId);
 
-        return new ResponseEntity<>(strategyDetailDto, HttpStatus.OK);
+        return new ResponseEntity<>(strategyGraphDto, HttpStatus.OK);
     }
 
     @GetMapping("/indicators")

@@ -15,7 +15,7 @@ import java.util.List;
 public interface StrategyService {
 
 
-    StrategyDetailDto getStrategyDetail(Member member, Long strategyId);
+    StrategyGraphDto getStrategyDetail(Member member, Long strategyId);
     IndicatorsDto getIndicators();
     IndustriesDto getIndustries();
     List<StrategyIndicator> getStrategy(Long id);
