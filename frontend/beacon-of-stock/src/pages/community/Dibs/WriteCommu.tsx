@@ -117,7 +117,7 @@ export const WriteCommu = () => {
         {/* 전략 창 열리는 모달 컴포넌트 !!!  */}
         <SelectModal isOpen={openModal} onClose={closeModal}>
           <h2 className='text-xl font-bold mb-4'>내 전략 선택</h2>
-          <article className='grid grid-cols-4 gap-4 content-evenly mx-32'>
+          <article className='grid grid-cols-3 gap-4 content-evenly mx-2'>
             {items.map((item, index) => (
               <WriteTileBoard
                 key={index}

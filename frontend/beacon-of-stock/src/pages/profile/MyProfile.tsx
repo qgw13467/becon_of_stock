@@ -226,12 +226,7 @@ export const MyProfile: FC = () => {
       </div>
       {/* 내 전략은 전략 컴포넌트 만들어서 해당 컴포넌트에서 앞에서 3개가 어차피 대표전략일거니까
     그 부분 그냥 불러와서 쓰기 */}
-      <div className='my-4 mx-32 px-4 py-1 '>
-        <div className='text-2xl font-bold border-2 border-cyan-600 ml-1 rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px]'>
-          내 대표 전략
-        </div>
-        <MyStrategy />
-      </div>
+      <MyStrategy />
     </div>
   );
 };
