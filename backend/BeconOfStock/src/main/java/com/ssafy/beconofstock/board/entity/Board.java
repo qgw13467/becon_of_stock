@@ -35,10 +35,11 @@ public class Board extends BaseEntity {
     private Long likeNum;
     private Long commentNum;
 
-    public void increaseCommentNum(int num) {
-        this.commentNum += num;
-    }
+    public void increaseHit() { this.hit += 1; }
 
+    public void increaseCommentNum() {
+        this.commentNum += 1;
+    }
     public void decreaseCommentNum(int num) {
         this.commentNum -= num;
     }

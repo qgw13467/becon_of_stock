@@ -90,12 +90,13 @@ public class BoardServiceImpl implements BoardService {
         return boardList.map(BoardListResponseDto::new);
     }
 
+    // 게시글 조회
+    @Transactional
     public BoardResponseDto getBoardDetail(Long boardId, OAuth2UserImpl user) {
         Member member = user.getMember();
         Board board = boardRepository.findById(boardId).orElse(null);
 
-        board.setHit(board.getHit() + 1);               // 조회수 업데이트
-        boardRepository.save(board);
+        board.increaseHit();
 
         List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(board.getStrategy());
 
@@ -169,9 +170,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public List<CommentResponseDto> createComment(Long boardId, CommentRequestDto content, OAuth2UserImpl user) {
         Board board = boardRepository.findById(boardId).orElse(null);
-        Long commentNum = board.getCommentNum() + 1;
-        board.setCommentNum(commentNum);
-        boardRepository.save(board);
+        board.increaseCommentNum();
 
         Comment comment = Comment.builder()
             .boardId(boardId)
@@ -255,11 +254,10 @@ public class BoardServiceImpl implements BoardService {
             .build();
 
         Comment child = commentRepository.save(comment);
-        parent.increaseCommentNum(1);
+        parent.increaseCommentNum();
         parent = commentRepository.save(parent);
         Board board = boardRepository.findById(boardId).orElse(null);
-        board.increaseCommentNum(1);
-        boardRepository.save(board);
+        board.increaseCommentNum();
 
         CommentRel commentRel = CommentRel.builder()
             .parent(parent)
