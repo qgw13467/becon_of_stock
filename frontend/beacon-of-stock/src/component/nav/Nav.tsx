@@ -71,11 +71,11 @@ const Nav: FC = () => {
         {isLogin ? (
           <>
             {/* <CountdownTimer initialTimeLeft={initialTimeLeft} /> */}
-            <div className='m-auto'>
+            {/* <div className='m-auto'>
               <Link to='/'>
                 <p className={navStyle}>튜토리얼</p>
               </Link>
-            </div>
+            </div> */}
             <div className='m-auto'>
               <Link to='/'>
                 <p className={navStyle}> 백테스트</p>

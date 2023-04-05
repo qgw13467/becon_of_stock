@@ -1,18 +1,13 @@
-import { SearchbarNone } from '../../../component/search/SearchbarNone';
 import { Pagenation } from '../../../component/Pagenation';
 import { BookBoard } from './BookBoard';
 import { useEffect, useState, useCallback } from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { usePageStore } from '../../../store/store';
 import { getCookie } from '../../../assets/config/Cookie';
-import StrategySelect from '../../../component/select_box/StrategySelect';
 import { Link } from 'react-router-dom';
 
 export const Bookmark = () => {
   const { page, setPage } = usePageStore();
-  const pageSize = 20;
-  // const 게시물수 = 100;
-  // const [totalElements, setTotalElements] = useState(게시물수);
   const [totalPages, setTotalPages] = useState(10);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -65,13 +60,13 @@ export const Bookmark = () => {
         <>
           {items.length > 0 ? (
             <>
-              <p className='font-KJCbold text-4xl m-9'>북마크</p>
+              <p className='font-KJCbold text-2xl my-9 mx-32'>북마크</p>
               {/* 필터링 부분 */}
-              <article className='flex justify-between'>
+              {/* <article className='flex justify-between'>
                 <StrategySelect />
                 <SearchbarNone />
-              </article>
-              <article className='grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 content-evenly mx-32'>
+              </article> */}
+              <article className='grid grid-cols-1 content-evenly mx-32'>
                 {items.map((item, index) => (
                   <BookBoard key={index} item={item} />
                 ))}
@@ -79,9 +74,9 @@ export const Bookmark = () => {
               <article className='my-8'>
                 <Pagenation totalPage={totalPages} />
               </article>
-              <article className='flex justify-center ml-32 my-8'>
+              {/* <article className='flex justify-center ml-32 my-8'>
                 <SearchbarNone />
-              </article>
+              </article> */}
             </>
           ) : (
             <div className='grid content-center justify-center h-[600px]'>
