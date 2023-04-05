@@ -4,6 +4,7 @@ import SelectModal from './SelectModal';
 import { getCookie } from '../../../assets/config/Cookie';
 import { WriteTileBoard } from './WriteTileBoard';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export const WriteCommu = () => {
   const navigate = useNavigate();
@@ -59,12 +60,23 @@ export const WriteCommu = () => {
           headers: { authentication: token },
         }
       )
-      .then((res) => {
-        alert('글 작성이 완료 되었습니다.');
+      .then(() => {
+        Swal.fire({
+          html: '<div>글 작성이 완료 되었습니다.</div>',
+          width: 300,
+          icon: 'success',
+          confirmButtonText: '<div>확인</div>',
+        });
         navigate('/community/dibs');
       })
-      .catch((err) => {
-        alert('제목과 내용이 입력되지 않았거나 전략이 선택되지 않았습니다.');
+      .catch(() => {
+        Swal.fire({
+          html: '<div>제목과 내용이 입력되지 않았거나</div><div>전략이 선택되지 않았습니다.</div>',
+          width: 320,
+          icon: 'warning',
+          confirmButtonText: '<div>확인</div>',
+          confirmButtonColor: '#f8bb86',
+        });
       });
   };
   return (
