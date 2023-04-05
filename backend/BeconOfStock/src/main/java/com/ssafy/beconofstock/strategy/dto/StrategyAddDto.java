@@ -31,7 +31,6 @@ public class StrategyAddDto {
 
     private Integer strategyRevenue;
     private Integer totalMonth;
-    private Integer rebalcnce;
 
 //    private AccessType access;
 

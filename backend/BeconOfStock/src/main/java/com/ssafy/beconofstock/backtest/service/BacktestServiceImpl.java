@@ -113,8 +113,6 @@ public class BacktestServiceImpl implements BacktestService {
 
         result.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
-        result.setRebalance(backtestIndicatorsDto.getRebalance());
-
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         System.out.println(history.size());
         for (int i = 0; i < history.size(); i++) {
@@ -197,10 +195,7 @@ public class BacktestServiceImpl implements BacktestService {
         int result = 0;
         result = endMonth - startMonth + (endYear - startYear) * 12;
         result = result / rebalance;
-//        int temp = result % rebalance;
-//        if (temp != 0) {
-//            result++;
-//        }
+
         return result;
     }
 

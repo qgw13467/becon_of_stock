@@ -147,7 +147,6 @@ public class StrategyServiceImpl implements StrategyService {
         // 전략 저장 - id get
         Strategy strategy = new Strategy(member, strategyAddDto);
         strategy.setRepresentative(false);
-        strategy.setRebalance(strategyAddDto.getRebalcnce());
         strategy = strategyRepository.save(strategy);
 
         // 누적 수익률 저장
@@ -159,15 +158,11 @@ public class StrategyServiceImpl implements StrategyService {
                 .map(ChangeRateDto::getChangeRate)
                 .collect(Collectors.toList());
 
-        Integer rebalance = strategy.getRebalance();
 
         for (int i = 0; i < marketValues.size(); i++) {
             int year = strategyDtoValues.get(i).getYear();
             int month = strategyDtoValues.get(i).getMonth();
-//            if (month >= 12) {
-//                month -= 12;
-//                year += 1;
-//            }
+
             cummulateReturnList.add(
                     CummulateReturn.builder()
                             .strategyValue(strategyValues.get(i))
@@ -263,7 +258,6 @@ public class StrategyServiceImpl implements StrategyService {
                             .build())
                     .collect(Collectors.toList());
             total.setCummulateReturnDtos(cummulateReturnDtoList);
-//            List<ChangeRateValueDto> changeRateValueDto = new ArrayList<>();
 
             // StrategyIndicator table에서 strategyId로 가져와야함
             List<Indicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
