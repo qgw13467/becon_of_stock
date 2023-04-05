@@ -9,6 +9,5 @@ import org.apache.spark.sql.SparkSession;
 public interface SparkService {
     BacktestResultDto getBacktestResult(BacktestIndicatorsDto backtestIndicatorsDto);
     Double getRevenueByDataSet(SparkSession spark, Dataset<Row> buy, Dataset<Row> trade, Integer rebalance);
-
-    public void calAverageRanking(Dataset<Row> trades);
+    public Dataset<Row> calAverageRanking(Dataset<Row> trades);
 }
