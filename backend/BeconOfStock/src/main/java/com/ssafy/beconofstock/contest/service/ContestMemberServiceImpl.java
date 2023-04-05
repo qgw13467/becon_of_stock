@@ -74,33 +74,6 @@ public class ContestMemberServiceImpl implements ContestMemberService{
                 return false;
             }
         }
-
-//        Comparator<ContestMember> comparator = null;
-//        if (des.equals("strategyMDD")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategyMDD);
-//        } else if (des.equals("strategyCumulativeReturn")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategyCumulativeReturn).reversed();
-//        } else if (des.equals("strategyCagr")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategyCagr).reversed();
-//        } else if (des.equals("strategySharpe")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategySharpe).reversed();
-//        } else if (des.equals("strategySortino")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategySortino).reversed();
-//        } else if (des.equals("strategyRevenue")) {
-//            comparator = Comparator.comparing(ContestMember::getStrategyRevenue).reversed();
-//        }
-//        if (comparator == null) {
-//            // Invalid description, do nothing
-//            return;
-//        }
-//
-//        Collections.sort(contestMembers, comparator);
-//
-//        int rank = 1;
-//        for (ContestMember cm : contestMembers) {
-//            cm.setRanking((long) rank);
-//            rank++;
-//        }
         Collections.sort(contestMembers, (a, b) -> {
             int compare = 0;
             if (a.getStrategy().getStrategyMDD() != null && b.getStrategy().getStrategyMDD() != null && des.equals("strategyMDD")) {
