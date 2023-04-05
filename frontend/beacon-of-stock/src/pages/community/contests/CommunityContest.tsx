@@ -140,13 +140,16 @@ export const CommunityContest: React.FC = () => {
             <p className='bg-emerald-700 rounded text-center w-80 text-[#fefefe] mb-2'>
               대회명 : {data.title}
             </p>
-            <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[900px] p-4 text-emerald-700 mt-2'>
+            <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[800px] p-4 text-emerald-700 mt-2'>
               <p className='col-span-1'>목표 :</p>
               <p className=''>{data.description}</p>
             </div>
           </div>
           {thisId.title && (
-            <p className='ml-10 my-auto'>선택된 전략 이름 : {thisId.title}</p>
+            <div className='grid content-center'>
+              <p className='my-auto text-start'>전략명 : </p>
+              <p className='my-auto text-start'>{' '}{thisId.title}{' '}</p>
+            </div>
           )}
           <SelectModal isOpen={openModal} onClose={closeModal}>
             <h2 className='text-xl font-bold mb-4'>내 전략 선택</h2>
@@ -165,7 +168,7 @@ export const CommunityContest: React.FC = () => {
             <>
               {thisId.title ? (
                 <button
-                  className='w-[104px] h-[104px] border-2 bg-emerald-700 rounded text-[#fefefe]'
+                  className='w-[99px] h-[99px] border-2 bg-emerald-700 rounded text-[#fefefe]'
                   onClick={() => {
                     joinContest();
                   }}
@@ -174,7 +177,7 @@ export const CommunityContest: React.FC = () => {
                 </button>
               ) : (
                 <button
-                  className='w-[104px] h-[104px] border-2 border-emerald-700 rounded'
+                  className='w-[99px] h-[99px] border-2 border-emerald-700 rounded'
                   onClick={() => {
                     openModalClick();
                   }}
