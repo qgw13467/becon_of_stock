@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 // import CountdownTimer from '../CountdownTimer';
 import { useLoginStore } from '../../store/store';
@@ -39,7 +39,8 @@ const Nav: FC = () => {
   // ===========================================================
 
   const token = getCookie('accessToken');
-  useEffect(() => {
+
+  const fatchData = useCallback(() => {
     axios_api
       .get('user', {
         headers: {
@@ -53,10 +54,22 @@ const Nav: FC = () => {
           setProfile(res.data);
         }
       })
-      .catch((err) => {
-        console.log('token 값이 아직 없을 때 나는 에러');
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          // 401 에러를 처리하는 코드 작성
+          console.log('인증 요청 중입니다.');
+        } else {
+          // 다른 에러를 처리하는 코드 작성
+          console.error('에러가 발생했습니다:', error);
+        }
       });
   }, [token]);
+
+  useEffect(() => {
+    if (isLogin) {
+      fatchData();
+    }
+  }, [isLogin]);
 
   const navStyle =
     'lg:text-lg md:text-base text-sm font-KJCbold inline cursor-pointer p-1 hover:border-b-2 hover:border-[#6EB5FF]';
