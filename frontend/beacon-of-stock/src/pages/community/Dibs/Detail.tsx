@@ -15,6 +15,7 @@ const Detail = () => {
   const token = getCookie('accessToken');
   const [data, setData] = useState<any>({});
   // console.log(data);
+  const [strategyId, setStrategyId] = useState<undefined | number>(undefined);
   const [changeLike, setChangeLike] = useState<boolean>(false);
   const changeLikeChange = () => {
     setChangeLike(!changeLike);
@@ -44,8 +45,25 @@ const Detail = () => {
       .then((res) => {
         console.log(res.data, 'Detail Main');
         setData(res.data);
+        setStrategyId(res.data.strategy.id);
+        console.log(res.data.strategy.id);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
         // setFollowStatus(res.data.followStatus);
+        axios_api
+          .get(`/strategies/${res.data.strategy.id}`, {
+            headers: {
+              authentication: token,
+            },
+            params: {
+              strategyId: res.data.strategy.id,
+            },
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -111,8 +129,8 @@ const Detail = () => {
         전략 공유 게시판
       </p>
       <div className='mt-6'>
-        <div className='flex  justify-between items-center'>
-          <div className='grid grid-cols-2 items-center'>
+        <div className='flex items-center justify-between'>
+          <div className='grid items-center grid-cols-2'>
             {!data.isAuthor && (
               <>
                 {!data.followStatus ? (
