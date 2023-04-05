@@ -323,32 +323,47 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public List<StrategyDetailDto> getRepresentative(OAuth2UserImpl user) {
-        List<Strategy> strategies = strategyRepository.findStrategyByMemberList(user.getMember());
-        List<StrategyDetailDto> strategyList = new ArrayList<>();
-        for (Strategy strategy:strategies) {
-            List<StrategyIndicator> strategyIndicatorList = strategyIndicatorRepository.findByStrategyFetch(strategy);
+    public Page<StrategyGraphDto> getRepresentative(OAuth2UserImpl user, Pageable pageable) {
+        List<StrategyGraphDto> result = new ArrayList<>();
 
-            List<Indicator> indicators = strategyIndicatorList.stream()
-                    .map(StrategyIndicator::getIndicator)
+        List<Long> strategyIds = strategyRepository.findStrategyIdByMemberList(user.getMember());
+
+        for (Long strategyId : strategyIds) {
+            StrategyGraphDto total = new StrategyGraphDto();
+            List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
+            List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
+                    .map(cummulateReturn -> CummulateReturnDto.builder()
+                            .year(cummulateReturn.getYear())
+                            .month(cummulateReturn.getMonth())
+                            .strategyValue(cummulateReturn.getStrategyValue())
+                            .marketValue(cummulateReturn.getMarketValue())
+                            .build())
                     .collect(Collectors.toList());
+            total.setCummulateReturnDtos(cummulateReturnDtoList);
+            // StrategyIndicator table에서 strategyId로 가져와야함
+            List<Indicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
+            total.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
-            StrategyDetailDto strategyDetailDto =
-                    StrategyDetailDto.builder()
-                            .id(strategy.getId())
-                            .title(strategy.getTitle())
-                            .memberNickname(strategy.getMember().getNickname())
-                            .memberId((strategy.getMember().getId()))
-                            .indicators(indicators)
-                            .strategyValues(toStrategyValues(strategy.getCummulateReturnList()))
-                            .marketValues(toMarketValues(strategy.getCummulateReturnList()))
-                            .representative(strategy.getRepresentative())
-                            .build();
-            strategyList.add(strategyDetailDto);
+            Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
+            total.setStrategyId(strategy.getId());
+            total.setTitle(strategy.getTitle());
+            // builder 로 처리(strategy에 있는 값 가져오면 됨)
+            CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
+                    .strategyCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                    .strategyCagr(strategy.getStrategyCagr())
+                    .strategySharpe(strategy.getStrategySharpe())
+                    .strategySortino(strategy.getStrategySortino())
+                    .strategyMDD(strategy.getStrategyMDD())
+                    .marketCumulativeReturn(strategy.getStrategyCumulativeReturn())
+                    .marketCagr(strategy.getStrategyCagr())
+                    .marketSharpe(strategy.getStrategySharpe())
+                    .marketSortino(strategy.getStrategySortino())
+                    .marketMDD(strategy.getStrategyMDD())
+                    .build();
+            total.setCumulativeReturnDataDto(cumulativeReturnDataDto);
+            result.add(total);
         }
-
-        return strategyList;
+        return new PageImpl<>(result, pageable, result.size());
     }
-
 
 }

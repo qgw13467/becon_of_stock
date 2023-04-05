@@ -172,8 +172,8 @@ public class StrategyController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<?> getRepresentative(@AuthenticationPrincipal OAuth2UserImpl user) {
-        List<StrategyDetailDto> strategies = strategyService.getRepresentative(user);
+    public ResponseEntity<?> getRepresentative(@AuthenticationPrincipal OAuth2UserImpl user, Pageable pageable) {
+        Page<StrategyGraphDto> strategies = strategyService.getRepresentative(user, pageable);
         return new ResponseEntity<>(strategies, HttpStatus.OK);
     }
 }
