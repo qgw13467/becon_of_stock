@@ -54,40 +54,45 @@ export const Pagenation = ({ totalPage }: pagebationProps) => {
   };
   return (
     <article className='flex justify-center m-auto p-auto'>
+      {first > 0 && 
       <button
-        id='prev-button'
-        onClick={prevClick}
-        className='box border-2 border-[#5598de] rounded-md bg-[#5598de] text-[#fefefe] text-lg w-16 h-12 my-4 ml-4 mr-3'
-        disabled={first === 0}
+      id='prev-button'
+      onClick={prevClick}
+      className='box border-2 border-[#5598de] rounded-md bg-[#5598de] text-[#fefefe] text-lg w-16 h-12 my-4 ml-4 mr-3'
       >
         prev
       </button>
+      }
       <div className='flex justify-around'>
+        {generatePageNumbers().length > 1 && <>
         {generatePageNumbers().map((pageNumber) => (
           <button
-            key={pageNumber}
-            onClick={() => {
-              setPage(pageNumber);
-              scrollToTop();
-            }}
-            className={`my-4 mx-1 px-1 text-lg h-12 w-12 border-2 rounded-sm ${
-              page === pageNumber
-                ? 'border-[#5598de] text-[#5598de]'
-                : 'border-gray-400 text-gray-400 hover:border-[#5598de] hover:text-[#5598de]'
-            }`}
+          key={pageNumber}
+          onClick={() => {
+            setPage(pageNumber);
+            scrollToTop();
+          }}
+          className={`my-4 mx-1 px-1 text-lg h-12 w-12 border-2 rounded-sm ${
+            page === pageNumber
+            ? 'border-[#5598de] text-[#5598de]'
+            : 'border-gray-400 text-gray-400 hover:border-[#5598de] hover:text-[#5598de]'
+          }`}
           >
             {pageNumber}
           </button>
         ))}
+        </>}
       </div>
+      {end > 10 && 
       <button
-        id='next-button'
-        onClick={nextClick}
-        className='box border-2 border-[#5598de] rounded-md bg-[#5598de] text-[#fefefe] text-lg w-16 h-12 my-4 mr-4 ml-4'
-        disabled={end === allPage}
+      id='next-button'
+      onClick={nextClick}
+      className='box border-2 border-[#5598de] rounded-md bg-[#5598de] text-[#fefefe] text-lg w-16 h-12 my-4 mr-4 ml-4'
+      disabled={end === allPage}
       >
         next
       </button>
+      }
     </article>
   );
 };
