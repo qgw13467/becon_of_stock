@@ -17,7 +17,7 @@ const Detail = () => {
   const [data, setData] = useState<any>({});
   const [graphData, setGraphData] = useState<any>(false);
   // console.log(data);
-  const [strategyId, setStrategyId] = useState<undefined | number>(undefined);
+  // const [strategyId, setStrategyId] = useState<undefined | number>(undefined);
   const [changeLike, setChangeLike] = useState<boolean>(false);
   const changeLikeChange = () => {
     setChangeLike(!changeLike);
@@ -47,7 +47,7 @@ const Detail = () => {
       .then((res) => {
         // console.log(res.data, 'Detail Main');
         setData(res.data);
-        setStrategyId(res.data.strategy.id);
+        // setStrategyId(res.data.strategy.id);
         // console.log(res.data.strategy.id);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
         // setFollowStatus(res.data.followStatus);
@@ -71,7 +71,7 @@ const Detail = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [token, changeLike, changeBookmark, followStatus]);
+  }, [token, changeLike, changeBookmark, followStatus, boardId]);
 
   if (isLoading) {
     return <DetailSkeleton />;

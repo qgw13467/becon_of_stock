@@ -56,12 +56,12 @@ export const ForumComponent = () => {
       {content.length > 0 ? (
         <>
           <article className='flex justify-between mb-8 mx-10'>
-            <div className='border border-[#3E7CBC] p-1 rounded-sm grid content-center'>
+            <div className='border border-cyan-600 p-1 rounded-sm grid content-center'>
               <DibsSelect onSelect={handleSelect} />
             </div>
             <Link
               to='/community/write'
-              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+              className='border-2 p-2 rounded-sm border-cyan-600 bg-cyan-600 text-[#fefefe]'
             >
               <p>글쓰기</p>
             </Link>
@@ -92,13 +92,13 @@ export const ForumComponent = () => {
           <article className='flex justify-end mb-8 mx-10'>
             <button
               onClick={scrollToTop}
-              className='border-2 border-[#3E7CBC] p-2 mr-2 rounded-sm bg-[#3E7CBC] text-[#fefefe]'
+              className='border-2 border-cyan-600 p-2 mr-2 rounded-sm bg-cyan-600 text-[#fefefe]'
             >
               <p>목록</p>
             </button>
             <Link
               to='/community/write'
-              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+              className='border-2 p-2 rounded-sm border-cyan-600 bg-cyan-600 text-[#fefefe]'
             >
               <p>글쓰기</p>
             </Link>
@@ -118,7 +118,7 @@ export const ForumComponent = () => {
           <article className='flex justify-center mb-8 mx-10'>
             <Link
               to='/community/write'
-              className='border-2 p-2 rounded-sm border-[#3E7CBC] bg-[#3E7CBC] text-[#fefefe]'
+              className='border-2 p-2 rounded-sm border-cyan-600 bg-cyan-600 text-[#fefefe]'
             >
               <p>글쓰기</p>
             </Link>

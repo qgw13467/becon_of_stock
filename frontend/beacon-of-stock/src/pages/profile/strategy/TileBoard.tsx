@@ -55,7 +55,7 @@ export const TileBoard = ({ item }: TileBoard) => {
         }
       )
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         fatchData();
       })
       .catch((err) => {
@@ -65,14 +65,14 @@ export const TileBoard = ({ item }: TileBoard) => {
 
   const backtestHandler = () => {
     backtestFactor.loadSelectedIndicator(item.indicators);
-    console.log(backtestFactor.selectedIndicators);
+    // console.log(backtestFactor.selectedIndicators);
   };
 
-  console.log(item);
-  console.log(item.indicators);
+  // console.log(item);
+  // console.log(item.indicators);
 
   return (
-    <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden'>
+    <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden hover:scale-125 bg-[#fefefe] z-0 hover:z-10'>
       <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
       <div className='absolute right-1 top-1' onClick={putStrategy}>
         {rep ? (

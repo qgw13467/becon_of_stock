@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 type BookItem = {
   nickname: string;
   title: string;
@@ -13,17 +15,35 @@ type BookBoard = {
   item: BookItem;
 };
 export const BookBoard = ({ item }: BookBoard) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const goDetail = () => {
+    navigate(`/community/detail/${item.boardId}`);
+  };
+
   return (
-    <div>
-      <div className='flex justify-between'>
-        <div>{item.nickname}</div>
-        <div className="flex justify-center">
-          <div>{item.title}</div>
-          <div>{item.commentNum}</div>
+    <div className='flex justify-evenly mr-32 mt-4 border h-14 rounded pt-4 border-fuchsia-800'>
+      <div className=' w-1/2 text-center '>{item.nickname}</div>
+      <div>:</div>
+      <div className='flex justify-center w-full text-center relative'>
+        <div>{item.title} </div>
+        <div className='ml-2'> ({item.commentNum})</div>
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {isHovered ? (
+            <button
+              className='absolute bg-fuchsia-800 -right-4 w-32 h-10 -top-2 rounded-md text-[#FEFEFE]'
+              onClick={() => goDetail()}
+            >
+              게시글보러 가기
+            </button>
+          ) : (
+            <div className='absolute bg-fuchsia-800 -right-4 w-8 h-10 -top-2 rounded-sm'></div>
+          )}
         </div>
-        <div>{item.createDate.replace('T', ' ')}</div>
-        <div>{item.hit}</div>
-        <div>{item.likeNum}</div>
       </div>
     </div>
   );
