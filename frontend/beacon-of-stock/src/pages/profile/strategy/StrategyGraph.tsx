@@ -51,7 +51,7 @@ const StrategyGraph = (props: Props) => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' />
-        <XAxis dataKey='name' tick={false} />
+        <XAxis dataKey='name' tick={false} axisLine={false} />
         {/* <YAxis label={{ value: '(%)', offset: 20, position: 'top' }} /> */}
         {/* <Tooltip /> */}
         {/* <Legend /> */}

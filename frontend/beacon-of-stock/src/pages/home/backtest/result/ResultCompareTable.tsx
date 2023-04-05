@@ -23,16 +23,16 @@ const ResultCompareTable = (props: Props) => {
   return (
     <div className='mt-[3%]'>
       <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
-      <table className='border-r border-b flex'>
+      <table className='flex border-b border-r'>
         <thead className='flex'>
           <tr>
-            <th className='border-t border-l block px-2 py-1 w-28'>구간</th>
-            <th className='border-t border-l block px-2 py-1 w-28'>내 전략</th>
-            <th className='border-t border-l block px-2 py-1 w-28'>시장</th>
-            <th className='border-t border-l block px-2 py-1 w-28'>
+            <th className='block px-2 py-1 border-t border-l w-28'>구간</th>
+            <th className='block px-2 py-1 border-t border-l w-28'>내 전략</th>
+            <th className='block px-2 py-1 border-t border-l w-28'>시장</th>
+            <th className='block px-2 py-1 border-t border-l w-28'>
               내 전략 / 시장
             </th>
-            <th className='border-t border-l block px-2 py-1 w-28'>
+            <th className='block px-2 py-1 border-t border-l w-28'>
               <div className='flex items-center justify-center'>
                 <p>승패</p>
                 <img
@@ -56,16 +56,16 @@ const ResultCompareTable = (props: Props) => {
           return (
             <tbody key={idx} className='flex'>
               <tr>
-                <td className='border-t border-l block px-2 py-1 text-center w-20'>
+                <td className='block w-20 px-2 py-1 text-center border-t border-l'>
                   {changeRate.year}-{changeRate.month}
                 </td>
-                <td className='border-t border-l block px-2 py-1 text-end'>
+                <td className='block px-2 py-1 border-t border-l text-end'>
                   {((changeRate.strategyValue - 1) * 100).toFixed(2)}%
                 </td>
-                <td className='border-t border-l block px-2 py-1 text-end'>
+                <td className='block px-2 py-1 border-t border-l text-end'>
                   {((changeRate.marketValue - 1) * 100).toFixed(2)}%
                 </td>
-                <td className='border-t border-l block px-2 py-1 text-end'>
+                <td className='block px-2 py-1 border-t border-l text-end'>
                   {(
                     (changeRate.strategyValue - 1) /
                     (changeRate.marketValue - 1)
