@@ -38,9 +38,9 @@ public class StrategyServiceImpl implements StrategyService {
     private final CummulationReturnRepository cummulationReturnRepository;
 
     @Override
-    public StrategyGraphDto getStrategyDetail(Member member, Long strategyId) {
+    public StrategyGraphRepresentativeDto getStrategyDetail(Member member, Long strategyId) {
 
-        StrategyGraphDto result = new StrategyGraphDto();
+        StrategyGraphRepresentativeDto result = new StrategyGraphRepresentativeDto();
         List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
         List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
                 .map(cummulateReturn -> CummulateReturnDto.builder()
@@ -73,6 +73,7 @@ public class StrategyServiceImpl implements StrategyService {
                 .marketMDD(strategy.getStrategyMDD())
                 .build();
         result.setCumulativeReturnDataDto(cumulativeReturnDataDto);
+        result.setRepresentative(strategy.getRepresentative());
 
         return result;
     }
