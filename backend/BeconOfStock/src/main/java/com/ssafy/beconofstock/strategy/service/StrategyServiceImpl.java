@@ -14,6 +14,9 @@ import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
 import com.ssafy.beconofstock.strategy.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -238,7 +241,7 @@ public class StrategyServiceImpl implements StrategyService {
 
     @Override
     @Transactional
-    public List<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user) {
+    public Page<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
 
         List<StrategyGraphDto> result = new ArrayList<>();
         
@@ -281,7 +284,7 @@ public class StrategyServiceImpl implements StrategyService {
             total.setCumulativeReturnDataDto(cumulativeReturnDataDto);
             result.add(total);
         }
-        return result;
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     public List<ChangeRateDto> toMarketValues(List<CummulateReturn> cummulateReturnList) {

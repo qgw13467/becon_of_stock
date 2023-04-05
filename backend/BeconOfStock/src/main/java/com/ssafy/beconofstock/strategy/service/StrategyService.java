@@ -22,7 +22,7 @@ public interface StrategyService {
     void addStrategy(Member member, StrategyAddDto strategyAddDto);
     void patchStrategy(Member member, StrategyAddDto strategyAddDto, Long strategyId);
     void deleteStrategy(Member member, Long StrategyId);
-    List<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user);
+    Page<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable);
     Boolean updateRepresentative(OAuth2UserImpl user, Long strategyId);
     List<StrategyDetailDto> getRepresentative(OAuth2UserImpl user);
 }
