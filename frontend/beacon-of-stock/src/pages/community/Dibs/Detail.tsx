@@ -45,10 +45,10 @@ const Detail = () => {
         },
       })
       .then((res) => {
-        console.log(res.data, 'Detail Main');
+        // console.log(res.data, 'Detail Main');
         setData(res.data);
         setStrategyId(res.data.strategy.id);
-        console.log(res.data.strategy.id);
+        // console.log(res.data.strategy.id);
         setIsLoading(false); // 데이터 로딩이 완료됨을 알리는 상태값 변경
         // setFollowStatus(res.data.followStatus);
         axios_api
@@ -61,7 +61,7 @@ const Detail = () => {
             },
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             setGraphData(res.data);
           })
           .catch((err) => {
