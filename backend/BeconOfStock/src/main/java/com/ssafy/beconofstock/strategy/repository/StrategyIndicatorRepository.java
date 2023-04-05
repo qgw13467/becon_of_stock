@@ -1,5 +1,6 @@
 package com.ssafy.beconofstock.strategy.repository;
 
+import com.ssafy.beconofstock.strategy.entity.Indicator;
 import com.ssafy.beconofstock.strategy.entity.Strategy;
 import com.ssafy.beconofstock.strategy.entity.StrategyIndicator;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,6 @@ public interface StrategyIndicatorRepository extends JpaRepository<StrategyIndic
     @Query("SELECT si FROM StrategyIndicator si LEFT JOIN FETCH si.indicator WHERE si.strategy=:strategy")
     List<StrategyIndicator> findByStrategyFetch(@Param("strategy") Strategy strategy);
 
-    @Query("SELECT si FROM StrategyIndicator si LEFT JOIN FETCH si.indicator WHERE si.strategy.id=:strategyId")
-    List<StrategyIndicator> findStrategyIndicatorByStrategyId(@Param("strategyId") Long strategyId);
+    @Query("SELECT si.indicator FROM StrategyIndicator si LEFT JOIN FETCH si.indicator WHERE si.strategy.id=:strategyId")
+    List<Indicator> findStrategyIndicatorByStrategyId(@Param("strategyId") Long strategyId);
 }

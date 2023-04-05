@@ -266,8 +266,8 @@ public class StrategyServiceImpl implements StrategyService {
 //            List<ChangeRateValueDto> changeRateValueDto = new ArrayList<>();
 
             // StrategyIndicator table에서 strategyId로 가져와야함
-            List<StrategyIndicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
-            total.setIndicators(indicators.stream().map(StrategyIndicator::getId).collect(Collectors.toList()));
+            List<Indicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
+            total.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
 
             Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
             total.setStrategyId(strategy.getId());
