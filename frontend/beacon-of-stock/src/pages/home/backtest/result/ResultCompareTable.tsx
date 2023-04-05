@@ -11,7 +11,7 @@ interface Props {
 }
 
 const ResultCompareTable = (props: Props) => {
-  console.log(props);
+  // console.log(props);
   // 설명 표시 여부
   const [showDesc, setShowDesc] = useState(false);
   const mouseEnterHandler = () => {

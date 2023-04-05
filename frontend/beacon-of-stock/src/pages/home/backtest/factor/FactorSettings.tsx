@@ -50,15 +50,21 @@ const FactorSettings = () => {
 
   return (
     <React.Fragment>
-      <div className='flex items-center justify-between'>
-        <div className='text-xl font-KJCbold w-[60%]'>팩터 설정 </div>
-        <p className='rounded-full border-[#131313] bg-[#FAF6FF]'>사용횟수</p>
-        <p
-          className='text-sm mx-[5%] cursor-pointer text-[#808080] hover:text-[#131313] hover:font-KJCbold'
-          onClick={resetIndicatorHandler}
-        >
-          초기화
-        </p>
+      <div className='flex items-start justify-between'>
+        <div className='items-start text-xl font-KJCbold w-[60%]'>
+          팩터 설정
+        </div>
+        <div className='flex flex-col mr-[8%]'>
+          <p
+            className='mt-[3%] text-sm mx-[5%] cursor-pointer text-[#808080] hover:text-[#131313] hover:font-KJCbold'
+            onClick={resetIndicatorHandler}
+          >
+            초기화
+          </p>
+          <p className='relative top-[15px] rounded-full border-[#131313] bg-[#FAF6FF]'>
+            사용횟수
+          </p>
+        </div>
       </div>
       <ul>
         {data?.factors.map((factor) => {

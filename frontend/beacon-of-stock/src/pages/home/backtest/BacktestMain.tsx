@@ -221,9 +221,12 @@ const BacktestMain = () => {
               </>
             )}
             {showFactor && (
-              <div onClick={doBackTestHandler} className='mr-[2.5%]'>
+              <div
+                onClick={doBackTestHandler}
+                className='fixed right-0 bottom-0 mr-[13%] mb-[3%]'
+              >
                 <input
-                  className='absolute text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[130%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
+                  className='text-lg font-KJCbold text-[#A47ECF] border border-[#A47ECF] rounded-xl bg-[#FEFEFE] w-[150%] h-10 hover:bg-[#A47ECF] hover:text-[#FEFEFE] cursor-pointer'
                   type='submit'
                   value='백테스트'
                 />
