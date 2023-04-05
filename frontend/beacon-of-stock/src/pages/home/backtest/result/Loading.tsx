@@ -1,4 +1,5 @@
-import BOSLoading from '../../../../assets/img/BOSLoading.gif';
+// import BOSLoading from '../../../../assets/img/BOSLoading.gif';
+import BOSLoading from '../../../../assets/img/BOSLoading1.gif';
 const animate1 = { animationDuration: '0.5s' };
 const animate2 = { animationDuration: '1.5s' };
 const Loading = () => {

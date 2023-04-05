@@ -2,6 +2,7 @@
 // import axios_api from '../../../assets/config/Axios';
 // import { getCookie } from '../../../assets/config/Cookie';
 // import { Dispatch, SetStateAction } from 'react';
+import StrategyGraph from '../../profile/strategy/StrategyGraph';
 
 type WriteTileBoardProps = {
   item: any;
@@ -45,8 +46,9 @@ export const WriteTileBoard = ({
         closeModal();
       }}
     >
-      <div className='absolute border-[#7D8AD8] border-2 bg-[#5598DE] text-[#fefefe] w-[240px] h-[80px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto'>
-        {strategyTitle !== null ? strategyTitle : '제목없음'}
+      <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
+      <div className='absolute grid content-center border-[#7D8AD8] border-2 bg-[#5598DE] w-[240px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto '>
+        <p className='text-[#fefefe] text-center'>{strategyTitle}</p>
       </div>
     </div>
   );

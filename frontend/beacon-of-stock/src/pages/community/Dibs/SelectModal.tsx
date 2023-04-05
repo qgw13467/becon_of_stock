@@ -35,7 +35,7 @@ const SelectModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       <div className='absolute inset-0 bg-[#808080] opacity-50'></div>
       <div
         ref={modalRef}
-        className='relative bg-white p-6 rounded-md shadow-lg z-10'
+        className='relative bg-white p-6 rounded-md shadow-lg z-10 w-[800px] h-[600px] overflow-y-auto'
       >
         <span
           className='absolute top-0 right-0 mt-2 mr-2 cursor-pointer text-gray-500 hover:text-gray-800'
