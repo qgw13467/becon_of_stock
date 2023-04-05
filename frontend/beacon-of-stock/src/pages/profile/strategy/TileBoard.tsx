@@ -10,7 +10,7 @@ type TileBoard = {
 };
 
 export const TileBoard = ({ item }: TileBoard) => {
-  // console.log(item);
+  // console.log('1', item);
   const title = item.title;
   const strategyId = item.strategyId;
   const token = getCookie('accessToken');
@@ -25,6 +25,7 @@ export const TileBoard = ({ item }: TileBoard) => {
         },
       })
       .then((res) => {
+        console.log('2', res);
         setRep(res.data.representative);
       })
       .catch((err) => {
