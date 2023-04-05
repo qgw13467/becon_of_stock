@@ -249,14 +249,14 @@ public class StrategyServiceImpl implements StrategyService {
 
     @Override
     @Transactional
-    public Page<StrategyGraphDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
+    public Page<StrategyGraphRepresentativeDto> getStrategyMyList(OAuth2UserImpl user, Pageable pageable) {
 
-        List<StrategyGraphDto> result = new ArrayList<>();
+        List<StrategyGraphRepresentativeDto> result = new ArrayList<>();
         
         List<Long> strategyIds = strategyRepository.findStrategyIdByMember(user.getMember());
 
         for (Long strategyId : strategyIds) {
-            StrategyGraphDto total = new StrategyGraphDto();
+            StrategyGraphRepresentativeDto total = new StrategyGraphRepresentativeDto();
             List<CummulateReturn> cummulateReturnList = cummulationReturnRepository.findCummulateReturnByStrategyId(strategyId);
             List<CummulateReturnDto> cummulateReturnDtoList = cummulateReturnList.stream()
                     .map(cummulateReturn -> CummulateReturnDto.builder()
@@ -267,7 +267,6 @@ public class StrategyServiceImpl implements StrategyService {
                             .build())
                     .collect(Collectors.toList());
             total.setCummulateReturnDtos(cummulateReturnDtoList);
-
             // StrategyIndicator table에서 strategyId로 가져와야함
             List<Indicator> indicators = strategyIndicatorRepository.findStrategyIndicatorByStrategyId(strategyId);
             total.setIndicators(indicators.stream().map(Indicator::getId).collect(Collectors.toList()));
@@ -275,6 +274,7 @@ public class StrategyServiceImpl implements StrategyService {
             Strategy strategy = strategyRepository.findById(strategyId).orElse(null);
             total.setStrategyId(strategy.getId());
             total.setTitle(strategy.getTitle());
+            total.setRepresentative(strategy.getRepresentative());
             // builder 로 처리(strategy에 있는 값 가져오면 됨)
             CumulativeReturnDataDto cumulativeReturnDataDto = CumulativeReturnDataDto.builder()
                     .strategyCumulativeReturn(strategy.getStrategyCumulativeReturn())
