@@ -16,6 +16,7 @@ import { Bookmark } from './pages/profile/bookmark/Bookmark';
 import { MyProfile } from './pages/profile/MyProfile';
 import { Strategy } from './pages/profile/strategy/Strategy';
 import { useLoginStore } from './store/store';
+import NotFound from './pages/NotFound';
 
 const App = () => {
   const { isLogin } = useLoginStore();
@@ -51,6 +52,7 @@ const App = () => {
               <Route path='/index' element={<LoginIndex />} />
             </>
           )}
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
