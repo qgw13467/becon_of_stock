@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import beacon from '../../assets/img/beacon.png';
 
 const NotLoginHome = () => {
-  const beacon = require('../../assets/img/beacon.png');
+  // const beacon = require('../../assets/img/beacon.png');
   return (
     <div className='bg-gradient-to-t from-indigo-500 via-[#FFE5B2] to-[#FFFFFF] h-screen flex justify-center'>
       <div
