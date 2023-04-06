@@ -12,11 +12,12 @@ public class ContestMemberDto {
     Long userId;
     String userNickname;
     Long strategyId;
+    String strategyTitle;
 
     public ContestMemberDto(ContestMember contestMember) {
-//        this.rank = contestMember.getRanking();
         this.userId = contestMember.getMember().getId();
         this.userNickname = contestMember.getMember().getNickname();
         this.strategyId = contestMember.getStrategy().getId();
+        this.strategyTitle = contestMember.getStrategy().getTitle();
     }
 }
