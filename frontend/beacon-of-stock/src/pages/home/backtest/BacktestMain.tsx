@@ -105,6 +105,15 @@ const BacktestMain = () => {
     { indicators: backtestFactor.selectedIndicators },
     { arrayFormat: 'repeat' }
   );
+
+  // componentUnmount의 경우 설정 초기화
+  const reset = () => {
+    backtestFactor.resetSelectedIndicator();
+    backtestFactor.resetIndicator();
+    useBacktestIndustry.selectedIndustries =
+      useBacktestIndustry.allSelectedIndustry;
+  };
+
   const doBackTestHandler = () => {
     if (
       useBacktestIndustry.selectedIndustries.length === 0 ||
@@ -182,6 +191,10 @@ const BacktestMain = () => {
     }
   };
 
+  // 새로고침 시 정보 초기화
+  const beforeUnLoad = () => {
+    // reset();
+  };
   // 대표전략이나 나의 전략조회에서 바로 넘어오는 경우
   useEffect(() => {
     if (location.state !== null) {
@@ -190,6 +203,11 @@ const BacktestMain = () => {
       backtestFactor.loadSelectedIndicator(redirectIndicators);
       setShowFactor(true);
     }
+    window.addEventListener('beforeunload', beforeUnLoad);
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnLoad);
+      reset();
+    };
   }, []);
 
   return (
