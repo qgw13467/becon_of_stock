@@ -443,7 +443,7 @@ const BacktestResult = () => {
       </div>
       <div className='flex flex-col ml-[3%] w-[1320px]'>
         <p className='text-xl font-KJCbold mb-[1%]'>시계열 수익률</p>
-        <div className='flex items-end rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+        <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
           <ResultCumulativeReturnDtos
             cumulativeReturnDtos={data.cumulativeReturnDtos}
           />
@@ -454,7 +454,7 @@ const BacktestResult = () => {
       </div>
       <div className='flex flex-col ml-[3%] w-[1320px] mt-[3%]'>
         <p className='text-xl font-KJCbold mb-[1%]'>전월대비 증감률</p>
-        <div className='flex items-end rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+        <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
           <ResultChangeRate changeRate={data.changeRate} />
           <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
         </div>
