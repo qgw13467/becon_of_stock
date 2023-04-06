@@ -38,9 +38,7 @@ import static org.apache.spark.sql.functions.*;
 @RequiredArgsConstructor
 @PropertySource("classpath:application.yml")
 public class SparkServiceImpl implements SparkService {
-    private final BoardRepository boardRepository;
 
-    private final TradeRepository tradeRepository;
     private final IndicatorRepository indicatorRepository;
     private final BackIndustryRepository backIndustryRepository;
     private final InterestRateRepository interestRateRepository;
