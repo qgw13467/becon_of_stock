@@ -441,19 +441,26 @@ const BacktestResult = () => {
           />
         )}
       </div>
-      <div className='flex items-end'>
-        <ResultCumulativeReturnDtos
-          cumulativeReturnDtos={data.cumulativeReturnDtos}
-        />
-        <ResultCumulativeReturnTable
-          cumulativeReturnDataDto={data.cumulativeReturnDataDto}
-        />
+      <div className='flex flex-col ml-[3%] w-[1320px]'>
+        <p className='text-xl font-KJCbold mb-[1%]'>시계열 수익률</p>
+        <div className='flex items-end rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+          <ResultCumulativeReturnDtos
+            cumulativeReturnDtos={data.cumulativeReturnDtos}
+          />
+          <ResultCumulativeReturnTable
+            cumulativeReturnDataDto={data.cumulativeReturnDataDto}
+          />
+        </div>
       </div>
-      <div className='flex items-end'>
-        <ResultChangeRate changeRate={data.changeRate} />
-        <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
+      <div className='flex flex-col ml-[3%] w-[1320px] mt-[3%]'>
+        <p className='text-xl font-KJCbold mb-[1%]'>전월대비 증감률</p>
+        <div className='flex items-end rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+          <ResultChangeRate changeRate={data.changeRate} />
+          <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
+        </div>
       </div>
-      <div className='mb-[5%] overflow-auto'>
+      <div className='mb-[5%] ml-[3%] mt-[3%]'>
+        <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
         <ResultCompareTable changeRate={data.changeRate} />
       </div>
     </div>
