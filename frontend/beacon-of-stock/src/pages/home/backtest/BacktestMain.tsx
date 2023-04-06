@@ -110,8 +110,11 @@ const BacktestMain = () => {
   const reset = () => {
     backtestFactor.resetSelectedIndicator();
     backtestFactor.resetIndicator();
-    useBacktestIndustry.selectedIndustries =
-      useBacktestIndustry.allSelectedIndustry;
+    useBacktestIndustry.selectedIndustries = [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    ];
+    // useBacktestIndustry.selectedIndustries =
+    //   useBacktestIndustry.allSelectedIndustry;
   };
 
   const doBackTestHandler = () => {
