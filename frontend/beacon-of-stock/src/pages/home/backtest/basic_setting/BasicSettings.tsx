@@ -29,7 +29,7 @@ const BasicSettings = (props: Props) => {
     // 정렬 기준 값
     // sortRatio: '20',
     // 시작 시점
-    start: '2001-01',
+    start: '2015-01',
     // 종료 시점
     end: '2021-12',
   });
