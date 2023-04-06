@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import qs from 'qs';
 import BasicSettings from './basic_setting/BasicSettings';
 import FactorSettings from './factor/FactorSettings';
@@ -18,6 +19,7 @@ const BacktestMain = () => {
   const backtestFactor = useBacktestFactorStore();
   const token = getCookie('accessToken');
   const navigate = useNavigate();
+  const location = useLocation();
 
   type UpdateSettings = {
     industries: string;
@@ -179,6 +181,16 @@ const BacktestMain = () => {
         });
     }
   };
+
+  // 대표전략이나 나의 전략조회에서 바로 넘어오는 경우
+  useEffect(() => {
+    if (location.state !== null) {
+      const redirectIndicators: number[] = location.state.indicators;
+      // console.log(redirectIndicators);
+      backtestFactor.loadSelectedIndicator(redirectIndicators);
+      setShowFactor(true);
+    }
+  }, []);
 
   return (
     <React.Fragment>

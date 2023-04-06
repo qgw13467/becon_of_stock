@@ -3,6 +3,7 @@ import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
 import starOn from '../../assets/img/starOn.png';
 import MyStrategyGraph from './MyStrategyGraph';
+import { useNavigate } from 'react-router';
 
 export const MyStrategy = () => {
   const [data, setData] = useState<any>(undefined);
@@ -21,8 +22,17 @@ export const MyStrategy = () => {
       });
   }, []);
   // console.log(data);
+
+  // 백테스트로 리다이렉트
+  const navigate = useNavigate();
+
+  // const backtestHandler = () => {
+  //   // console.log(item.indicators);
+  //   navigate('/', { state: { indicators: item.indicators } });
+  // };
+
   return (
-    <div className='col-span-2 ml-32 my-6'>
+    <div className='col-span-2 my-6 ml-32'>
       {data !== undefined && (
         <div className='my-4 py-1 w-[800px]'>
           <div className='text-2xl font-bold bg-[#A47ECF] text-[#FEFEFE] rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
@@ -45,7 +55,10 @@ export const MyStrategy = () => {
                     <div className='absolute left-4 top-1 text-2xl text-[#131313] font-KJCbold'>
                       {index + 1}
                     </div>
-                    <div className='absolute grid content-center border-[#A47ECF] border-2 bg-[#A47ECF] text-[#FEFEFE] lg:w-[300px] md:w-[240px] w-[180px] h-[56px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto text-center text-lg font-bold'>
+                    <div
+                      className='absolute grid content-center border-[#A47ECF] border-2 bg-[#A47ECF] text-[#FEFEFE] lg:w-[300px] md:w-[240px] w-[180px] h-[56px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto text-center text-lg font-bold'
+                      // onClick={backtestHandler}
+                    >
                       {item.title}
                     </div>
                   </div>

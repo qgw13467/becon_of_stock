@@ -38,8 +38,11 @@ const FactorDetail = (props: Props) => {
       factorSelected === false
     ) {
       setFactorSelected(true);
-      console.log(title);
-      backtestFactor.addIndicator(props.id, title);
+      if (props.title.slice(0, 1) === '3' || props.title.slice(0, 1) === '6') {
+        backtestFactor.addIndicator(props.id, props.description);
+      } else {
+        backtestFactor.addIndicator(props.id, props.title);
+      }
     } else if (!backtestFactor.selectedIndicators.includes(props.id)) {
       setFactorSelected(false);
     }

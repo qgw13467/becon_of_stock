@@ -5,14 +5,12 @@ import starOn from '../../../assets/img/starOn.png';
 import { useCallback, useEffect, useState } from 'react';
 import StrategyGraph from './StrategyGraph';
 import { useNavigate } from 'react-router';
-import { useBacktestFactorStore } from '../../../store/store';
 
 type TileBoard = {
   item: any;
 };
 
 export const TileBoard = ({ item }: TileBoard) => {
-  const backtestFactor = useBacktestFactorStore();
   const navigate = useNavigate();
 
   // console.log('1', item);
@@ -63,9 +61,10 @@ export const TileBoard = ({ item }: TileBoard) => {
       });
   };
 
+  // 백테스트로 리다이렉트
   const backtestHandler = () => {
-    backtestFactor.loadSelectedIndicator(item.indicators);
-    // console.log(backtestFactor.selectedIndicators);
+    // console.log(item.indicators);
+    navigate('/', { state: { indicators: item.indicators } });
   };
 
   // console.log(item);
