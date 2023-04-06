@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
+import closeE from '../../../assets/img/close.png';
 // import axios_api from '../../../assets/config/Axios';
 
 type ModalProps = {
@@ -41,7 +42,7 @@ const SelectModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           className='absolute top-0 right-0 mt-2 mr-2 cursor-pointer text-gray-500 hover:text-gray-800'
           onClick={onClose}
         >
-          X
+          <img src={closeE} alt='modal-close' className='w-8 h-8 mt-3 mr-3' />
         </span>
         {children}
       </div>

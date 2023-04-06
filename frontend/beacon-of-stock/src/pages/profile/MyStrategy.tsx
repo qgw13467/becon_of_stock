@@ -22,19 +22,19 @@ export const MyStrategy = () => {
   }, []);
   // console.log(data);
   return (
-    <div>
+    <div className='col-span-2 ml-32 my-6'>
       {data !== undefined && (
-        <div className='my-4 mx-32 px-4 py-1'>
-          <div className='text-2xl font-bold border-2 border-cyan-600 ml-1 rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px]'>
+        <div className='my-4 py-1'>
+          <div className='text-2xl font-bold border-2 border-cyan-600 rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
             내 대표 전략
           </div>
-          <div className='flex justify-between'>
+          <div className='grid grid-cols-2'>
             {data.map((item: any, index: number) => {
               return (
                 <div key={index}>
                   <div
                     id='hover-big'
-                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 mx-1 my-2 overflow-hidden hover:scale-125 bg-[#fefefe] duration-700'
+                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 my-2 overflow-hidden hover:scale-110 bg-[#fefefe] duration-500'
                   >
                     <MyStrategyGraph
                       cumulativeReturnDtos={item.cummulateReturnDtos}

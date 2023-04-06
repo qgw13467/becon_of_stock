@@ -30,7 +30,9 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
     <div>
       {content.length > 0 ? (
         <>
-          {falseState && <p className='m-4'>종료된 대회 입니다.</p>}
+          {falseState && (
+            <p className='m-4 border border-emerald-700'>종료된 대회 입니다.</p>
+          )}
           <div className='w-40 bg-emerald-700 text-[#fefefe] rounded my-4 p-1'>
             <p className='text-center'>참여자 명단</p>
           </div>
