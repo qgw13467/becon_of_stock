@@ -37,14 +37,7 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         cookie1.setMaxAge(3600 * 24);
 
         response.addCookie(cookie1);
-        String serverName = request.getRemoteHost();
-        if (serverName != null && (serverName.equals("j8d207.p.ssafy.io"))) {
-            response.setStatus(302);
-            response.setHeader("Location", "/index?token=" + shortToken);
-        }else{
-            response.setStatus(302);
-            response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
-        }
+        response.setStatus(302);
 
 
 //            response.setStatus(302);
