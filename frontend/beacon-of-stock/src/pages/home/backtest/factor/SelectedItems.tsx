@@ -4,7 +4,6 @@ import { useBacktestFactorStore } from '../../../../store/store';
 
 const SelectedItems = () => {
   const backtestFactor = useBacktestFactorStore();
-  // console.log(backtestFactor.indicators);
 
   return (
     <React.Fragment>
