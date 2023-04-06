@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         response.addCookie(cookie1);
 
         String serverName = request.getServerName();
-        if (serverName != null && (serverName.equals("localhost:3000") || serverName.equals("127.0.0.1:3000"))) {
+        if (serverName != null && (serverName.equals("localhost") || serverName.equals("127.0.0.1"))) {
             response.setStatus(302);
             response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
 
