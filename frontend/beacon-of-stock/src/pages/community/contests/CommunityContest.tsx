@@ -130,7 +130,7 @@ export const CommunityContest: React.FC = () => {
             </p>
             <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[600px] p-4 text-emerald-700 mt-2'>
               <p className='col-span-1'>목표 :</p>
-              <p className=''>{data.description}</p>
+              <p className='col-span-9'>{data.description}</p>
             </div>
           </div>
         </div>
@@ -142,18 +142,18 @@ export const CommunityContest: React.FC = () => {
             </p>
             <div className='grid grid-cols-10 border border-emerald-700 rounded text-center w-[800px] p-4 text-emerald-700 mt-2'>
               <p className='col-span-1'>목표 :</p>
-              <p className=''>{data.description}</p>
+              <p className='col-span-9'>{data.description}</p>
             </div>
           </div>
           {thisId.title && (
             <div className='grid content-center'>
-              <p className='my-auto text-start'>전략명 : </p>
-              <p className='my-auto text-start'> {thisId.title} </p>
+              <p className='my-auto text-start'>선택된 전략명 :</p>
+              <p className='my-auto text-center'> {thisId.title} </p>
             </div>
           )}
           <SelectModal isOpen={openModal} onClose={closeModal}>
             <h2 className='text-xl font-bold mb-4'>내 전략 선택</h2>
-            <article className='grid grid-cols-4 gap-4 content-evenly mx-32'>
+            <article className='grid grid-cols-3 gap-4 content-evenly mx-2'>
               {items.map((item, index) => (
                 <WriteTileBoard
                   key={index}
