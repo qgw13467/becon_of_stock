@@ -7,9 +7,18 @@ type contestProps = {
   contestId: number;
 };
 
+type contentType = {
+  strategyId: number;
+  userId: number;
+  userNickname: string;
+  strategyTitle: string;
+};
+
 export const AttendList: React.FC<contestProps> = ({ contestId }) => {
   const { falseState } = useContestStateStore();
-  const [content, setContent] = useState<any[]>([]);
+  const [content, setContent] = useState<contentType[]>([]);
+  // console.log(contestId);
+  // console.log(content);
   const token = getCookie('accessToken');
   useEffect(() => {
     axios_api
@@ -36,21 +45,26 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
           <div className='w-40 bg-emerald-700 text-[#fefefe] rounded my-4 p-1'>
             <p className='text-center'>참여자 명단</p>
           </div>
-          <div className='grid grid-cols-3 border border-emerald-700 rounded my-4'>
+          <div className='grid grid-cols-3 border bg-emerald-700 rounded my-4'>
             {content.slice(0, 3).map((item, index) => {
               return (
                 <div
                   key={index}
-                  className='flex justify-center border border-emerald-700 rounded m-1 py-4'
+                  className='flex justify-center font-KJCbold text-lg text-emerald-700 bg-[#FEFEFE] rounded m-1 py-4'
                 >
                   <p>{index + 1} : </p>
-                  <p>{item.userNickname}</p>
+                  <p className='indent-1'>{item.userNickname}</p>
+                  <p className='indent-1'>
+                    {' < '}
+                    {item.strategyTitle}
+                    {' >'}
+                  </p>
                 </div>
               );
             })}
           </div>
           {content.length > 3 && (
-            <div className='grid grid-cols-10 border border-emerald-700 rounded'>
+            <div className='grid grid-cols-6 border border-emerald-700 rounded'>
               {content.slice(3).map((item, index) => {
                 return (
                   <div
@@ -58,7 +72,12 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
                     className='flex justify-center border border-emerald-700 rounded m-1'
                   >
                     <p>{index + 4} : </p>
-                    <p>{item.userNickname}</p>
+                    <p className='indent-1'>{item.userNickname}</p>
+                    <p className='indent-1'>
+                      {' < '}
+                      {item.strategyTitle}
+                      {' >'}
+                    </p>
                   </div>
                 );
               })}

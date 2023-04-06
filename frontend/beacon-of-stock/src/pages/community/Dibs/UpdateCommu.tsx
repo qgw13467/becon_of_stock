@@ -3,10 +3,29 @@ import axios_api from '../../../assets/config/Axios';
 import SelectModal from './SelectModal';
 import { getCookie } from '../../../assets/config/Cookie';
 import { WriteTileBoard } from './WriteTileBoard';
-import { useNavigate } from 'react-router-dom';
-
+import {
+  useNavigate,
+  // useLocation
+} from 'react-router-dom';
+// type dataType = {
+//   boardId: number;
+//   commentNum: number;
+//   hit: number;
+//   likeNum: number;
+//   memberId: number;
+//   content: string;
+//   createDate: string;
+//   nickname: string;
+//   title: string;
+//   dibStatus: boolean;
+//   followStatus: boolean;
+//   isAuthor: boolean;
+//   likeStatus: boolean;
+// };
 export const UpdateCommu = () => {
   const navigate = useNavigate();
+  // const location = useLocation();
+  // const prevData = location.state as { data: dataType };
   const [title, setTitle] = useState<string>('');
   const titleChange = (e: any) => {
     setTitle(e.target.value);

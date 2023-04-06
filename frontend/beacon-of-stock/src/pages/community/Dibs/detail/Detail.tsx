@@ -1,20 +1,50 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios_api from '../../../assets/config/Axios';
-import { getCookie } from '../../../assets/config/Cookie';
-import { DetailButton } from './DetailButton';
-import DetailComment from './comment/DetailComment';
-import DetailSkeleton from './DetailSkeleton';
-import DetailGraph from './DetailGraph';
-import followAdd from '../../../assets/img/person_add.png';
-import followRemove from '../../../assets/img/person_remove.png';
+import axios_api from '../../../../assets/config/Axios';
+import { getCookie } from '../../../../assets/config/Cookie';
+import { DetailButton } from '../detail/DetailButton';
+import DetailComment from '../comment/DetailComment';
+import DetailSkeleton from '../detail/DetailSkeleton';
+import DetailGraph from '../detail/DetailGraph';
+import followAdd from '../../../../assets/img/person_add.png';
+import followRemove from '../../../../assets/img/person_remove.png';
+
+type dataType = {
+  boardId: number;
+  commentNum: number;
+  hit: number;
+  likeNum: number;
+  memberId: number;
+  content: string;
+  createDate: string;
+  nickname: string;
+  title: string;
+  dibStatus: boolean;
+  followStatus: boolean;
+  isAuthor: boolean;
+  likeStatus: boolean;
+};
 
 const Detail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const boardId = location.pathname.split('/').pop();
   const token = getCookie('accessToken');
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<dataType>({
+    boardId: 0,
+    commentNum: 0,
+    hit: 0,
+    likeNum: 0,
+    memberId: 0,
+    content: '',
+    createDate: '',
+    nickname: '',
+    title: '',
+    dibStatus: false,
+    followStatus: false,
+    isAuthor: false,
+    likeStatus: false,
+  });
   const [graphData, setGraphData] = useState<any>(false);
   // console.log(data);
   // const [strategyId, setStrategyId] = useState<undefined | number>(undefined);
@@ -69,7 +99,11 @@ const Detail = () => {
           });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status) {
+          navigate('/*');
+        } else {
+          console.log(err);
+        }
       });
   }, [token, changeLike, changeBookmark, followStatus, boardId]);
 
@@ -78,12 +112,17 @@ const Detail = () => {
   }
 
   const addFollow = () => {
+    // console.log(data);
     axios_api
-      .post(`/follows/${data.memberId}`, {
-        headers: {
-          authentication: token,
-        },
-      })
+      .post(
+        `/follows/${data.memberId}`,
+        { userId: data.memberId },
+        {
+          headers: {
+            authentication: token,
+          },
+        }
+      )
       .then((res) => {
         // console.log(res);
         changeFollowStatus();
@@ -200,7 +239,13 @@ const Detail = () => {
       {/* 현재 유저와 게시글의 유저가 같을 때만 보이게. */}
       {data.isAuthor ? (
         <div className='flex justify-end my-6'>
-          <Link to={`/community/update/${boardId}`} className='px-1 mr-2'>
+          <Link
+            to={{
+              pathname: `/community/update/${boardId}`,
+              // state: { data: data },
+            }}
+            className='px-1 mr-2'
+          >
             수정
           </Link>
           <p className='mx-8 text-[#808080]'>|</p>
