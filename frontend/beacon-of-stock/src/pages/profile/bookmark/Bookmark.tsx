@@ -67,10 +67,10 @@ export const Bookmark = () => {
                 <SearchbarNone />
               </article> */}
               <article className='flex justify-around w-1/2'>
-                <p className='border w-1/2 text-center rounded ml-32 border-[#131313]'>
+                <p className='border-l border-t border-b w-1/2 text-center ml-32 border-[#131313]'>
                   작성자
                 </p>
-                <p className='border w-full text-center rounded mr-32 border-[#131313]'>
+                <p className='border w-full text-center mr-32 border-[#131313]'>
                   제목
                 </p>
               </article>
