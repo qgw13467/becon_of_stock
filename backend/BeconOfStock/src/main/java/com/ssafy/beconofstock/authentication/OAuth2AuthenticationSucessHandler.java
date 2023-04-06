@@ -4,6 +4,7 @@ import com.ssafy.beconofstock.authentication.user.OAuth2UserImpl;
 import com.ssafy.beconofstock.member.entity.Member;
 import com.ssafy.beconofstock.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.parquet.hadoop.api.ReadSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessHandler {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2UserImpl oAuth2User = (OAuth2UserImpl) authentication.getPrincipal();
@@ -35,9 +37,16 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         cookie1.setMaxAge(3600 * 24);
 
         response.addCookie(cookie1);
-        response.setStatus(302);
-        response.setHeader("Location","http://localhost:3000/index?token="+shortToken);
+
+        String serverName = request.getServerName();
+        if (serverName != null && (serverName.equals("localhost:3000") || serverName.equals("127.0.0.1:3000"))) {
+            response.setStatus(302);
+            response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
+
+        }
 
 //            response.setStatus(302);
     }
+
+
 }
