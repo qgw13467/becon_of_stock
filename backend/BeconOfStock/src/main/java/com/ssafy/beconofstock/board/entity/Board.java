@@ -18,6 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @Builder
 @DynamicInsert
+@Table
 public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
