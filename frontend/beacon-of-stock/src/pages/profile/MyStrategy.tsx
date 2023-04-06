@@ -3,10 +3,39 @@ import axios_api from '../../assets/config/Axios';
 import { getCookie } from '../../assets/config/Cookie';
 import starOn from '../../assets/img/starOn.png';
 import MyStrategyGraph from './MyStrategyGraph';
-import { useNavigate } from 'react-router';
+import SelectModal from '../community/Dibs/SelectModal';
+import { TileBoard } from './strategy/TileBoard';
 
 export const MyStrategy = () => {
   const [data, setData] = useState<any>(undefined);
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const [items, setItems] = useState([]);
+  const token = getCookie('accessToken');
+
+  const openModal = () => {
+    axios_api
+      .get('/strategies', {
+        headers: {
+          authentication: token,
+        },
+        params: {
+          pageSize: 30,
+          pageNumber: 0,
+        },
+      })
+      .then((res) => {
+        setItems(res.data.content);
+        setIsModal(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const closeModal = () => {
+    setIsModal(false);
+  };
+
   useEffect(() => {
     const token = getCookie('accessToken');
     axios_api
@@ -21,18 +50,9 @@ export const MyStrategy = () => {
         console.log(res);
       });
   }, []);
-  // console.log(data);
-
-  // 백테스트로 리다이렉트
-  const navigate = useNavigate();
-
-  // const backtestHandler = () => {
-  //   // console.log(item.indicators);
-  //   navigate('/', { state: { indicators: item.indicators } });
-  // };
 
   return (
-    <div className='col-span-2 my-6 ml-32'>
+    <div className='col-span-2 my-6 ml-64'>
       {data !== undefined && (
         <div className='my-4 py-1 w-[800px]'>
           <div className='text-2xl font-bold bg-[#A47ECF] text-[#FEFEFE] rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
@@ -67,11 +87,23 @@ export const MyStrategy = () => {
             })}
           </div>
           <div className='flex justify-end mr-12'>
-            <button className='my-6 bg-[#A47ECF] w-24 text-[#FEFEFE] rounded-md'>
+            <button
+              className='my-6 bg-[#FEFEFE] hover:bg-[#A47ECF] w-24 h-8 text-[#A47ECF] hover:text-[#FEFEFE] border border-[#A47ECF] rounded-md font-KJCbold'
+              onClick={openModal}
+            >
               전략수정
             </button>
           </div>
         </div>
+      )}
+      {isModal && (
+        <SelectModal isOpen={isModal} onClose={closeModal}>
+          <article className='grid grid-cols-3 content-evenly mt-8'>
+            {items.map((item, index) => (
+              <TileBoard key={index} item={item} />
+            ))}
+          </article>
+        </SelectModal>
       )}
     </div>
   );
