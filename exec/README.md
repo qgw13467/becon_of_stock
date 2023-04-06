@@ -1,7 +1,5 @@
 # 주마등(주식을 마주하는 등대)
 
-## <u>목차</u>
-
 
 ## <u>프로젝트 소개</u>
 '주마등'은 '주식을 마주하는 등대'의 줄임말입니다. 등대가 어두운 바다에 빛을 밝혀 배가 안전하게 항해할 수 있도록 돕듯이, 이용자가 안전하게 주식 시장에 입문할 수 있도록 돕고자 하는 마음을 담았습니다. </br></br>
@@ -40,11 +38,55 @@
 </br>
 
 ## <u>기술 스택</u>
-[ppt 기술 스택 이미지]
+**Backend - Spring**
+
+- IntelliJ IDE
+- Springboot Gradle 7.4
+- Java jdk corretto 11.0.17
+- Spring Data JPA
+- Springframework 2.7.9
+- Spring Security
+- Spring Validation
+- Spring Web
+- Swagger 3.0.0
+- Lombok
+- spark-core 2.12:3.3.2
+- spark-sql 2.12:3.2.3
+- jjwt 0.11.2
+
+**Backend - DB**
+
+- MariaDB 10.11.2
+
+**Backend - Spark**
+
+- Spark 3.2.3
+- Hadoop 3.3.4
+
+**Frontend - React**
+
+- Visual Studio Code IDE 1.74.2
+- Nodejs 18.12.1
+- React 18.2.0
+- zustand 4.3.6
+- typescript 4.9.5
+- TailwindCss 3.2.7
+
+**CI/CD**
+
+- AWS EC2
+  Ubuntu 20.04
+  Docker 23.0.1
+- Jenkins
+- NGINX
+- SSL
+## 빌드시 환경변수 
+- spring : java -jar -Dspring.profiles.active=server app.jar (yml 프로파일 지정)
+
 ## <u>ERD</u>
 [erd 이미지]
 ## <u>개발 팀 소개</u>
 FE : 김현진, 하진우
 BE : 강교철, 박희종, 임지원, 임유정
 
-## <u>실행 방법</u>
+
