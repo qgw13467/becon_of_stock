@@ -5,6 +5,7 @@ import starOn from '../../assets/img/starOn.png';
 import MyStrategyGraph from './MyStrategyGraph';
 import SelectModal from '../community/Dibs/SelectModal';
 import { TileBoard } from './strategy/TileBoard';
+import { useNavigate } from 'react-router';
 
 export const MyStrategy = () => {
   const [data, setData] = useState<any>(undefined);
@@ -51,6 +52,16 @@ export const MyStrategy = () => {
       });
   }, []);
 
+  // 백테스트로 리다이렉트
+  const navigate = useNavigate();
+  const backtestHandler = (
+    params: number[],
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    // console.log(params);
+    navigate('/', { state: { indicators: params } });
+  };
+
   return (
     <div className='col-span-2 my-6 ml-64'>
       {data !== undefined && (
@@ -77,7 +88,9 @@ export const MyStrategy = () => {
                     </div>
                     <div
                       className='absolute grid content-center border-[#A47ECF] border-2 bg-[#A47ECF] text-[#FEFEFE] lg:w-[300px] md:w-[240px] w-[180px] h-[56px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto text-center text-lg font-bold'
-                      // onClick={backtestHandler}
+                      onClick={(event) => {
+                        backtestHandler(item.indicators, event);
+                      }}
                     >
                       {item.title}
                     </div>
@@ -98,7 +111,7 @@ export const MyStrategy = () => {
       )}
       {isModal && (
         <SelectModal isOpen={isModal} onClose={closeModal}>
-          <article className='grid grid-cols-3 content-evenly mt-8'>
+          <article className='grid grid-cols-3 mt-8 content-evenly'>
             {items.map((item, index) => (
               <TileBoard key={index} item={item} />
             ))}
