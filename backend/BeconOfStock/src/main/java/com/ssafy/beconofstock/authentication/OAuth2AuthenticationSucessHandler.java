@@ -38,13 +38,13 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
 
         response.addCookie(cookie1);
         String serverName = request.getRemoteHost();
-
-        response.setStatus(302);
-        response.setHeader("Location", "/index?token=" + shortToken);
         if (serverName != null && (serverName.equals("localhost") || serverName.equals("127.0.0.1"))) {
             response.setStatus(302);
             response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
         }
+        response.setStatus(302);
+        response.setHeader("Location", "/index?token=" + shortToken);
+
 
 //            response.setStatus(302);
     }
