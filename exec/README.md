@@ -18,11 +18,13 @@
 </br>
 ### 백테스트
 [백테스트 페이지 사진]
+<img src="./전략 생성.png">
 - 지표에 대한 설명, 지표를 사용한 전략 수 표시
 - 2000년 ~ 2022년 기간 동안 KOSPI 거래 기록과 상장 기업들의 재무 정보를 기반으로 백테스트를 실행합니다.
 </br>
 ### 결과 페이지
 [결과 페이지 사진]
+<img src="./백테스트_결과.png">
 - 동 기간 시장 대비 수익률, 최고 수익과 최고 손해액 등 전략 판단에 도움이 될 지표들을 그래프와 표로 제공합니다.
 </br>
 ### 커뮤니티
@@ -38,6 +40,9 @@
 </br>
 
 ## <u>기술 스택</u>
+
+<img src="./architecture.png">
+
 **Backend - Spring**
 
 - IntelliJ IDE
@@ -80,13 +85,31 @@
 - Jenkins
 - NGINX
 - SSL
+
+### 외부 서비스
+
+-           OAUTH2(kakao):
+            client-id: 6cc5ec0c050089526ff7be1c676eff66
+            client-secret: SkPr4qmOSB2pOUBRKhA5RzXEzsTMLhYh
+            redirect-uri: http://j8d207.p.ssafy.io/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - account_email
+              - profile_image
+
+
 ## 빌드시 환경변수 
 - spring : java -jar -Dspring.profiles.active=server app.jar (yml 프로파일 지정)
 
 ## <u>ERD</u>
-[erd 이미지]
-## <u>개발 팀 소개</u>
-FE : 김현진, 하진우
-BE : 강교철, 박희종, 임지원, 임유정
+<img src="./ERD.png">
+
+# <u>개발 팀 소개</u>
+- FE : 김현진, 하진우
+- BE : 강교철, 박희종, 임지원, 임유정
+
 
 
