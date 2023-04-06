@@ -12,6 +12,7 @@ export const ReplyMain: React.FC<ReplyProps> = ({
   changeImeeey,
   setCreateState,
 }) => {
+  // console.log(comment);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedCommentContent, setEditedCommentContent] = useState('');
   const token = getCookie('accessToken');
@@ -43,7 +44,9 @@ export const ReplyMain: React.FC<ReplyProps> = ({
 
   // 댓글 삭제
   const commentDelete = (commentId: number, children: []) => {
-    if (children.length === 0) {
+    // console.log(children);
+
+    if (children === null || children.length === 0) {
       axios_api
         .delete(`/boards/comments/${commentId}`, {
           headers: { authentication: token },
