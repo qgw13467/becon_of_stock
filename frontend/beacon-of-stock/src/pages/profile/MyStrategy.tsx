@@ -25,7 +25,7 @@ export const MyStrategy = () => {
     <div className='col-span-2 ml-32 my-6'>
       {data !== undefined && (
         <div className='my-4 py-1'>
-          <div className='text-2xl font-bold border-2 border-cyan-600 rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
+          <div className='text-2xl font-bold bg-[#A47ECF] text-[#FEFEFE] rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
             내 대표 전략
           </div>
           <div className='grid grid-cols-2'>
@@ -34,7 +34,7 @@ export const MyStrategy = () => {
                 <div key={index}>
                   <div
                     id='hover-big'
-                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 my-2 overflow-hidden hover:scale-110 bg-[#fefefe] duration-500'
+                    className='relative lg:w-[300px] md:w-[240px] w-[180px] h-[180px] border-[#A47ECF] rounded-md border-2 my-2 overflow-hidden hover:scale-110 bg-[#fefefe] duration-500 ml-1'
                   >
                     <MyStrategyGraph
                       cumulativeReturnDtos={item.cummulateReturnDtos}
@@ -45,7 +45,7 @@ export const MyStrategy = () => {
                     <div className='absolute left-4 top-1 text-2xl text-[#131313] font-KJCbold'>
                       {index + 1}
                     </div>
-                    <div className='absolute grid content-center border-[#7D8AD8] border-2 bg-[#5598DE] text-[#fefefe] lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto text-center text-lg font-bold'>
+                    <div className='absolute grid content-center border-[#A47ECF] border-2 bg-[#A47ECF] text-[#fefefe] lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto text-center text-lg font-bold'>
                       {item.title}
                     </div>
                   </div>
