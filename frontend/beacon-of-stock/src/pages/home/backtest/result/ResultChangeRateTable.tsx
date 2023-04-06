@@ -9,7 +9,7 @@ interface Props {
 
 const ResultChangeRateTable = (props: Props) => {
   return (
-    <div className='flex flex-col justify-center pt-[1%] pl-[5%] mb-[3%]'>
+    <div className='flex flex-col justify-center mt-[3%] pl-[5%] mb-[3%]'>
       {/* <p className='text-xl font-KJCbold'>ResultChangeRateTable</p> */}
       {/* 표를 나타내는 태그 */}
       <table className='border'>
