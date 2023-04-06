@@ -322,7 +322,7 @@ public class StrategyServiceImpl implements StrategyService {
             return false;
         }
         Boolean representative = strategy.getRepresentative();
-        if (strategies.size() == 3 && !representative) {
+        if (strategies.size() == 4 && !representative) {
             return false;
         }
 

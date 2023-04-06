@@ -38,9 +38,7 @@ import static org.apache.spark.sql.functions.*;
 @RequiredArgsConstructor
 @PropertySource("classpath:application.yml")
 public class SparkServiceImpl implements SparkService {
-    private final BoardRepository boardRepository;
 
-    private final TradeRepository tradeRepository;
     private final IndicatorRepository indicatorRepository;
     private final BackIndustryRepository backIndustryRepository;
     private final InterestRateRepository interestRateRepository;
@@ -213,13 +211,13 @@ public class SparkServiceImpl implements SparkService {
 
 
         return CumulativeReturnDataDto.builder()
-                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate())
-                .strategyCagr(getAvg(changeRates))
+                .strategyCumulativeReturn(cumulativeReturn.get(cumulativeReturn.size() - 1).getChangeRate() - 1)
+                .strategyCagr((getAvg(changeRates)-1)*100D)
                 .strategySharpe(getSharpe(strategyRateDtos, backtestIndicatorsDto))
                 .strategySortino(getSortino(strategyRateDtos, backtestIndicatorsDto))
                 .strategyMDD(getMdd(cumulativeReturn))
-                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate())
-                .marketCagr(getAvg(marketChangeRates))
+                .marketCumulativeReturn(marketCumulativeReturn.get(marketCumulativeReturn.size() - 1).getChangeRate() - 1)
+                .marketCagr((getAvg(marketChangeRates)-1)*100D)
                 .marketSharpe(getSharpe(marketChangeRateDtos, backtestIndicatorsDto))
                 .marketSortino(getSortino(marketChangeRateDtos, backtestIndicatorsDto))
                 .marketMDD(getMdd(marketCumulativeReturn))
