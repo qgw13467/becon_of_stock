@@ -41,9 +41,11 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         if (serverName != null && (serverName.equals("localhost") || serverName.equals("127.0.0.1"))) {
             response.setStatus(302);
             response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
+        }else{
+            response.setStatus(302);
+            response.setHeader("Location", "/index?token=" + shortToken);
+
         }
-        response.setStatus(302);
-        response.setHeader("Location", "/index?token=" + shortToken);
 
 
 //            response.setStatus(302);
