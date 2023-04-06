@@ -25,7 +25,7 @@ export const CreateComment: React.FC<Props> = ({
             id='content'
             name='content'
             rows={4}
-            className='resize-none mt-1 focus:ring-cyan-600 focus:border-cyan-600 block w-full sm:text-sm border-gray-300 rounded-md'
+            className='resize-none mt-1 indent-2 block w-full sm:text-sm rounded-md'
             value={newComment.content}
             onChange={(e) =>
               changeNewComment({ ...newComment, content: e.target.value })
@@ -33,7 +33,7 @@ export const CreateComment: React.FC<Props> = ({
           ></textarea>
           <button
             type='submit'
-            className='border border-cyan-600 hover:bg-cyan-600 text-cyan-600 hover:text-white font-bold py-2 w-24 rounded'
+            className='border border-cyan-600 hover:bg-cyan-600 text-cyan-600 hover:text-white font-bold py-2 w-24 rounded mt-1'
             onClick={() => handleSubmit}
           >
             작성

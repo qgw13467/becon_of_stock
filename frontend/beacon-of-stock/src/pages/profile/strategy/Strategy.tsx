@@ -31,7 +31,7 @@ export const Strategy = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         // setTotalElements(res.data.totalElements);
         setTotalPages(res.data.totalPages);
         setItems(res.data.content);

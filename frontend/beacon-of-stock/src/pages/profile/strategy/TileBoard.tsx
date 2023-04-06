@@ -72,7 +72,7 @@ export const TileBoard = ({ item }: TileBoard) => {
   // console.log(item.indicators);
 
   return (
-    <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden hover:scale-125 bg-[#fefefe] z-0 hover:z-10'>
+    <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden hover:scale-125 bg-[#fefefe] z-0 hover:z-10 duration-500'>
       <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
       <div className='absolute right-1 top-1' onClick={putStrategy}>
         {rep ? (

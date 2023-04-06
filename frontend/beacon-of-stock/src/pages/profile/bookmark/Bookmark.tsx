@@ -27,7 +27,7 @@ export const Bookmark = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         // setTotalElements(res.data.totalElements);
         setTotalPages(res.data.totalPages);
         setItems(res.data.content);
