@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import loginLogo from '../../assets/img/bos-logo.png';
 // import beacon from '../../assets/img/beacon.png'
 
@@ -13,15 +13,15 @@ const Login = () => {
           className='w-[200px] h-[200px] '
         />
         <div className='grid content-center'>
-          <Link
-            to={kakaoLogin}
+          <a
+            href={kakaoLogin}
             className='text-lg bg-[#fae100] text-center rounded-md'
           >
             kakao 로그인
-          </Link>
-          <Link to={kakaoLogin} className='text-slate-500/75 text-center'>
+          </a>
+          <a href={kakaoLogin} className='text-slate-500/75 text-center'>
             kakao로 회원가입하기
-          </Link>
+          </a>
         </div>
       </div>
     </div>
