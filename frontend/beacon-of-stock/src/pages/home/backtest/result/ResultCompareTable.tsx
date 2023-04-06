@@ -21,9 +21,8 @@ const ResultCompareTable = (props: Props) => {
     setShowDesc(false);
   };
   return (
-    <div className='mt-[3%]'>
-      <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
-      <table className='flex border-b border-r'>
+    <div className='ml-7 px-[3%] pt-[2%] pb-[1%] w-[1260px] rounded-md bg-[#FAF6FF]'>
+      <table className='flex overflow-auto border-b border-r '>
         <thead className='flex'>
           <tr>
             <th className='block px-2 py-1 border-t border-l w-28'>구간</th>

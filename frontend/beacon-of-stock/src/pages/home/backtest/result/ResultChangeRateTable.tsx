@@ -9,22 +9,22 @@ interface Props {
 
 const ResultChangeRateTable = (props: Props) => {
   return (
-    <div className='flex flex-col justify-center ml-[10%] mb-[3%]'>
+    <div className='flex flex-col justify-center pt-[1%] pl-[5%] mb-[3%]'>
       {/* <p className='text-xl font-KJCbold'>ResultChangeRateTable</p> */}
       {/* 표를 나타내는 태그 */}
       <table className='border'>
         {/* 제목 행을 그룹화하는 태그 */}
         <thead className='border'>
           <tr>
-            <th className='border px-2 py-1 w-40'>구분</th>
-            <th className='border px-2 py-1 w-24'>시장</th>
-            <th className='border px-2 py-1 w-24'>내 전략</th>
+            <th className='w-40 px-2 py-1 border'>구분</th>
+            <th className='w-24 px-2 py-1 border'>시장</th>
+            <th className='w-24 px-2 py-1 border'>내 전략</th>
           </tr>
         </thead>
         {/* 본문 행을 그룹화하는 태그 */}
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1 w-40'>
+            <td className='flex items-center w-40 px-2 py-1'>
               <div>수익이 있는 달</div>
             </td>
             <td className='px-2 py-1 text-right border'>
@@ -37,7 +37,7 @@ const ResultChangeRateTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1 w-40'>
+            <td className='flex items-center w-40 px-2 py-1'>
               <div>전체 달</div>
             </td>
             <td className='px-2 py-1 text-right border'>
@@ -50,7 +50,7 @@ const ResultChangeRateTable = (props: Props) => {
         </tbody>
         <tbody className='border'>
           <tr>
-            <td className='flex items-center px-2 py-1 w-40'>
+            <td className='flex items-center w-40 px-2 py-1'>
               <div>승률</div>
             </td>
             <td className='px-2 py-1 text-right border'>

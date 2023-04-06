@@ -38,8 +38,7 @@ const ResultCumulativeReturnDtos = (props: Props) => {
   console.log();
 
   return (
-    <div className='flex flex-col'>
-      <p className='text-xl font-KJCbold'>시계열 수익률</p>
+    <div>
       <LineChart
         width={800}
         height={300}
