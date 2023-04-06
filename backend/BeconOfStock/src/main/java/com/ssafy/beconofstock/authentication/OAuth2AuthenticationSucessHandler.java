@@ -37,12 +37,10 @@ public class OAuth2AuthenticationSucessHandler implements AuthenticationSuccessH
         cookie1.setMaxAge(3600 * 24);
 
         response.addCookie(cookie1);
-
-        String serverName = request.getServerName();
+        String serverName = request.getRemoteHost();
         if (serverName != null && (serverName.equals("localhost") || serverName.equals("127.0.0.1"))) {
             response.setStatus(302);
             response.setHeader("Location", "http://localhost:3000/index?token=" + shortToken);
-
         }
 
 //            response.setStatus(302);
