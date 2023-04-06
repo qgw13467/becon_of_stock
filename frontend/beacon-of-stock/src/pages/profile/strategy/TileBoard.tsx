@@ -72,7 +72,7 @@ export const TileBoard = ({ item }: TileBoard) => {
   // console.log(item.indicators);
 
   return (
-    <div className='relative w-[240px] h-[180px] border-[#7D8AD8] rounded-md border-2 m-auto my-2 overflow-hidden hover:scale-125 bg-[#fefefe] z-0 hover:z-10 duration-500'>
+    <div className='relative w-[240px] h-[180px] border-[#A47ECF] rounded-md border-2 m-auto my-2 overflow-hidden hover:scale-125 bg-[#fefefe] z-0 hover:z-10 duration-500'>
       <StrategyGraph cumulativeReturnDtos={item.cummulateReturnDtos} />
       <div className='absolute right-1 top-1' onClick={putStrategy}>
         {rep ? (
@@ -82,10 +82,10 @@ export const TileBoard = ({ item }: TileBoard) => {
         )}
       </div>
       <div
-        className='absolute grid content-center border-[#7D8AD8] border-2 bg-[#5598DE] w-[240px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto'
+        className='absolute grid content-center border-[#A47ECF] border-2 bg-[#A47ECF] w-[240px] h-[65px] rounded-b-md -bottom-[9px] my-2 -right-[1.5px] m-auto'
         onClick={backtestHandler}
       >
-        <p className='text-[#fefefe] text-center'>{title}</p>
+        <p className='text-[#FEFEFE] text-center'>{title}</p>
       </div>
     </div>
   );

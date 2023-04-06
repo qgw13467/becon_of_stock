@@ -102,17 +102,19 @@ export const MyProfile: FC = () => {
 
   return (
     <div className='grid grid-cols-3'>
-      <div className='col-span-1'>
-        <p className='font-KJCbold text-2xl my-9 ml-60'>내 프로필</p>
-        <div id='프로필-프로필' className='grid justify-start my-9 mx-48'>
+      <div className='col-span-1 border border-[#A47ECF] w-[400px] grid content-center justify-center m-10 rounded-md'>
+        <p className='font-KJCbold text-2xl mb-12 ml-40 border-2 border-[#A47ECF] text-[#A47ECF] w-32 text-center rounded-md'>
+          내 프로필
+        </p>
+        <div id='프로필-프로필' className='grid justify-start my-2 mx-48'>
           <img
             src={profile.profileImg ? profile.profileImg : emptyProfile}
             alt='empty-profile-img'
-            className='rounded-full border-[#131313] border-[2px] w-[180px] h-[180px] m-9'
+            className='rounded-full w-[180px] h-[180px] mb-9 mx-9'
           />
           <div
             id='프로필-사진-옆-div'
-            className='grid content-evenly w-[200px] relative ml-10'
+            className='grid content-evenly w-[240px] relative'
           >
             <div className='flex justify-between'>
               <p>닉네임 : </p>
@@ -128,7 +130,7 @@ export const MyProfile: FC = () => {
                       type='text'
                       value={isNickname}
                       onChange={nicknameChange}
-                      className='border rounded-sm border-black w-32'
+                      className='border rounded-sm border-[#A47ECF] w-32'
                       dir='rtl'
                     />
                   </div>

@@ -1,7 +1,7 @@
 import { TileBoard } from './TileBoard';
 import { Pagenation } from '../../../component/Pagenation';
-import { SearchbarNone } from '../../../component/search/SearchbarNone';
-import StrategySelect from '../../../component/select_box/StrategySelect';
+// import { SearchbarNone } from '../../../component/search/SearchbarNone';
+// import StrategySelect from '../../../component/select_box/StrategySelect';
 import { useEffect, useState, useCallback } from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
