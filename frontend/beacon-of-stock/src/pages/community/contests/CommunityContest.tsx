@@ -148,7 +148,7 @@ export const CommunityContest: React.FC = () => {
           {thisId.title && (
             <div className='grid content-center'>
               <p className='my-auto text-start'>전략명 : </p>
-              <p className='my-auto text-start'>{' '}{thisId.title}{' '}</p>
+              <p className='my-auto text-start'> {thisId.title} </p>
             </div>
           )}
           <SelectModal isOpen={openModal} onClose={closeModal}>

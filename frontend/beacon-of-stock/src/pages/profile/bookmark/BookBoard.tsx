@@ -23,7 +23,7 @@ export const BookBoard = ({ item }: BookBoard) => {
   };
 
   return (
-    <div className='flex justify-evenly mr-32 mt-4 border h-14 rounded pt-4 border-fuchsia-800'>
+    <div className='flex justify-evenly mr-32 mt-4 border h-14 rounded pt-4 border-[#7D8AD8]'>
       <div className=' w-1/2 text-center '>{item.nickname}</div>
       <div>:</div>
       <div className='flex justify-center w-full text-center relative'>
@@ -35,13 +35,13 @@ export const BookBoard = ({ item }: BookBoard) => {
         >
           {isHovered ? (
             <button
-              className='absolute bg-fuchsia-800 -right-4 w-32 h-10 -top-2 rounded-md text-[#FEFEFE]'
+              className='absolute bg-[#7D8AD8] -right-8 w-32 h-10 -top-4 rounded-md text-[#FEFEFE]'
               onClick={() => goDetail()}
             >
               게시글보러 가기
             </button>
           ) : (
-            <div className='absolute bg-fuchsia-800 -right-4 w-8 h-10 -top-2 rounded-sm'></div>
+            <div className='absolute bg-[#7D8AD8] -right-8 w-8 h-10 -top-4 rounded-sm'></div>
           )}
         </div>
       </div>

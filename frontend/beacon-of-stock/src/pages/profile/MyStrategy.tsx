@@ -34,7 +34,7 @@ export const MyStrategy = () => {
                 <div key={index}>
                   <div
                     id='hover-big'
-                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 mx-1 my-2 overflow-hidden hover:scale-125 bg-[#fefefe]'
+                    className='relative lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] h-[180px] border-[#7D8AD8] rounded-md border-2 mx-1 my-2 overflow-hidden hover:scale-125 bg-[#fefefe] duration-700'
                   >
                     <MyStrategyGraph
                       cumulativeReturnDtos={item.cummulateReturnDtos}
