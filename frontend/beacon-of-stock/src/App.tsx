@@ -52,7 +52,7 @@ const App = () => {
               <Route path='/index' element={<LoginIndex />} />
             </>
           )}
-          <Route path='*' element={<NotFound />} />
+          {/* <Route path='*' element={<NotFound />} /> */}
         </Routes>
       </BrowserRouter>
     </>
