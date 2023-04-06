@@ -36,7 +36,7 @@ const BacktestMain = () => {
 
   // 기본 설정 Lift
   const [updatedSettings, setUpdatedSettings] = useState({
-    startYear: 2001,
+    startYear: 2015,
     startMonth: 1,
     endYear: 2021,
     endMonth: 12,
