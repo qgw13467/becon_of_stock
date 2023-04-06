@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ResultCumulativeReturnDtos from './ResultCumulativeReturnDtos';
 import ResultCumulativeReturnTable from './ResultCumulativeReturnTable';
 import ResultChangeRate from './ResultChangeRate';
 import ResultChangeRateTable from './ResultChangeRateTable';
 import axios_api from '../../../../assets/config/Axios';
 import { getCookie } from '../../../../assets/config/Cookie';
-import question from '../../../../assets/img/question.png';
 import Swal from 'sweetalert2';
 import ResultCompareTable from './ResultCompareTable';
 
@@ -56,7 +55,16 @@ type resultValues = {
 
 const BacktestResult = () => {
   const location = useLocation();
-  const data: resultValues = location.state.data;
+  const navigate = useNavigate();
+  const [data, setData] = useState<undefined | resultValues>(undefined);
+  const checkData = location.state;
+  useEffect(() => {
+    if (checkData === null) {
+      navigate('/');
+    } else if (checkData) {
+      setData(checkData.data);
+    }
+  }, [data]);
 
   // const data = {
   //   cumulativeReturnDtos: [
@@ -367,7 +375,7 @@ const BacktestResult = () => {
         confirmButtonText: '<div>확인</div>',
         confirmButtonColor: '#f8bb86',
       });
-    } else if (strategyTitle.trim().length !== 0) {
+    } else if (strategyTitle.trim().length !== 0 && data !== undefined) {
       axios_api
         .post(
           'strategies',
@@ -441,28 +449,34 @@ const BacktestResult = () => {
           />
         )}
       </div>
-      <div className='flex flex-col ml-[3%] w-[1320px]'>
-        <p className='text-xl font-KJCbold mb-[1%]'>시계열 수익률</p>
-        <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
-          <ResultCumulativeReturnDtos
-            cumulativeReturnDtos={data.cumulativeReturnDtos}
-          />
-          <ResultCumulativeReturnTable
-            cumulativeReturnDataDto={data.cumulativeReturnDataDto}
-          />
+      {data !== undefined && (
+        <div className='flex flex-col ml-[3%] w-[1320px]'>
+          <p className='text-xl font-KJCbold mb-[1%]'>시계열 수익률</p>
+          <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+            <ResultCumulativeReturnDtos
+              cumulativeReturnDtos={data.cumulativeReturnDtos}
+            />
+            <ResultCumulativeReturnTable
+              cumulativeReturnDataDto={data.cumulativeReturnDataDto}
+            />
+          </div>
         </div>
-      </div>
-      <div className='flex flex-col ml-[3%] w-[1320px] mt-[3%]'>
-        <p className='text-xl font-KJCbold mb-[1%]'>전월대비 증감률</p>
-        <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
-          <ResultChangeRate changeRate={data.changeRate} />
-          <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
+      )}
+      {data !== undefined && (
+        <div className='flex flex-col ml-[3%] w-[1320px] mt-[3%]'>
+          <p className='text-xl font-KJCbold mb-[1%]'>전월대비 증감률</p>
+          <div className='flex items-start rounded-md pt-[1%] bg-[#FAF6FF] mx-[2%]'>
+            <ResultChangeRate changeRate={data.changeRate} />
+            <ResultChangeRateTable revenueDataDto={data.revenueDataDto} />
+          </div>
         </div>
-      </div>
-      <div className='mb-[5%] ml-[3%] mt-[3%]'>
-        <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
-        <ResultCompareTable changeRate={data.changeRate} />
-      </div>
+      )}
+      {data !== undefined && (
+        <div className='mb-[5%] ml-[3%] mt-[3%]'>
+          <p className='text-xl font-KJCbold mb-[1%]'>구간별 수익률 비교</p>
+          <ResultCompareTable changeRate={data.changeRate} />
+        </div>
+      )}
     </div>
   );
 };
