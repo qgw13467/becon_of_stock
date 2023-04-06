@@ -32,7 +32,7 @@ export const CommunityNav = () => {
   }, []);
 
   return (
-    <div className=' py-4 grid justify-center gap-y-4 border-2 border-[#D7609E] rounded-md w-40 h-auto m-9 sticky top-8'>
+    <div className='py-4 grid justify-center gap-y-4 border-2 border-[#D7609E] rounded-md w-40 h-auto m-9 sticky top-8 indent-3'>
       <Link
         to='/community/dibs'
         className='text-lg font-KJCbold text-[#D7609E]'
@@ -53,14 +53,14 @@ export const CommunityNav = () => {
         contestData.map((item, index) => {
           if (item.type === 0) {
             return (
-              <div key={index}>
+              <div key={index} className='px-2'>
                 <Link
                   to={`/community/contests/${item.contestId}`}
                   state={index + 1}
-                  className='ml-1 cursor-pointer'
+                  className='cursor-pointer'
                   onClick={() => setState(false)}
                 >
-                  ㄴ{item.title}
+                  {item.title}
                 </Link>
               </div>
             );
@@ -78,14 +78,14 @@ export const CommunityNav = () => {
         contestData.map((item, index) => {
           if (item.type === 1) {
             return (
-              <div key={index}>
+              <div key={index} className='px-2'>
                 <Link
                   to={`/community/contests/${item.contestId}`}
                   state={index + 1}
-                  className='ml-1 cursor-pointer'
+                  className='cursor-pointer'
                   onClick={() => setState(true)}
                 >
-                  ㄴ{item.title}
+                  {item.title}
                 </Link>
               </div>
             );

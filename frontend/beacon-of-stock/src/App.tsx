@@ -7,7 +7,7 @@ import CommunityMain from './pages/community/CommunityMain';
 import NotLoginHome from './pages/home/NotLoginHome';
 import { WriteCommu } from './pages/community/Dibs/WriteCommu';
 import { UpdateCommu } from './pages/community/Dibs/UpdateCommu';
-import Detail from './pages/community/Dibs/Detail';
+import Detail from './pages/community/Dibs/detail/Detail';
 import { LoginIndex } from './component/login/LoginIndex';
 import { Contests } from './pages/community/contests/Contests';
 import { CommunityDibs } from './pages/community/Dibs/CommunityDibs';
@@ -52,7 +52,7 @@ const App = () => {
               <Route path='/index' element={<LoginIndex />} />
             </>
           )}
-          {/* <Route path='*' element={<NotFound />} /> */}
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>

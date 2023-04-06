@@ -1,10 +1,10 @@
 import React from 'react';
-import axios_api from '../../../assets/config/Axios';
-import { getCookie } from '../../../assets/config/Cookie';
-import thumbUpTrue from '../../../assets/img/thumbs-up-solid.svg';
-import thumbUp from '../../../assets/img/thumbs-up-regular.svg';
-import setBookmark from '../../../assets/img/file_copy.png';
-import yaBookmark from '../../../assets/img/file_copy_1.png';
+import axios_api from '../../../../assets/config/Axios';
+import { getCookie } from '../../../../assets/config/Cookie';
+import thumbUpTrue from '../../../../assets/img/thumbs-up-solid.svg';
+import thumbUp from '../../../../assets/img/thumbs-up-regular.svg';
+import setBookmark from '../../../../assets/img/file_copy.png';
+import yaBookmark from '../../../../assets/img/file_copy_1.png';
 
 interface DetailButtonProps {
   boardId: number;

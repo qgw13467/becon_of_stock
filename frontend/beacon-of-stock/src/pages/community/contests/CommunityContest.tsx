@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios_api from '../../../assets/config/Axios';
 import { getCookie } from '../../../assets/config/Cookie';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SelectModal from '../Dibs/SelectModal';
 import { WriteTileBoard } from '../Dibs/WriteTileBoard';
 import { AttendList } from './AttendList';
 import { useContestStateStore } from '../../../store/store';
 // import { useContestState } from '../../../store/store';
+import Swal from 'sweetalert2';
 
 interface CommunityContest {
   typ: number;
@@ -16,6 +17,7 @@ interface CommunityContest {
 }
 
 export const CommunityContest: React.FC = () => {
+  const navigate = useNavigate();
   const { falseState } = useContestStateStore();
   const location = useLocation();
   const contestId = Number(location.pathname.split('/').pop());
@@ -43,7 +45,7 @@ export const CommunityContest: React.FC = () => {
             }
           )
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           })
           .catch((err) => {
             console.log(err);
@@ -107,14 +109,30 @@ export const CommunityContest: React.FC = () => {
             }
           )
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             changeReload();
           })
           .catch((err) => {
-            console.log(err);
+            Swal.fire({
+              title: '오류 발생',
+              text: '같은 전략으로는 참가하실 수 없습니다!',
+              icon: 'warning',
+              confirmButtonText: '돌아가기',
+            }).then(() => {
+              navigate(`/community/contests/${contestId}`);
+            });
+            // console.log(err);
           });
       })
       .catch((err) => {
+        Swal.fire({
+          title: '오류 발생',
+          text: '같은 전략으로는 참가하실 수 없습니다!',
+          icon: 'warning',
+          confirmButtonText: '돌아가기',
+        }).then(() => {
+          navigate(`/community/contests/${contestId}`);
+        });
         console.log(err);
       });
   };
@@ -182,7 +200,7 @@ export const CommunityContest: React.FC = () => {
                     openModalClick();
                   }}
                 >
-                  대회참가
+                  전략선택
                 </button>
               )}
             </>
