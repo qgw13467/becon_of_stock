@@ -64,7 +64,7 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
             })}
           </div>
           {content.length > 3 && (
-            <div className='grid grid-cols-6 border border-emerald-700 rounded'>
+            <div className='grid grid-cols-5 border border-emerald-700 rounded'>
               {content.slice(3).map((item, index) => {
                 return (
                   <div
@@ -72,7 +72,6 @@ export const AttendList: React.FC<contestProps> = ({ contestId }) => {
                     className='flex justify-center border border-emerald-700 rounded m-1'
                   >
                     <p>{index + 4} : </p>
-                    <p className='indent-1'>{item.userNickname}</p>
                     <p className='indent-1'>
                       {' < '}
                       {item.strategyTitle}

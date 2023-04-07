@@ -113,26 +113,30 @@ export const CommunityContest: React.FC = () => {
             changeReload();
           })
           .catch((err) => {
-            Swal.fire({
-              title: '오류 발생',
-              text: '같은 전략으로는 참가하실 수 없습니다!',
-              icon: 'warning',
-              confirmButtonText: '돌아가기',
-            }).then(() => {
-              navigate(`/community/contests/${contestId}`);
-            });
-            // console.log(err);
+            if (err.request.status === 404) {
+              Swal.fire({
+                title: '오류 발생',
+                text: '같은 전략으로는 참가하실 수 없습니다!',
+                icon: 'warning',
+                confirmButtonText: '돌아가기',
+              }).then(() => {
+                navigate(`/community/contests/${contestId}`);
+              });
+            }
+            console.log(err);
           });
       })
       .catch((err) => {
-        Swal.fire({
-          title: '오류 발생',
-          text: '같은 전략으로는 참가하실 수 없습니다!',
-          icon: 'warning',
-          confirmButtonText: '돌아가기',
-        }).then(() => {
-          navigate(`/community/contests/${contestId}`);
-        });
+        if (err.request.status === 404) {
+          Swal.fire({
+            title: '오류 발생',
+            text: '같은 전략으로는 참가하실 수 없습니다!',
+            icon: 'warning',
+            confirmButtonText: '돌아가기',
+          }).then(() => {
+            navigate(`/community/contests/${contestId}`);
+          });
+        }
         console.log(err);
       });
   };
