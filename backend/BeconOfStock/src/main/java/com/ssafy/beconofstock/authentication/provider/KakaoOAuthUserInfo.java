@@ -33,8 +33,8 @@ public class KakaoOAuthUserInfo implements OAuthUserInfo{
 
     @Override
     public String getProfileImg() {
-        if(attributesProfile.get("image")!=null){
-            return attributesProfile.get("image").toString() ;
+        if(attributesProfile.get("thumbnail_image_url")!=null){
+            return attributesProfile.get("thumbnail_image_url").toString() ;
         }
         return "";
     }
