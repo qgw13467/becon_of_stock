@@ -11,9 +11,7 @@ export function onLogin() {
 
   if (accessToken !== undefined) {
     // accessToken header로 설정
-    axios_api.defaults.headers.common[
-      'Authorization'
-    ] = `Bearer ${accessToken}`;
+    axios_api.defaults.headers.common['Authorization'] = `${accessToken}`;
   } else {
     // alert('로그인 후 접근 가능해요!');
     Swal.fire({
@@ -36,7 +34,7 @@ const onLoginSuccess = (response: any) => {
   const { accessToken } = response.data;
 
   // accessToken 설정
-  axios_api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+  axios_api.defaults.headers.common['Authorization'] = `${accessToken}`;
 
   // accessToken 만료하기 1분 전에 로그인 연장
   // setTimeout(onSilentAccess, JWT_EXPIRY_TIME - 60000);
