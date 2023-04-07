@@ -63,7 +63,7 @@ export const MyStrategy = () => {
   };
 
   return (
-    <div className='col-span-2 my-6 ml-64'>
+    <div className='col-span-2 my-6 ml-32'>
       {data !== undefined && (
         <div className='my-4 py-1 w-[800px]'>
           <div className='text-2xl font-bold bg-[#A47ECF] text-[#FEFEFE] rounded text-center lg:w-[360px] md:w-[300px] sm:w-[240px] w-[180px] ml-56 mb-8'>
