@@ -37,6 +37,7 @@ export const MyProfile: FC = () => {
         })
         .then((res) => {
           console.log(res, '닉네임 변경 요청');
+          setIsInput(true);
         })
         .catch((err) => {
           console.log(err);
@@ -153,7 +154,9 @@ export const MyProfile: FC = () => {
                     src={pen}
                     alt='edit-pen'
                     className='border border-[#3E7CBC] rounded-md w-[24px] h-[24px]'
-                    onClick={() => setIsInput(false)}
+                    onClick={() => {
+                      nicknameValidation();
+                    }}
                   />
                   <img
                     src={closeX}
