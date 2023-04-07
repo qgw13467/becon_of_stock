@@ -19,7 +19,7 @@ const Login = () => {
           >
             kakao 로그인
           </a>
-          <a href={kakaoLogin} className='text-slate-500/75 text-center'>
+          <a href={kakaoLogin} className='text-center text-slate-500/75'>
             kakao로 회원가입하기
           </a>
         </div>
