@@ -88,10 +88,12 @@ public class SecurityConfig {
                 .authenticationEntryPoint((request, response, authException) -> {
                     authException.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().print(authException.getMessage());
                 })
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     accessDeniedException.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().print(accessDeniedException.getMessage());
                 });
         return http.build();
 
@@ -101,12 +103,16 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000", "http://j8d207.p.ssafy.io/", "http://localhost:8080"
+                "http://localhost:3000", "http://j8d207.p.ssafy.io/", "http://localhost:8080",
+                "http://localhost:8888"
         ));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "CONNECT", "OPTIONS", "TRACE"
+        ));
         configuration.setAllowedHeaders(Arrays.asList(
                 "Accept",
                 "Accept-Language",
+                "authentication",
                 "Authentication",
                 "Authorization",
                 "Content-Language",
