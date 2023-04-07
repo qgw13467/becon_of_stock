@@ -63,6 +63,7 @@ const BacktestResult = () => {
       navigate('/');
     } else if (checkData) {
       setData(checkData.data);
+      console.log(checkData.data);
     }
   }, [data]);
 
@@ -336,7 +337,7 @@ const BacktestResult = () => {
   //   },
   //   indicators: [1, 2],
   // };
-  // console.log(data);
+  console.log(data);
 
   // 전략 저장
   const token = getCookie('accessToken');
