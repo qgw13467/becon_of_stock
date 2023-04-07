@@ -54,7 +54,7 @@ export const CommunityContest: React.FC = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [reload]);
+  }, [data, reload]);
   const [thisId, setThisId] = useState({ id: -1, title: '' });
   const handleSetThisId = (id: number, title: string) => {
     setThisId({ id, title });

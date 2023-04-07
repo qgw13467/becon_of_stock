@@ -25,7 +25,7 @@ export const CreateComment: React.FC<Props> = ({
             id='content'
             name='content'
             rows={4}
-            className='resize-none mt-1 indent-2 block w-full sm:text-sm rounded-md'
+            className='resize-none mt-1 indent-2 block w-full sm:text-sm rounded-md pr-4'
             value={newComment.content}
             onChange={(e) =>
               changeNewComment({ ...newComment, content: e.target.value })

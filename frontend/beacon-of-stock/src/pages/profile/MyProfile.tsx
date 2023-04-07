@@ -103,7 +103,7 @@ export const MyProfile: FC = () => {
 
   return (
     <div className='grid grid-cols-3'>
-      <div className='col-span-1 border border-[#A47ECF] w-[400px] grid content-center justify-center m-10 ml-auto rounded-md'>
+      <div className='col-span-1 border border-[#A47ECF] w-[400px] grid content-center justify-center m-10 ml-20 rounded-md'>
         <p className='font-KJCbold text-2xl mb-12 ml-40 border-2 border-[#A47ECF] text-[#A47ECF] w-32 text-center rounded-md'>
           내 프로필
         </p>
