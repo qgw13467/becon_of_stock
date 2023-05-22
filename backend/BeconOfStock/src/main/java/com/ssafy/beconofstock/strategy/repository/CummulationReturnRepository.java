@@ -1,0 +1,18 @@
+package com.ssafy.beconofstock.strategy.repository;
+
+import com.ssafy.beconofstock.backtest.entity.CummulateReturn;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface CummulationReturnRepository extends JpaRepository<CummulateReturn, Long> {
+
+    @Query("select cr from CummulateReturn cr where cr.strategy.id=:strategyId")
+    List<CummulateReturn> findCummulateReturnByStrategyId(@Param("strategyId") Long strategyId);
+}
